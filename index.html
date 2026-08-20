@@ -2730,7 +2730,7 @@ function renderBaseDataProduct() {
         <div class="table-wrap">
           <table class="data-table">
             <thead>
-              <tr><th>产品编码</th><th>产品名称</th><th>产品类型</th><th>中重稀土分类</th><th>产品规格</th><th>产品单位</th><th class="col-num">报价提醒阈值</th><th class="col-num">报价限制阈值</th><th class="col-num">计算阈值</th><th>产品状态</th><th>操作</th></tr>
+              <tr><th>产品编码</th><th>产品名称</th><th>产品类型</th><th>中重稀土分类</th><th>产品规格</th><th class="col-num">报价提醒阈值</th><th class="col-num">报价限制阈值</th><th class="col-num">计算阈值</th><th>产品状态</th><th>操作</th></tr>
             </thead>
             <tbody>
               ${PRODUCTS.map(p => `
@@ -2740,7 +2740,6 @@ function renderBaseDataProduct() {
                   <td>${p.category}</td>
                   <td><span class="badge badge-gray">${p.rareClass}</span></td>
                   <td>${p.spec}</td>
-                  <td>${p.unit}</td>
                   <td class="col-num">
                     <div style="display:inline-flex;align-items:center;gap:4px;">
                       <input class="form-input" style="width:56px;text-align:right;padding:4px 6px;" value="${p.remindThreshold}" onchange="App.toast('${p.name} 报价提醒阈值已调整，保存后生效', 'info')" />
@@ -2808,7 +2807,10 @@ function renderBaseDataCustomer() {
                   <td><span class="badge ${stageMap[c.stage] || 'badge-gray'}">${c.stage}</span></td>
                   <td>${c.followUp}</td>
                   <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${c.note}</td>
-                  <td><button class="btn btn-sm btn-ghost text-primary">跟进</button></td>
+                  <td>
+                    <button class="btn btn-sm btn-ghost text-primary" onclick="App.openCustomerModal('${c.id}')">编辑</button>
+                    <button class="btn btn-sm btn-ghost text-primary">跟进</button>
+                  </td>
                 </tr>
                 `;
               }).join('')}
@@ -3119,7 +3121,7 @@ function renderSystemUser() {
 
 function renderSystemRole() {
   return `
-    <div class="card mb-16">
+    <div class="card">
       <div class="card-header">
         <div class="card-title">角色列表<span style="font-size:12px;color:#97a3b5;font-weight:400;margin-left:8px;">共 ${ROLES.length} 个角色</span></div>
         <div style="display:flex;gap:8px;">
@@ -3137,7 +3139,7 @@ function renderSystemRole() {
         <div class="table-wrap">
           <table class="data-table">
             <thead>
-              <tr><th>角色名称</th><th>角色编码</th><th class="col-num">成员数</th><th class="col-num">功能模块数</th><th>职责描述</th><th>状态</th><th>操作</th></tr>
+              <tr><th>角色名称</th><th>角色编码</th><th class="col-num">成员数</th><th>职责描述</th><th>状态</th><th>操作</th></tr>
             </thead>
             <tbody>
               ${ROLES.filter(r => !App.state.roleQuery || r.name.toLowerCase().includes(App.state.roleQuery.toLowerCase()) || r.id.toLowerCase().includes(App.state.roleQuery.toLowerCase())).map(r => `
@@ -3145,13 +3147,13 @@ function renderSystemRole() {
                   <td><span class="badge badge-primary">${r.name}</span></td>
                   <td class="col-mono">${r.id}</td>
                   <td class="col-num">${r.memberCount}</td>
-                  <td class="col-num">${MENU_CONFIG[r.id].length}</td>
-                  <td style="max-width:280px;color:#64748b;">${r.desc}</td>
+                  <td style="max-width:360px;color:#64748b;">${r.desc}</td>
                   <td><span class="badge badge-success">启用</span></td>
                   <td>
                     <button class="btn btn-sm btn-ghost text-primary" onclick="App.openRoleModal('${r.id}')">编辑</button>
-                    <button class="btn btn-sm btn-ghost" onclick="App.toast('跳转权限矩阵配置', 'info')">配置权限</button>
+                    <button class="btn btn-sm btn-ghost text-primary" onclick="App.openRolePermissionModal('${r.id}')">配置权限</button>
                     <button class="btn btn-sm btn-ghost text-danger" onclick="App.toast('角色已停用', 'warning')">停用</button>
+                    <button class="btn btn-sm btn-ghost text-danger" onclick="App.deleteRole('${r.id}')">删除</button>
                   </td>
                 </tr>
               `).join('')}
@@ -3160,61 +3162,7 @@ function renderSystemRole() {
         </div>
       </div>
     </div>
-    <div class="card">
-      <div class="card-header">
-        <div class="card-title">权限矩阵（模块 × 操作 × 角色）</div>
-        <div style="font-size:12px;color:#64748b;">已细化到操作层面，精确控制每个角色在每个功能上的操作权限</div>
-      </div>
-      <div class="card-body" style="padding:0;">
-        <div class="table-wrap">
-          <table class="data-table perm-matrix">
-            <thead>
-              <tr>
-                <th>功能模块 / 操作</th>
-                <th>采集员</th>
-                <th>统计人员</th>
-                <th>业务经理</th>
-                <th>副总</th>
-                <th>董事长</th>
-                <th>系统管理员</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${PERMISSION_MATRIX.map((p, i) => {
-                const isModuleStart = i === 0 || PERMISSION_MATRIX[i - 1].module !== p.module;
-                return `
-                <tr ${isModuleStart ? 'style="border-top:2px solid #dfe5ee;background:#f7f9fc;"' : ''}>
-                  <td>
-                    ${isModuleStart
-                      ? `<div class="font-bold" style="color:#1a4d8c;">${p.module}</div><div style="font-size:12px;padding-left:16px;">└ ${p.action}</div>`
-                      : `<div style="padding-left:16px;">${p.action}</div>`}
-                  </td>
-                  <td>${permIcon(p.collector)}</td>
-                  <td>${permIcon(p.statistician)}</td>
-                  <td>${permIcon(p.manager)}</td>
-                  <td>${permIcon(p.vp)}</td>
-                  <td>${permIcon(p.chairman)}</td>
-                  <td>${permIcon(p.admin)}</td>
-                </tr>
-                `;
-              }).join('')}
-            </tbody>
-          </table>
-        </div>
-        <div style="padding:12px 20px;display:flex;gap:16px;font-size:12px;color:#64748b;">
-          <span><span class="perm-check">✓</span> 完全权限（增删改查 / 审核 / 发布）</span>
-          <span><span style="color:#0e7490;">◐</span> 仅查看</span>
-          <span><span class="perm-cross">✕</span> 无权限</span>
-        </div>
-      </div>
-    </div>
   `;
-}
-
-function permIcon(val) {
-  if (val === 'full') return '<span class="perm-check">✓</span>';
-  if (val === 'view') return '<span style="color:#0e7490;font-size:14px;">◐</span>';
-  return '<span class="perm-cross">✕</span>';
 }
 
 function renderSystemLog() {
@@ -4400,12 +4348,6 @@ const App = {
             <input class="form-input" style="margin-top:4px;width:100%;" value="${product ? product.spec : ''}" placeholder="纯度成分规格，如 TREO≥99%" />
           </div>
           <div>
-            <label style="font-size:12px;color:#64748b;">产品单位<span style="color:#c0392b;">*</span></label>
-            <select class="form-select" style="margin-top:4px;width:100%;">
-              <option selected>万元/吨</option>
-            </select>
-          </div>
-          <div>
             <label style="font-size:12px;color:#64748b;">产品编码</label>
             <input class="form-input" style="margin-top:4px;width:100%;" value="${product ? product.id : ''}" placeholder="内部编码（选填）" />
           </div>
@@ -4514,21 +4456,21 @@ const App = {
             ${this.mselFilter('entCollectors', '采集员', ['张明','李芳','王强'], e && e.collector ? [e.collector] : [])}
             <div style="margin-top:4px;font-size:11px;color:#97a3b5;">多选，控制数据权限</div>
           </div>
-        </div>
-        <div style="margin-top:14px;padding:12px;background:#f7f9fc;border:1px dashed #c9d3e0;border-radius:8px;font-size:12px;color:#64748b;">
-          <div style="font-size:12px;color:#64748b;margin-bottom:8px;">关联产品<span style="color:#c0392b;">*</span><span style="font-size:11px;color:#97a3b5;margin-left:4px;">限定该企业可报价的产品范围，未关联产品不会出现在其填报列表</span></div>
-          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;">
-            ${PRODUCTS.map(p => {
-              const checked = linked.includes(p.name);
-              return `
-              <label style="display:flex;align-items:center;gap:6px;padding:7px 10px;border:1px solid ${checked ? '#1a4d8c' : '#dfe5ee'};border-radius:6px;background:${checked ? '#eaf1fa' : '#fff'};cursor:pointer;font-size:12px;color:#334155;">
-                <input type="checkbox" name="entProdLink" value="${p.name}" ${checked ? 'checked' : ''} onchange="this.closest('label').style.borderColor=this.checked?'#1a4d8c':'#dfe5ee';this.closest('label').style.background=this.checked?'#eaf1fa':'#fff';" />
-                <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${p.name}</span>
-              </label>
-              `;
-            }).join('')}
+          <div style="grid-column:1 / -1;">
+            <label style="font-size:12px;color:#64748b;">关联产品<span style="color:#c0392b;">*</span><span style="font-size:11px;color:#97a3b5;margin-left:4px;">限定该企业可报价的产品范围，未关联产品不会出现在其填报列表</span></label>
+            <div style="margin-top:4px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;">
+              ${PRODUCTS.map(p => {
+                const checked = linked.includes(p.name);
+                return `
+                <label style="display:flex;align-items:center;gap:6px;padding:7px 10px;border:1px solid ${checked ? '#1a4d8c' : '#dfe5ee'};border-radius:6px;background:${checked ? '#eaf1fa' : '#fff'};cursor:pointer;font-size:12px;color:#334155;">
+                  <input type="checkbox" name="entProdLink" value="${p.name}" ${checked ? 'checked' : ''} onchange="this.closest('label').style.borderColor=this.checked?'#1a4d8c':'#dfe5ee';this.closest('label').style.background=this.checked?'#eaf1fa':'#fff';" />
+                  <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${p.name}</span>
+                </label>
+                `;
+              }).join('')}
+            </div>
+            <div style="margin-top:6px;font-size:11px;color:#97a3b5;">保存后将同步到「产品关联」管理，支持随时调整</div>
           </div>
-          <div style="margin-top:8px;font-size:11px;color:#97a3b5;">保存后将同步到「产品关联」管理，支持随时调整</div>
         </div>
       </div>
       <div class="modal-footer">
@@ -4542,6 +4484,64 @@ const App = {
   saveEnterpriseModal() {
     const linked = document.querySelectorAll('input[name="entProdLink"]:checked');
     this.toast('企业信息已保存，已关联 ' + linked.length + ' 个报价产品', 'success');
+    this.closeModal();
+  },
+
+  // ========== 潜在客户编辑 ==========
+  openCustomerModal(id) {
+    const c = id ? POTENTIAL_CUSTOMERS.find(x => x.id === id) : null;
+    const modal = document.getElementById('modal');
+    modal.innerHTML = `
+      <div class="modal-header">
+        <div class="modal-title">${c ? '编辑客户' : '新增客户'}</div>
+        <button class="modal-close" onclick="App.closeModal()">×</button>
+      </div>
+      <div class="modal-body">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          <div style="grid-column:1 / -1;">
+            <label style="font-size:12px;color:#64748b;">客户名称<span style="color:#c0392b;">*</span></label>
+            <input class="form-input" style="margin-top:4px;width:100%;" value="${c ? c.name : ''}" placeholder="企业全称" />
+          </div>
+          <div>
+            <label style="font-size:12px;color:#64748b;">所在区域</label>
+            <select class="form-select" style="margin-top:4px;width:100%;">
+              ${['内蒙古','江西','四川','湖南','江苏','浙江','甘肃','山东','福建','广西'].map(p => `<option ${c && c.area === p ? 'selected' : ''}>${p}</option>`).join('')}
+            </select>
+          </div>
+          <div>
+            <label style="font-size:12px;color:#64748b;">跟进阶段</label>
+            <select class="form-select" style="margin-top:4px;width:100%;">
+              ${['初步接洽','方案沟通','商务谈判','意向确认','已签约','已流失'].map(s => `<option ${c && c.stage === s ? 'selected' : ''}>${s}</option>`).join('')}
+            </select>
+          </div>
+          <div>
+            <label style="font-size:12px;color:#64748b;">联系人</label>
+            <input class="form-input" style="margin-top:4px;width:100%;" value="${c ? c.contact : ''}" placeholder="联系人姓名" />
+          </div>
+          <div>
+            <label style="font-size:12px;color:#64748b;">联系电话</label>
+            <input class="form-input" style="margin-top:4px;width:100%;" value="${c ? c.phone : ''}" placeholder="如：139****8888" />
+          </div>
+          <div>
+            <label style="font-size:12px;color:#64748b;">下次跟进</label>
+            <input class="form-input" style="margin-top:4px;width:100%;" type="date" value="${c ? c.followUp : ''}" />
+          </div>
+          <div style="grid-column:1 / -1;">
+            <label style="font-size:12px;color:#64748b;">备注</label>
+            <textarea class="form-textarea" style="margin-top:4px;min-height:60px;" placeholder="客户需求、跟进记录等">${c ? c.note : ''}</textarea>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" onclick="App.closeModal()">取消</button>
+        <button class="btn btn-primary" onclick="App.saveCustomerModal()">保存</button>
+      </div>
+    `;
+    document.getElementById('modalOverlay').classList.add('show');
+  },
+
+  saveCustomerModal() {
+    this.toast('客户信息已保存', 'success');
     this.closeModal();
   },
 
@@ -4706,6 +4706,69 @@ const App = {
   saveRoleModal() {
     this.toast('角色信息已保存', 'success');
     this.closeModal();
+  },
+
+  // ========== 角色权限配置 ==========
+  openRolePermissionModal(roleId) {
+    const r = ROLES.find(x => x.id === roleId);
+    if (!r) return;
+    const allowed = new Set(MENU_CONFIG[r.id] || []);
+    const groups = [...new Set(MENU_ITEMS.map(i => i.group))];
+    const modal = document.getElementById('modal');
+    modal.innerHTML = `
+      <div class="modal-header">
+        <div class="modal-title">配置权限 - ${r.name}</div>
+        <button class="modal-close" onclick="App.closeModal()">×</button>
+      </div>
+      <div class="modal-body" style="max-height:420px;overflow:auto;">
+        <div style="margin-bottom:12px;padding:10px;background:#f7f9fc;border-radius:6px;font-size:12px;color:#64748b;">
+          勾选该角色可访问的功能菜单，保存后即时生效。
+        </div>
+        ${groups.map(g => `
+          <div style="margin-bottom:14px;">
+            <div style="font-size:12px;font-weight:600;color:#1a4d8c;margin-bottom:8px;">${g}</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+              ${MENU_ITEMS.filter(i => i.group === g).map(i => `
+                <label style="display:flex;align-items:center;gap:6px;padding:8px 10px;border:1px solid #dfe5ee;border-radius:6px;background:#fff;cursor:pointer;font-size:12px;color:#334155;">
+                  <input type="checkbox" name="rolePerm" value="${i.id}" ${allowed.has(i.id) ? 'checked' : ''} />
+                  <span>${i.label}</span>
+                </label>
+              `).join('')}
+            </div>
+          </div>
+        `).join('')}
+      </div>
+      <div class="modal-footer">
+        <button class="btn" onclick="App.closeModal()">取消</button>
+        <button class="btn btn-primary" onclick="App.saveRolePermissionModal('${r.id}')">保存</button>
+      </div>
+    `;
+    document.getElementById('modalOverlay').classList.add('show');
+  },
+
+  saveRolePermissionModal(roleId) {
+    const checked = document.querySelectorAll('input[name="rolePerm"]:checked');
+    this.toast(`已保存「${roleId}」权限配置，共 ${checked.length} 个功能菜单`, 'success');
+    this.closeModal();
+  },
+
+  deleteRole(id) {
+    const r = ROLES.find(x => x.id === id);
+    const modal = document.getElementById('modal');
+    modal.innerHTML = `
+      <div class="modal-header">
+        <div class="modal-title">删除角色</div>
+        <button class="modal-close" onclick="App.closeModal()">×</button>
+      </div>
+      <div class="modal-body">
+        <div style="font-size:14px;color:#334155;">确定删除角色 <b>${r ? r.name : id}</b> 吗？已绑定该角色的用户将失去对应权限，操作不可恢复。</div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" onclick="App.closeModal()">取消</button>
+        <button class="btn btn-danger" onclick="App.closeModal(); App.toast('角色已删除', 'success')">确认删除</button>
+      </div>
+    `;
+    document.getElementById('modalOverlay').classList.add('show');
   },
 
   // ========== 审核分类标签切换 ==========
