@@ -1057,6 +1057,59 @@ const SMS_TEMPLATES = [
   { id: 'TPL003', name: '企业报价邀约', channel: '移动短信平台', content: '【包头稀土】请于今日16:30前登录小程序完成报价填报。', updated: '2026-08-05 09:00', status: '停用' },
 ];
 
+// ========== 小程序：历史报价（近30日，企业端） ==========
+const MP_HISTORY = [
+  { date: '08-18', items: [
+    { name: '氧化镨钕', high: 48.72, low: 48.40, status: '已发布' },
+    { name: '氧化镝', high: 185.50, low: 184.00, status: '已发布' },
+  ] },
+  { date: '08-17', items: [
+    { name: '氧化镨钕', high: 48.55, low: 48.20, status: '已发布' },
+    { name: '氧化镝', high: 184.80, low: 183.50, status: '已发布' },
+  ] },
+  { date: '08-14', items: [
+    { name: '氧化镨钕', high: 48.10, low: 47.85, status: '已发布' },
+    { name: '氧化铽', high: 660.00, low: 655.00, status: '已发布' },
+  ] },
+  { date: '08-13', items: [
+    { name: '氧化镨钕', high: 47.90, low: 47.60, status: '已发布' },
+    { name: '碳酸镧铈', high: 0.52, low: 0.50, status: '已驳回' },
+  ] },
+  { date: '08-11', items: [
+    { name: '氧化镨钕', high: 47.75, low: 47.50, status: '已发布' },
+    { name: '氧化镝', high: 183.20, low: 182.00, status: '已发布' },
+  ] },
+  { date: '08-07', items: [
+    { name: '氧化镨钕', high: 47.40, low: 47.10, status: '已发布' },
+    { name: '氧化铽', high: 648.00, low: 642.00, status: '已发布' },
+  ] },
+  { date: '08-06', items: [
+    { name: '氧化镨钕', high: 47.30, low: 47.00, status: '已发布' },
+    { name: '金属镨钕', high: 59.80, low: 59.30, status: '已发布' },
+  ] },
+  { date: '08-04', items: [
+    { name: '氧化镨钕', high: 47.20, low: 46.95, status: '已发布' },
+    { name: '氧化镝', high: 181.50, low: 180.20, status: '已发布' },
+  ] },
+  { date: '08-03', items: [
+    { name: '氧化镨钕', high: 47.05, low: 46.80, status: '已发布' },
+    { name: '碳酸镧铈', high: 0.51, low: 0.49, status: '已发布' },
+  ] },
+  { date: '07-31', items: [
+    { name: '氧化镨钕', high: 46.90, low: 46.60, status: '已发布' },
+    { name: '氧化铽', high: 640.00, low: 635.00, status: '已发布' },
+  ] },
+];
+
+// ========== 小程序：今日行情速览（企业端首页） ==========
+const MP_MARKET = [
+  { name: '氧化镨钕', price: 48.72, change: '+0.82%', trend: 'up' },
+  { name: '氧化镝', price: 185.25, change: '+0.52%', trend: 'up' },
+  { name: '氧化铽', price: 662.00, change: '+0.30%', trend: 'up' },
+  { name: '碳酸镧铈', price: 0.52, change: '-0.10%', trend: 'down' },
+  { name: '金属镨钕', price: 60.15, change: '+0.65%', trend: 'up' },
+];
+
 </script>
 <script>
 // ========== SVG Chart Utilities ==========
@@ -1363,11 +1416,11 @@ function renderDashboard() {
     <div class="grid" style="grid-template-columns:2fr 1fr;gap:16px;">
       <div class="card">
         <div class="card-header">
-          <div class="card-title">近7日主要品类价格趋势</div>
+          <div class="card-title">${App.state.trendRange === 'day' ? '近7日' : App.state.trendRange === 'month' ? '近12月' : '近4周'}主要品类价格趋势</div>
           <div style="display:flex;gap:8px;">
-            <button class="btn btn-sm">日</button>
-            <button class="btn btn-sm btn-primary">周</button>
-            <button class="btn btn-sm">月</button>
+            <button class="btn btn-sm ${App.state.trendRange === 'day' ? 'btn-primary' : ''}" onclick="App.setTrendRange('day')">日</button>
+            <button class="btn btn-sm ${App.state.trendRange === 'week' ? 'btn-primary' : ''}" onclick="App.setTrendRange('week')">周</button>
+            <button class="btn btn-sm ${App.state.trendRange === 'month' ? 'btn-primary' : ''}" onclick="App.setTrendRange('month')">月</button>
           </div>
         </div>
         <div class="card-body">
@@ -1605,7 +1658,7 @@ function renderCollectionRecords() {
       <div class="card-header">
         <div class="card-title">采集记录</div>
         <div style="display:flex;gap:8px;">
-          <button class="btn btn-sm">导出Excel</button>
+          <button class="btn btn-sm" onclick="App.exportRecords()">导出Excel</button>
         </div>
       </div>
       <div class="card-body" style="padding:16px;">
@@ -1615,7 +1668,6 @@ function renderCollectionRecords() {
           { label: '状态', control: '<select class="form-select"><option value="">全部</option><option>草稿</option><option>已提交</option><option>审核中</option><option>预警</option><option>已拦截</option><option>已发布</option></select>' },
           { label: '日期', control: '<input class="form-input" type="date" value="2026-08-18" />' },
           { label: '采集员', control: '<select class="form-select"><option value="">全部</option><option>张明</option><option>李芳</option><option>王强</option></select>', fold: true },
-          { label: '附件状态', control: '<select class="form-select"><option value="">全部</option><option>已上传</option><option>未上传</option></select>', fold: true },
         ])}
         <div class="table-wrap">
           <table class="data-table">
@@ -1679,7 +1731,7 @@ function renderCollectionRecords() {
           <div style="display:flex;gap:4px;">
             <button class="btn btn-sm" disabled>上一页</button>
             <button class="btn btn-sm btn-primary">1</button>
-            <button class="btn btn-sm">下一页</button>
+            <button class="btn btn-sm" onclick="App.toast('已加载第 2 页（模拟）', 'info')">下一页</button>
           </div>
         </div>
       </div>
@@ -2048,7 +2100,7 @@ function renderReviewHistory() {
     <div class="card mb-16">
       <div class="card-header">
         <div class="card-title">发布审核记录<span style="font-size:12px;color:#97a3b5;font-weight:400;margin-left:8px;">流程2 · 统计人员提交 → 董事长终审</span></div>
-        <button class="btn btn-sm">导出记录</button>
+        <button class="btn btn-sm" onclick="App.exportData('review')">导出记录</button>
       </div>
       <div class="card-body" style="padding:0;">
         <div class="table-wrap">
@@ -2352,8 +2404,8 @@ function renderPublishConfig() {
           </div>
         </div>
         <div style="display:flex;gap:6px;">
-          <button class="btn btn-sm">连通性测试</button>
-          <button class="btn btn-sm">查看推送日志</button>
+          <button class="btn btn-sm" onclick="App.testSmsConn()">连通性测试</button>
+          <button class="btn btn-sm" onclick="App.viewSmsLog('push')">查看推送日志</button>
         </div>
       </div>
     </div>
@@ -2388,7 +2440,7 @@ function renderPublishConfig() {
         </div>
         <div style="display:flex;gap:6px;">
           <button class="btn btn-sm" onclick="App.toast('已发起连通性测试', 'info')">连通性测试</button>
-          <button class="btn btn-sm">查看获取日志</button>
+          <button class="btn btn-sm" onclick="App.viewSmsLog('get')">查看获取日志</button>
         </div>
       </div>
     </div>
@@ -2427,7 +2479,7 @@ function renderPublishHistory() {
     <div class="card">
       <div class="card-header">
         <div class="card-title">发布历史</div>
-        <button class="btn btn-sm">导出</button>
+        <button class="btn btn-sm" onclick="App.exportData('publish')">导出</button>
       </div>
       <div class="card-body" style="padding:0;">
         <div class="table-wrap">
@@ -2448,7 +2500,7 @@ function renderPublishHistory() {
                   <td>${r.status === 'published' ? '<span class="badge badge-success">已发布</span>' : '<span class="badge badge-warning">待发布</span>'}</td>
                   <td>
                     <button class="btn btn-sm btn-ghost" onclick="App.toast('查看行情详情', 'info')">查看</button>
-                    ${r.status === 'published' ? '<button class="btn btn-sm btn-ghost">回溯</button>' : ''}
+                    ${r.status === 'published' ? `<button class="btn btn-sm btn-ghost" onclick="App.rollbackPublish('${r.id}')">回溯</button>` : ''}
                   </td>
                 </tr>
               `).join('')}
@@ -2612,8 +2664,8 @@ function renderBaseDataEnterprise() {
       <div class="card-header">
         <div class="card-title">企业管理<span style="font-size:12px;color:#97a3b5;font-weight:400;margin-left:8px;">可维护企业与报价产品的关联关系</span></div>
         <div style="display:flex;gap:8px;">
-          <button class="btn btn-sm">批量导入</button>
-          <button class="btn btn-sm">导出</button>
+          <button class="btn btn-sm" onclick="App.importData('enterprise')">批量导入</button>
+          <button class="btn btn-sm" onclick="App.exportData('enterprise')">导出</button>
           <button class="btn btn-sm btn-primary" onclick="App.openEnterpriseModal()">新增企业</button>
         </div>
       </div>
@@ -2729,8 +2781,9 @@ function renderBaseDataCustomer() {
       <div class="card-header">
         <div class="card-title">潜在客户台账<span style="font-size:12px;color:#97a3b5;font-weight:400;margin-left:8px;">区分正式 / 潜在企业，客户分层运维</span></div>
         <div style="display:flex;gap:8px;">
-          <button class="btn btn-sm" onclick="App.toast('批量导入：请使用标准模板上传 Excel 文件', 'info')">批量导入</button>
-          <button class="btn btn-sm btn-primary">新增客户</button>
+          <button class="btn btn-sm" onclick="App.importData('enterprise')">批量导入</button>
+          <button class="btn btn-sm" onclick="App.exportData('enterprise')">导出</button>
+          <button class="btn btn-sm btn-primary" onclick="App.toast('打开新增客户弹窗', 'info')">新增客户</button>
         </div>
       </div>
       <div class="card-body" style="padding:0;">
@@ -2852,8 +2905,8 @@ function renderSystemMenu() {
       <div class="card-header">
         <div class="card-title">菜单管理</div>
         <div style="display:flex;gap:8px;">
-          <button class="btn btn-sm">导入</button>
-          <button class="btn btn-sm">导出</button>
+          <button class="btn btn-sm" onclick="App.importData('menu')">导入</button>
+          <button class="btn btn-sm" onclick="App.exportData('menu')">导出</button>
           <button class="btn btn-sm btn-primary" onclick="App.openMenuModal()">新增菜单</button>
         </div>
       </div>
@@ -2919,18 +2972,23 @@ function renderSystemDept() {
         <div class="card-header">
           <div class="card-title">部门列表</div>
           <div style="display:flex;gap:8px;">
-            <button class="btn btn-sm">导入</button>
-            <button class="btn btn-sm">导出</button>
+            <button class="btn btn-sm" onclick="App.importData('dept')">导入</button>
+            <button class="btn btn-sm" onclick="App.exportData('dept')">导出</button>
           </div>
         </div>
         <div class="card-body" style="padding:0;">
+          ${filterBar([
+            { label: '部门名称', control: '<input class="form-input" placeholder="部门名称关键词" oninput="App.filterDept(this.value)" value="${App.state.deptQuery}" />' },
+            { label: '类型', control: '<select class="form-select"><option value="">全部</option><option>公司</option><option>中心</option><option>部门</option><option>小组</option></select>' },
+            { label: '状态', control: '<select class="form-select"><option value="">全部</option><option>启用</option><option>停用</option></select>', fold: true },
+          ])}
           <div class="table-wrap">
             <table class="data-table">
               <thead>
                 <tr><th>部门名称</th><th>类型</th><th>上级组织</th><th>负责人</th><th class="col-num">成员数</th><th>状态</th><th>操作</th></tr>
               </thead>
               <tbody>
-                ${DEPARTMENTS.map(d => `
+                ${DEPARTMENTS.filter(d => !App.state.deptQuery || d.name.toLowerCase().includes(App.state.deptQuery.toLowerCase())).map(d => `
                   <tr>
                     <td class="font-bold">${d.name}</td>
                     <td><span class="badge badge-gray">${d.type}</span></td>
@@ -2959,8 +3017,8 @@ function renderSystemDict() {
       <div class="card-header">
         <div class="card-title">数据字典</div>
         <div style="display:flex;gap:8px;">
-          <button class="btn btn-sm">导入</button>
-          <button class="btn btn-sm">导出</button>
+          <button class="btn btn-sm" onclick="App.importData('dict')">导入</button>
+          <button class="btn btn-sm" onclick="App.exportData('dict')">导出</button>
           <button class="btn btn-sm btn-primary" onclick="App.openDictModal()">新增字典</button>
         </div>
       </div>
@@ -3003,8 +3061,8 @@ function renderSystemUser() {
       <div class="card-header">
         <div class="card-title">用户管理<span style="font-size:12px;color:#97a3b5;font-weight:400;margin-left:8px;">用户归属组织架构节点，决定数据权限范围</span></div>
         <div style="display:flex;gap:8px;">
-          <button class="btn btn-sm">导入</button>
-          <button class="btn btn-sm">导出</button>
+          <button class="btn btn-sm" onclick="App.importData('user')">导入</button>
+          <button class="btn btn-sm" onclick="App.exportData('user')">导出</button>
           <button class="btn btn-sm btn-primary" onclick="App.openUserModal()">新增用户</button>
         </div>
       </div>
@@ -3065,19 +3123,24 @@ function renderSystemRole() {
       <div class="card-header">
         <div class="card-title">角色列表<span style="font-size:12px;color:#97a3b5;font-weight:400;margin-left:8px;">共 ${ROLES.length} 个角色</span></div>
         <div style="display:flex;gap:8px;">
-          <button class="btn btn-sm">导入</button>
-          <button class="btn btn-sm">导出</button>
+          <button class="btn btn-sm" onclick="App.importData('role')">导入</button>
+          <button class="btn btn-sm" onclick="App.exportData('role')">导出</button>
           <button class="btn btn-sm btn-primary" onclick="App.openRoleModal()">新增角色</button>
         </div>
       </div>
-      <div class="card-body" style="padding:0;">
+      <div class="card-body" style="padding:16px;">
+        ${filterBar([
+          { label: '角色名称', control: '<input class="form-input" placeholder="角色名称关键词" oninput="App.filterRole(this.value)" value="${App.state.roleQuery}" />' },
+          { label: '角色编码', control: '<input class="form-input" placeholder="角色编码" />' },
+          { label: '状态', control: '<select class="form-select"><option value="">全部</option><option>启用</option><option>停用</option></select>', fold: true },
+        ])}
         <div class="table-wrap">
           <table class="data-table">
             <thead>
               <tr><th>角色名称</th><th>角色编码</th><th class="col-num">成员数</th><th class="col-num">功能模块数</th><th>职责描述</th><th>状态</th><th>操作</th></tr>
             </thead>
             <tbody>
-              ${ROLES.map(r => `
+              ${ROLES.filter(r => !App.state.roleQuery || r.name.toLowerCase().includes(App.state.roleQuery.toLowerCase()) || r.id.toLowerCase().includes(App.state.roleQuery.toLowerCase())).map(r => `
                 <tr>
                   <td><span class="badge badge-primary">${r.name}</span></td>
                   <td class="col-mono">${r.id}</td>
@@ -3160,7 +3223,7 @@ function renderSystemLog() {
       <div class="card-header">
         <div class="card-title">操作日志</div>
         <div style="display:flex;gap:8px;">
-          <button class="btn btn-sm">导出日志</button>
+          <button class="btn btn-sm" onclick="App.exportData('log')">导出日志</button>
         </div>
       </div>
       <div class="card-body" style="padding:16px;">
@@ -3216,8 +3279,28 @@ function renderMiniProgramPreview() {
         <div class="mp-header">包头稀土价格填报</div>
         <div class="mp-body">
 
-          <!-- Tab 1: 报价填报 -->
-          <div class="mp-panel show" data-tab="quote">
+          <!-- Tab 1: 行情速览 -->
+          <div class="mp-panel ${App.state.mpTab === 'market' ? 'show' : ''}" data-tab="market">
+            <div class="mp-greet">今日稀土行情</div>
+            <div class="mp-subgreet">2026年8月18日 · 已发布</div>
+            ${MP_MARKET.map(m => `
+              <div class="mp-quote-item" style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;" onclick="App.mpGoQuote('${m.name}')">
+                <div>
+                  <div class="mp-qname">${m.name}</div>
+                  <div style="font-size:10px;color:var(--c-gray-400);margin-top:2px;">点击快速填报报价</div>
+                </div>
+                <div style="text-align:right;">
+                  <div style="font-size:15px;font-weight:700;color:var(--c-gray-800);">${m.price}<span style="font-size:10px;font-weight:400;color:var(--c-gray-400);"> 万元/吨</span></div>
+                  <div style="font-size:11px;font-weight:600;margin-top:2px;${m.trend === 'up' ? 'color:#c0392b;' : 'color:#1c8a4d;'}">${m.change} ${m.trend === 'up' ? '▲' : '▼'}</div>
+                </div>
+              </div>
+            `).join('')}
+            <div class="mp-tip" style="margin-top:10px;">行情由包头稀土价格采编发系统发布，企业端实时同步</div>
+            <button class="mp-ghost-btn" onclick="App.mpTab('myQuotes')">查看我的报价记录 →</button>
+          </div>
+
+          <!-- Tab 2: 报价填报 -->
+          <div class="mp-panel ${App.state.mpTab === 'quote' ? 'show' : ''}" data-tab="quote">
             <div class="mp-greet">您好，金蒙稀土</div>
             <div class="mp-subgreet">今日报价尚未提交 · 截止 16:00</div>
             <div class="mp-cell">
@@ -3228,23 +3311,31 @@ function renderMiniProgramPreview() {
               <div class="mp-label">报价产品</div>
               <div class="mp-select">氧化镨钕（万元/吨） <span class="mp-caret">▾</span></div>
             </div>
+            <div class="mp-cell">
+              <div class="mp-label">行为类型</div>
+              <div class="mp-select">销售 <span class="mp-caret">▾</span></div>
+            </div>
             <div class="mp-row2">
               <div class="mp-cell">
-                <div class="mp-label">最高价</div>
+                <div class="mp-label">最高价<span style="color:#c0392b;">*</span></div>
                 <input class="mp-input" value="48.80" placeholder="0.00" />
               </div>
               <div class="mp-cell">
-                <div class="mp-label">最低价</div>
+                <div class="mp-label">最低价<span style="color:var(--c-gray-400);">（选填）</span></div>
                 <input class="mp-input" value="48.50" placeholder="0.00" />
               </div>
             </div>
-            <div class="mp-tip">同一企业多产品可分别填报，价格单位：万元/吨</div>
+            <div class="mp-cell">
+              <div class="mp-label">佐证附件<span style="color:#c0392b;">*</span></div>
+              <div class="mp-select" onclick="App.toast('已上传报价单截图（自动加水印）', 'success')">📎 报价单_20260818.png <span class="mp-caret">▾</span></div>
+            </div>
+            <div class="mp-tip">同一企业多产品可分别填报，价格单位：万元/吨 · 附件至少1份，自动加水印</div>
             <button class="mp-submit" onclick="App.toast('报价已提交，等待统计人员汇总核算', 'success')">提交报价</button>
             <button class="mp-ghost-btn" onclick="App.toast('已保存为草稿，16:00 前可继续修改', 'info')">存为草稿</button>
           </div>
 
-          <!-- Tab 2: 我的报价 -->
-          <div class="mp-panel" data-tab="myQuotes">
+          <!-- Tab 3: 我的报价 -->
+          <div class="mp-panel ${App.state.mpTab === 'myQuotes' ? 'show' : ''}" data-tab="myQuotes">
             <div class="mp-list-title">今日报价</div>
             <div class="mp-quote-item">
               <div class="mp-qhead"><span class="mp-qname">氧化镨钕</span><span class="badge badge-success">已发布</span></div>
@@ -3261,12 +3352,29 @@ function renderMiniProgramPreview() {
               <div class="mp-qbody">样本不足，请补充数据后重新提交</div>
               <div class="mp-qtime">8月16日 · 驳回原因见消息中心</div>
             </div>
-            <div class="mp-list-title" style="margin-top:16px;">历史报价</div>
-            <div class="mp-hist-link" onclick="App.toast('历史报价查询页待设计', 'info')">查看近 7 日 / 30 日报价记录 →</div>
+            <div class="mp-list-title" style="margin-top:16px;">历史报价（近${App.state.mpHistRange === '7d' ? '7' : '30'}日）</div>
+            <div style="display:flex;gap:6px;margin-bottom:8px;">
+              <button class="btn btn-sm ${App.state.mpHistRange === '7d' ? 'btn-primary' : ''}" onclick="App.mpHist('7d')">近7日</button>
+              <button class="btn btn-sm ${App.state.mpHistRange === '30d' ? 'btn-primary' : ''}" onclick="App.mpHist('30d')">近30日</button>
+            </div>
+            ${MP_HISTORY.slice(0, App.state.mpHistRange === '7d' ? 5 : 10).map(d => `
+              <div style="margin-bottom:8px;">
+                <div style="font-size:10px;color:var(--c-gray-400);margin-bottom:4px;">8月${d.date.split('-')[1]}日</div>
+                ${d.items.map(it => `
+                  <div class="mp-quote-item" style="padding:8px 10px;">
+                    <div class="mp-qhead">
+                      <span class="mp-qname" style="font-size:12px;">${it.name}</span>
+                      <span class="badge ${it.status === '已发布' ? 'badge-success' : 'badge-danger'}" style="font-size:9px;">${it.status}</span>
+                    </div>
+                    <div class="mp-qbody" style="font-size:11px;">最高 ${it.high} · 最低 ${it.low} <span style="color:var(--c-gray-400);">（万元/吨）</span></div>
+                  </div>
+                `).join('')}
+              </div>
+            `).join('')}
           </div>
 
-          <!-- Tab 3: 消息 -->
-          <div class="mp-panel" data-tab="messages">
+          <!-- Tab 4: 消息 -->
+          <div class="mp-panel ${App.state.mpTab === 'messages' ? 'show' : ''}" data-tab="messages">
             <div class="mp-list-title">消息通知</div>
             <div class="mp-msg-item">
               <div class="mp-msg-title">报价审核通过</div>
@@ -3290,8 +3398,8 @@ function renderMiniProgramPreview() {
             </div>
           </div>
 
-          <!-- Tab 4: 我的 -->
-          <div class="mp-panel" data-tab="profile">
+          <!-- Tab 5: 我的 -->
+          <div class="mp-panel ${App.state.mpTab === 'profile' ? 'show' : ''}" data-tab="profile">
             <div class="mp-greet">我的</div>
             <div class="mp-subgreet">企业资料与偏好设置</div>
             <div class="mp-cell">
@@ -3319,19 +3427,23 @@ function renderMiniProgramPreview() {
 
         </div>
         <div class="mp-tabbar">
-          <div class="mp-tab active" data-tab="quote" onclick="App.mpTab('quote')">
+          <div class="mp-tab ${App.state.mpTab === 'market' ? 'active' : ''}" data-tab="market" onclick="App.mpTab('market')">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+            <span>行情</span>
+          </div>
+          <div class="mp-tab ${App.state.mpTab === 'quote' ? 'active' : ''}" data-tab="quote" onclick="App.mpTab('quote')">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l8 4v6c0 5.05-3.41 9.76-8 10.91C7.41 21.76 4 17.05 4 12V6l8-4zm0 2.3L6 7.48V12c0 4.1 2.58 7.78 6 8.95 3.42-1.17 6-4.85 6-8.95V7.48L12 4.3z"/></svg>
             <span>报价填报</span>
           </div>
-          <div class="mp-tab" data-tab="myQuotes" onclick="App.mpTab('myQuotes')">
+          <div class="mp-tab ${App.state.mpTab === 'myQuotes' ? 'active' : ''}" data-tab="myQuotes" onclick="App.mpTab('myQuotes')">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M3 5h2v14H3V5zm4 0h2v14H7V5zm4 0h2v14h-2V5zm4 0h2v14h-2V5zm4 0h2v14h-2V5z"/></svg>
             <span>我的报价</span>
           </div>
-          <div class="mp-tab" data-tab="messages" onclick="App.mpTab('messages')">
+          <div class="mp-tab ${App.state.mpTab === 'messages' ? 'active' : ''}" data-tab="messages" onclick="App.mpTab('messages')">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-9 11H9V9h2v4zm4 0h-2V9h2v4z"/></svg>
             <span>消息</span>
           </div>
-          <div class="mp-tab" data-tab="profile" onclick="App.mpTab('profile')">
+          <div class="mp-tab ${App.state.mpTab === 'profile' ? 'active' : ''}" data-tab="profile" onclick="App.mpTab('profile')">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
             <span>我的</span>
           </div>
@@ -3343,9 +3455,10 @@ function renderMiniProgramPreview() {
           <div class="card-header"><div class="card-title">页面清单</div></div>
           <div class="card-body" style="padding:16px 20px;">
             ${[
+              ['行情速览', '今日稀土价格行情实时同步，点击品类可直接发起报价填报', 'done'],
               ['登录授权', '企业微信授权登录，绑定企业信息后自动匹配', 'done'],
               ['报价填报', '选择企业产品，填报最高价/最低价，支持草稿与多产品分别填报', 'done'],
-              ['我的报价', '今日与历史报价记录、审核状态跟踪、阈值预警确认', 'done'],
+              ['我的报价', '今日与历史报价记录（近7日/近30日切换）、审核状态跟踪', 'done'],
               ['消息通知', '审核结果、填报提醒、阈值预警实时推送', 'done'],
               ['我的', '企业资料维护、价格单位与提醒设置', 'done'],
             ].map(([name, desc, tag]) => `
@@ -3387,7 +3500,7 @@ function renderMiniProgramPreview() {
 
 function renderMessages() {  return `
     <div style="display:flex;justify-content:flex-end;margin-bottom:16px;">
-      <button class="btn btn-sm">全部已读</button>
+      <button class="btn btn-sm" onclick="App.markAllRead()">全部已读</button>
     </div>
     <div class="card">
       <div class="card-body" style="padding:8px 0;">
@@ -3439,6 +3552,11 @@ const App = {
     reviewCat: 'publish',
     uploadedFiles: [],
     selectedCalcRows: [],
+    trendRange: 'week',
+    mpHistRange: '7d',
+    mpTab: 'quote',
+    deptQuery: '',
+    roleQuery: '',
   },
 
   init() {
@@ -3743,6 +3861,17 @@ const App = {
 
   setSubTab(tab) {
     this.state.subTab = tab;
+    this.refreshContent();
+  },
+
+  // ========== 部门 / 角色 搜索过滤（V2.0 意见：所有功能增删改搜索） ==========
+  filterDept(val) {
+    this.state.deptQuery = (val || '').trim();
+    this.refreshContent();
+  },
+
+  filterRole(val) {
+    this.state.roleQuery = (val || '').trim();
     this.refreshContent();
   },
 
@@ -4387,8 +4516,19 @@ const App = {
           </div>
         </div>
         <div style="margin-top:14px;padding:12px;background:#f7f9fc;border:1px dashed #c9d3e0;border-radius:8px;font-size:12px;color:#64748b;">
-          关联产品（限定企业可报价品类）：${linked.length ? linked.map(n => `<span class="badge badge-primary" style="font-size:10px;margin:0 2px;">${n}</span>`).join('') : '<span class="text-gray">未关联</span>'}
-          <div style="margin-top:6px;">保存后可在「产品关联」中维护企业可报价的产品范围。</div>
+          <div style="font-size:12px;color:#64748b;margin-bottom:8px;">关联产品<span style="color:#c0392b;">*</span><span style="font-size:11px;color:#97a3b5;margin-left:4px;">限定该企业可报价的产品范围，未关联产品不会出现在其填报列表</span></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;">
+            ${PRODUCTS.map(p => {
+              const checked = linked.includes(p.name);
+              return `
+              <label style="display:flex;align-items:center;gap:6px;padding:7px 10px;border:1px solid ${checked ? '#1a4d8c' : '#dfe5ee'};border-radius:6px;background:${checked ? '#eaf1fa' : '#fff'};cursor:pointer;font-size:12px;color:#334155;">
+                <input type="checkbox" name="entProdLink" value="${p.name}" ${checked ? 'checked' : ''} onchange="this.closest('label').style.borderColor=this.checked?'#1a4d8c':'#dfe5ee';this.closest('label').style.background=this.checked?'#eaf1fa':'#fff';" />
+                <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${p.name}</span>
+              </label>
+              `;
+            }).join('')}
+          </div>
+          <div style="margin-top:8px;font-size:11px;color:#97a3b5;">保存后将同步到「产品关联」管理，支持随时调整</div>
         </div>
       </div>
       <div class="modal-footer">
@@ -4400,7 +4540,8 @@ const App = {
   },
 
   saveEnterpriseModal() {
-    this.toast('企业信息已保存，可在「企业-产品关联」中维护报价产品', 'success');
+    const linked = document.querySelectorAll('input[name="entProdLink"]:checked');
+    this.toast('企业信息已保存，已关联 ' + linked.length + ' 个报价产品', 'success');
     this.closeModal();
   },
 
@@ -5032,8 +5173,80 @@ const App = {
 
   // ========== 小程序预览 Tab 切换 ==========
   mpTab(tab) {
+    this.state.mpTab = tab;
     document.querySelectorAll('.mp-panel').forEach(p => p.classList.toggle('show', p.dataset.tab === tab));
     document.querySelectorAll('.mp-tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
+  },
+
+  // ========== 小程序行情 → 去填报 ==========
+  mpGoQuote(product) {
+    this.mpTab('quote');
+    this.toast('已带入产品：' + product + '，请填写最高/最低价', 'info');
+  },
+
+  // ========== 小程序历史报价范围切换（近7日 / 近30日） ==========
+  mpHist(range) {
+    this.state.mpHistRange = range;
+    this.refreshContent();
+  },
+
+  // ========== 工作台趋势图 日/周/月 切换 ==========
+  setTrendRange(range) {
+    this.state.trendRange = range;
+    this.refreshContent();
+    const label = { day: '近7日', week: '近4周', month: '近12月' }[range];
+    this.toast('已切换为「' + label + '」趋势', 'info');
+  },
+
+  // ========== 通用导出（原型层：toast 提示 + 模拟下载） ==========
+  exportData(kind) {
+    const names = {
+      record: '采集记录', enterprise: '企业数据', product: '产品数据',
+      menu: '菜单数据', dept: '部门数据', dict: '字典数据',
+      user: '用户数据', role: '角色数据', log: '操作日志',
+      publish: '发布历史', review: '审核记录', quote: '报价表',
+    };
+    this.toast((names[kind] || '数据') + '已导出（Excel），共 N 条记录', 'success');
+  },
+
+  // ========== 通用导入（原型层：toast 提示） ==========
+  importData(kind) {
+    const names = {
+      enterprise: '企业', product: '产品', menu: '菜单', dept: '部门',
+      dict: '字典', user: '用户', role: '角色',
+    };
+    this.toast('批量导入' + (names[kind] || '') + '：请使用标准模板上传 Excel 文件', 'info');
+  },
+
+  // ========== 消息中心：全部已读 ==========
+  markAllRead() {
+    MESSAGES.forEach(m => { m.read = true; });
+    this.refreshContent();
+    this.toast('全部消息已标记为已读', 'success');
+  },
+
+  // ========== 短信平台连通性测试 / 日志查看 ==========
+  testSmsConn() {
+    this.toast('短信平台连通性测试通过：网络延迟 86ms，服务正常', 'success');
+  },
+  viewSmsLog(dir) {
+    this.toast(dir === 'push' ? '推送日志：最近一次 10:32 成功推送 42 条' : '获取日志：最近一次 09:15 同步获取 36 条', 'info');
+  },
+
+  // ========== 采集记录导出 Excel（带条数） ==========
+  exportRecords() {
+    const n = COLLECTION_RECORDS.length;
+    this.toast('采集记录已导出（Excel），共 ' + n + ' 条', 'success');
+  },
+
+  // ========== 工作台待办：已处理标记 ==========
+  resolveTodo(text) {
+    this.toast('已处理：「' + text + '」', 'success');
+  },
+
+  // ========== 发布历史：回溯 ==========
+  rollbackPublish(id) {
+    this.toast('已回溯至 ' + id + ' 版本，发布内容已恢复（模拟）', 'info');
   },
 
   toast(msg, type = 'info') {
