@@ -256,7 +256,42 @@ body {
 }
 .filter-toggle:hover { color: var(--c-primary); border-color: var(--c-primary); }
 .filter-toggle .arrow { font-size: 9px; }
-select.select-multi { min-height: 34px; height: auto; }
+/* 自定义可折叠多选下拉组件（替代原生 select multiple，避免选项展开占位） */
+.msel { position: relative; display: inline-block; width: 160px; vertical-align: middle; }
+.filter-item .msel { width: 160px; }
+.msel-btn {
+  width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 6px;
+  padding: 6px 10px; border: 1px solid var(--c-gray-300); border-radius: var(--radius-sm);
+  background: #fff; font-size: 13px; color: var(--c-gray-800); cursor: pointer;
+  transition: all 0.15s; font-family: inherit; text-align: left;
+}
+.msel-btn:hover { border-color: var(--c-primary); }
+.msel-btn .msel-label { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.msel-btn .msel-arrow { font-size: 10px; color: var(--c-gray-400); flex-shrink: 0; transition: transform 0.15s; }
+.msel.open .msel-arrow { transform: rotate(180deg); }
+.msel-panel {
+  position: absolute; top: calc(100% + 4px); left: 0; z-index: 60;
+  display: none; min-width: 240px; max-height: 240px; overflow-y: auto;
+  background: #fff; border: 1px solid var(--c-gray-300); border-radius: var(--radius-md);
+  box-shadow: 0 8px 24px rgba(15,35,65,0.12); padding: 6px;
+}
+.msel-panel.show { display: block; }
+.msel-opt {
+  display: flex; align-items: center; gap: 8px; padding: 7px 10px;
+  border-radius: 6px; font-size: 13px; color: var(--c-gray-700); cursor: pointer;
+}
+.msel-opt:hover { background: var(--c-bg); }
+.msel-opt input { accent-color: var(--c-primary); flex-shrink: 0; }
+.msel-actions {
+  display: flex; justify-content: space-between; padding: 6px 4px 4px;
+  border-top: 1px solid var(--c-gray-200); margin-top: 4px;
+}
+.msel-actions button {
+  border: none; background: none; font-size: 12px; color: var(--c-primary);
+  cursor: pointer; padding: 2px 6px; font-family: inherit;
+}
+.msel-actions button:hover { text-decoration: underline; }
+.msel-count { font-size: 11px; color: var(--c-gray-500); }
 
 /* Unit auxiliary display */
 .unit-display {
@@ -1575,8 +1610,8 @@ function renderCollectionRecords() {
       </div>
       <div class="card-body" style="padding:16px;">
         ${filterBar([
-          { label: '企业名称', control: `<select class="form-select select-multi" multiple title="Ctrl/⌘ 多选"><option value="" disabled>多选企业</option>${ENTERPRISES.map(e => `<option>${e.name}</option>`).join('')}</select>` },
-          { label: '产品', control: `<select class="form-select select-multi" multiple title="Ctrl/⌘ 多选"><option value="" disabled>多选产品</option>${PRODUCTS.map(p => `<option>${p.name}</option>`).join('')}</select>` },
+          { label: '企业名称', control: App.mselFilter('filterEnt', '企业', ENTERPRISES.map(e => e.name)) },
+          { label: '产品', control: App.mselFilter('filterProd', '产品', PRODUCTS.map(p => p.name)) },
           { label: '状态', control: '<select class="form-select"><option value="">全部</option><option>草稿</option><option>已提交</option><option>审核中</option><option>预警</option><option>已拦截</option><option>已发布</option></select>' },
           { label: '日期', control: '<input class="form-input" type="date" value="2026-08-18" />' },
           { label: '采集员', control: '<select class="form-select"><option value="">全部</option><option>张明</option><option>李芳</option><option>王强</option></select>', fold: true },
@@ -1631,7 +1666,7 @@ function renderCollectionRecords() {
                   <td><span class="badge ${scls}">${stext}</span></td>
                   <td>
                     <button class="btn btn-sm btn-ghost" onclick="App.viewRecord('${r.id}')">详情</button>
-                    ${r.status === 'draft' ? `<button class="btn btn-sm btn-ghost text-primary" onclick="App.toast('编辑功能', 'info')">编辑</button>` : ''}
+                    ${r.status === 'draft' ? `<button class="btn btn-sm btn-ghost text-primary" onclick="App.openRecordModal('${r.id}')">编辑</button>` : ''}
                   </td>
                 </tr>
                 `;
@@ -2819,7 +2854,7 @@ function renderSystemMenu() {
         <div style="display:flex;gap:8px;">
           <button class="btn btn-sm">导入</button>
           <button class="btn btn-sm">导出</button>
-          <button class="btn btn-sm btn-primary" onclick="App.toast('打开新增菜单弹窗', 'info')">新增菜单</button>
+          <button class="btn btn-sm btn-primary" onclick="App.openMenuModal()">新增菜单</button>
         </div>
       </div>
       <div class="card-body" style="padding:16px;">
@@ -2844,7 +2879,7 @@ function renderSystemMenu() {
                   <td class="col-num">${m.sort}</td>
                   <td><span class="badge badge-success">${m.status}</span></td>
                   <td>
-                    <button class="btn btn-sm btn-ghost text-primary" onclick="App.toast('打开菜单编辑弹窗', 'info')">编辑</button>
+                    <button class="btn btn-sm btn-ghost text-primary" onclick="App.openMenuModal('${m.id}')">编辑</button>
                     <button class="btn btn-sm btn-ghost" onclick="App.toast('菜单已隐藏', 'warning')">停用</button>
                     <button class="btn btn-sm btn-ghost text-danger" onclick="App.toast('菜单已删除', 'success')">删除</button>
                   </td>
@@ -2866,7 +2901,7 @@ function renderSystemDept() {
       <div class="card">
         <div class="card-header">
           <div class="card-title">组织架构</div>
-          <button class="btn btn-sm btn-primary" onclick="App.toast('打开新增部门弹窗', 'info')">新增部门</button>
+          <button class="btn btn-sm btn-primary" onclick="App.openDeptModal()">新增部门</button>
         </div>
         <div class="card-body" style="padding:16px;">
           <div style="padding:10px 14px;border:1px solid #dfe5ee;border-radius:8px;background:#eaf1fa;margin-bottom:8px;font-size:13px;font-weight:600;color:#123662;">${root.name}<span class="badge badge-primary" style="font-size:9px;margin-left:6px;">${root.type}</span></div>
@@ -2904,7 +2939,7 @@ function renderSystemDept() {
                     <td class="col-num">${d.memberCount}</td>
                     <td>${d.status === '启用' ? '<span class="badge badge-success">启用</span>' : '<span class="badge badge-danger">停用</span>'}</td>
                     <td>
-                      <button class="btn btn-sm btn-ghost text-primary" onclick="App.toast('打开部门编辑弹窗', 'info')">编辑</button>
+                      <button class="btn btn-sm btn-ghost text-primary" onclick="App.openDeptModal('${d.id}')">编辑</button>
                       <button class="btn btn-sm btn-ghost" onclick="App.toast('部门已删除，成员自动移出', 'success')">删除</button>
                     </td>
                   </tr>
@@ -2926,7 +2961,7 @@ function renderSystemDict() {
         <div style="display:flex;gap:8px;">
           <button class="btn btn-sm">导入</button>
           <button class="btn btn-sm">导出</button>
-          <button class="btn btn-sm btn-primary" onclick="App.toast('打开新增字典弹窗', 'info')">新增字典</button>
+          <button class="btn btn-sm btn-primary" onclick="App.openDictModal()">新增字典</button>
         </div>
       </div>
       <div class="card-body" style="padding:16px;">
@@ -2949,7 +2984,7 @@ function renderSystemDict() {
                   <td style="max-width:200px;color:#64748b;">${d.remark}</td>
                   <td><span class="badge badge-success">${d.status}</span></td>
                   <td>
-                    <button class="btn btn-sm btn-ghost text-primary" onclick="App.toast('打开字典编辑弹窗', 'info')">编辑</button>
+                    <button class="btn btn-sm btn-ghost text-primary" onclick="App.openDictModal('${d.id}')">编辑</button>
                     <button class="btn btn-sm btn-ghost text-danger" onclick="App.toast('字典已删除', 'success')">删除</button>
                   </td>
                 </tr>
@@ -3407,6 +3442,16 @@ const App = {
   },
 
   init() {
+    // 点击多选下拉外部时收起所有展开的面板
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.msel')) {
+        document.querySelectorAll('.msel.open').forEach(m => {
+          m.classList.remove('open');
+          const p = m.querySelector('.msel-panel');
+          if (p) p.classList.remove('show');
+        });
+      }
+    });
     this.render();
   },
 
@@ -4337,9 +4382,8 @@ const App = {
           </div>
           <div>
             <label style="font-size:12px;color:#64748b;">绑定采集员</label>
-            <select class="form-select select-multi" multiple size="3" style="margin-top:4px;width:100%;" title="Ctrl/⌘ 多选，控制数据权限">
-              ${['张明','李芳','王强'].map(c => `<option ${e && e.collector === c ? 'selected' : ''}>${c}</option>`).join('')}
-            </select>
+            ${this.mselFilter('entCollectors', '采集员', ['张明','李芳','王强'], e && e.collector ? [e.collector] : [])}
+            <div style="margin-top:4px;font-size:11px;color:#97a3b5;">多选，控制数据权限</div>
           </div>
         </div>
         <div style="margin-top:14px;padding:12px;background:#f7f9fc;border:1px dashed #c9d3e0;border-radius:8px;font-size:12px;color:#64748b;">
@@ -4604,6 +4648,386 @@ const App = {
       </div>
     `;
     document.getElementById('modalOverlay').classList.add('show');
+  },
+
+  // ========== 可折叠多选下拉组件 ==========
+  mselFilter(id, label, options, selected) {
+    const sel = selected || [];
+    const opts = options.map(o => `
+      <label class="msel-opt"><input type="checkbox" value="${o}" ${sel.includes(o) ? 'checked' : ''} onchange="App.syncMsel('${id}')"> <span style="flex:1;">${o}</span></label>`).join('');
+    return `
+      <div class="msel" id="${id}">
+        <button type="button" class="msel-btn" onclick="App.toggleMsel('${id}')">
+          <span class="msel-label">全部${label}</span>
+          <span class="msel-arrow">▾</span>
+        </button>
+        <div class="msel-panel">
+          ${opts}
+          <div class="msel-actions">
+            <span class="msel-count">0 项已选</span>
+            <span>
+              <button type="button" onclick="App.mselSelectAll('${id}')">全选</button>
+              <button type="button" onclick="App.mselClear('${id}')">清空</button>
+            </span>
+          </div>
+        </div>
+      </div>`;
+  },
+
+  toggleMsel(id) {
+    const root = document.getElementById(id);
+    if (!root) return;
+    const panel = root.querySelector('.msel-panel');
+    const isOpen = root.classList.contains('open');
+    document.querySelectorAll('.msel.open').forEach(m => {
+      m.classList.remove('open');
+      const p = m.querySelector('.msel-panel');
+      if (p) p.classList.remove('show');
+    });
+    if (!isOpen) { root.classList.add('open'); if (panel) panel.classList.add('show'); }
+  },
+
+  mselSelectAll(id) {
+    document.querySelectorAll('#' + id + ' input[type="checkbox"]').forEach(c => c.checked = true);
+    this.syncMsel(id);
+  },
+
+  mselClear(id) {
+    document.querySelectorAll('#' + id + ' input[type="checkbox"]').forEach(c => c.checked = false);
+    this.syncMsel(id);
+  },
+
+  syncMsel(id) {
+    const root = document.getElementById(id);
+    if (!root) return;
+    const boxes = root.querySelectorAll('input[type="checkbox"]');
+    const checked = root.querySelectorAll('input[type="checkbox"]:checked');
+    const label = root.querySelector('.msel-label');
+    const count = root.querySelector('.msel-count');
+    if (checked.length === 0) {
+      if (label) label.textContent = '全部';
+      if (count) count.textContent = '0 项已选';
+    } else if (checked.length === boxes.length) {
+      if (label) label.textContent = '全部';
+      if (count) count.textContent = boxes.length + ' 项全选';
+    } else {
+      if (label) label.textContent = checked.length + ' 项已选';
+      if (count) count.textContent = checked.length + ' 项已选';
+    }
+  },
+
+  // ========== 采集记录编辑（草稿，字段按文档4.1.1） ==========
+  openRecordModal(id) {
+    const r = COLLECTION_RECORDS.find(x => x.id === id);
+    if (!r) return;
+    const p = PRODUCTS.find(x => x.name === r.product);
+    const modal = document.getElementById('modal');
+    modal.innerHTML = `
+      <div class="modal-header">
+        <div class="modal-title">编辑报价记录 - ${r.id}</div>
+        <button class="modal-close" onclick="App.closeModal()">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="alert alert-info" style="margin-bottom:12px;">
+          <strong>编辑说明：</strong>仅草稿状态可编辑；保存后重新触发阈值校验，最高价必填、最低价选填、佐证附件为必传字段。
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          <div>
+            <label style="font-size:12px;color:#64748b;">报价企业<span style="color:#c0392b;">*</span></label>
+            <select class="form-select" id="recEnterprise" style="margin-top:4px;width:100%;">
+              ${ENTERPRISES.filter(e => e.status === '合作中').map(e => `<option value="${e.name}" ${r.enterprise === e.name ? 'selected' : ''}>${e.name}</option>`).join('')}
+            </select>
+          </div>
+          <div>
+            <label style="font-size:12px;color:#64748b;">产品名称<span style="color:#c0392b;">*</span></label>
+            <select class="form-select" id="recProduct" style="margin-top:4px;width:100%;" onchange="App.onRecordProductChange()">
+              ${PRODUCTS.map(x => `<option value="${x.name}" data-spec="${x.spec}" ${r.product === x.name ? 'selected' : ''}>${x.name}（${x.category}）</option>`).join('')}
+            </select>
+          </div>
+          <div>
+            <label style="font-size:12px;color:#64748b;">产品规格<span style="color:#c0392b;">*</span></label>
+            <input class="form-input" id="recSpec" style="margin-top:4px;width:100%;" value="${p ? p.spec : ''}" placeholder="跟随产品联动" />
+          </div>
+          <div>
+            <label style="font-size:12px;color:#64748b;">行为类型<span style="color:#c0392b;">*</span></label>
+            <select class="form-select" id="recTradeType" style="margin-top:4px;width:100%;">
+              ${['购买','销售','成交'].map(t => `<option ${r.tradeType === t ? 'selected' : ''}>${t}</option>`).join('')}
+            </select>
+          </div>
+          <div>
+            <label style="font-size:12px;color:#64748b;">最高价（万元/吨）<span style="color:#c0392b;">*</span></label>
+            <input class="form-input" id="recHighPrice" type="number" step="0.01" style="margin-top:4px;width:100%;" value="${r.highPrice}" />
+          </div>
+          <div>
+            <label style="font-size:12px;color:#64748b;">最低价（万元/吨）<span style="font-weight:400;color:#97a3b5;font-size:11px;">（选填）</span></label>
+            <input class="form-input" id="recLowPrice" type="number" step="0.01" style="margin-top:4px;width:100%;" value="${r.lowPrice || ''}" />
+          </div>
+          <div>
+            <label style="font-size:12px;color:#64748b;">填报日期<span style="color:#c0392b;">*</span></label>
+            <input class="form-input" style="margin-top:4px;width:100%;" value="${r.date}" readonly />
+          </div>
+          <div>
+            <label style="font-size:12px;color:#64748b;">采集人<span style="color:#c0392b;">*</span></label>
+            <input class="form-input" style="margin-top:4px;width:100%;" value="${r.collector}" readonly />
+          </div>
+          <div style="grid-column:1 / -1;">
+            <label style="font-size:12px;color:#64748b;">佐证附件<span style="color:#c0392b;">*</span></label>
+            <div class="upload-zone" style="padding:12px;cursor:pointer;" onclick="App.simulateUpload()">
+              <div style="font-size:12px;color:#64748b;text-align:center;">${r.hasAttachment ? '已上传 1 份佐证材料（点击可追加）' : '点击上传佐证附件（至少1份，自动加水印）'}</div>
+            </div>
+          </div>
+          <div style="grid-column:1 / -1;">
+            <label style="font-size:12px;color:#64748b;">填报备注</label>
+            <textarea class="form-textarea" id="recRemark" style="margin-top:4px;width:100%;min-height:70px;" placeholder="记录特殊业务说明（选填）">${r.remark || ''}</textarea>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" onclick="App.closeModal()">取消</button>
+        <button class="btn btn-primary" onclick="App.saveRecordModal('${r.id}')">保存</button>
+      </div>
+    `;
+    document.getElementById('modalOverlay').classList.add('show');
+  },
+
+  onRecordProductChange() {
+    const sel = document.getElementById('recProduct');
+    const spec = sel.selectedOptions[0]?.dataset.spec || '';
+    document.getElementById('recSpec').value = spec;
+  },
+
+  saveRecordModal(id) {
+    const r = COLLECTION_RECORDS.find(x => x.id === id);
+    if (!r) return;
+    const high = parseFloat(document.getElementById('recHighPrice').value);
+    if (!high) { this.toast('最高价为必填项', 'warning'); return; }
+    r.enterprise = document.getElementById('recEnterprise').value;
+    r.product = document.getElementById('recProduct').value;
+    r.spec = document.getElementById('recSpec').value;
+    r.tradeType = document.getElementById('recTradeType').value;
+    r.highPrice = high;
+    const low = parseFloat(document.getElementById('recLowPrice').value);
+    r.lowPrice = isNaN(low) ? null : low;
+    r.remark = document.getElementById('recRemark').value;
+    r.submitTime = new Date().toTimeString().slice(0, 5);
+    this.toast('报价记录已更新，阈值校验已重新触发', 'success');
+    this.closeModal();
+    this.refreshContent();
+  },
+
+  // ========== 菜单编辑 / 新增 ==========
+  openMenuModal(id) {
+    const m = id ? MENU_LIST.find(x => x.id === id) : null;
+    const modal = document.getElementById('modal');
+    modal.innerHTML = `
+      <div class="modal-header">
+        <div class="modal-title">${m ? '编辑菜单' : '新增菜单'}</div>
+        <button class="modal-close" onclick="App.closeModal()">×</button>
+      </div>
+      <div class="modal-body">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          <div>
+            <label style="font-size:12px;color:#64748b;">菜单名称<span style="color:#c0392b;">*</span></label>
+            <input class="form-input" id="menuName" style="margin-top:4px;width:100%;" value="${m ? m.label : ''}" placeholder="如：价格采集" />
+          </div>
+          <div>
+            <label style="font-size:12px;color:#64748b;">所属分组</label>
+            <select class="form-select" id="menuGroup" style="margin-top:4px;width:100%;">
+              ${['概览','业务','分析','管理'].map(g => `<option ${m && m.group === g ? 'selected' : ''}>${g}</option>`).join('')}
+            </select>
+          </div>
+          <div>
+            <label style="font-size:12px;color:#64748b;">类型</label>
+            <select class="form-select" id="menuType" style="margin-top:4px;width:100%;">
+              <option ${!m || m.type === '菜单' ? 'selected' : ''}>菜单</option>
+              <option ${m && m.type === '页面' ? 'selected' : ''}>页面</option>
+            </select>
+          </div>
+          <div>
+            <label style="font-size:12px;color:#64748b;">上级菜单</label>
+            <select class="form-select" id="menuParent" style="margin-top:4px;width:100%;">
+              <option value="-">— 顶级菜单 —</option>
+              ${MENU_LIST.filter(x => x.type === '菜单').map(x => `<option value="${x.id}" ${m && m.parent === x.id ? 'selected' : ''}>${x.label}</option>`).join('')}
+            </select>
+          </div>
+          <div>
+            <label style="font-size:12px;color:#64748b;">图标</label>
+            <input class="form-input" id="menuIcon" style="margin-top:4px;width:100%;" value="${m ? m.icon : ''}" placeholder="如：grid" />
+          </div>
+          <div>
+            <label style="font-size:12px;color:#64748b;">排序</label>
+            <input class="form-input" id="menuSort" type="number" style="margin-top:4px;width:100%;" value="${m ? m.sort : MENU_LIST.length + 1}" />
+          </div>
+          <div>
+            <label style="font-size:12px;color:#64748b;">状态</label>
+            <select class="form-select" id="menuStatus" style="margin-top:4px;width:100%;">
+              <option ${!m || m.status === '启用' ? 'selected' : ''}>启用</option>
+              <option ${m && m.status === '停用' ? 'selected' : ''}>停用</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" onclick="App.closeModal()">取消</button>
+        <button class="btn btn-primary" onclick="App.saveMenuModal('${id || ''}')">保存</button>
+      </div>
+    `;
+    document.getElementById('modalOverlay').classList.add('show');
+  },
+
+  saveMenuModal(id) {
+    const name = document.getElementById('menuName').value.trim();
+    if (!name) { this.toast('菜单名称必填', 'warning'); return; }
+    const m = id ? MENU_LIST.find(x => x.id === id) : null;
+    if (m) {
+      m.label = name;
+      m.group = document.getElementById('menuGroup').value;
+      m.type = document.getElementById('menuType').value;
+      m.parent = document.getElementById('menuParent').value;
+      m.icon = document.getElementById('menuIcon').value;
+      m.sort = parseInt(document.getElementById('menuSort').value) || 1;
+      m.status = document.getElementById('menuStatus').value;
+    } else {
+      MENU_LIST.push({ id: 'menu' + Date.now(), label: name, group: document.getElementById('menuGroup').value, type: document.getElementById('menuType').value, parent: document.getElementById('menuParent').value, icon: document.getElementById('menuIcon').value, sort: parseInt(document.getElementById('menuSort').value) || 1, status: document.getElementById('menuStatus').value });
+    }
+    this.toast('菜单已保存', 'success');
+    this.closeModal();
+    this.refreshContent();
+  },
+
+  // ========== 部门编辑 / 新增 ==========
+  openDeptModal(id) {
+    const d = id ? DEPARTMENTS.find(x => x.id === id) : null;
+    const modal = document.getElementById('modal');
+    modal.innerHTML = `
+      <div class="modal-header">
+        <div class="modal-title">${d ? '编辑部门' : '新增部门'}</div>
+        <button class="modal-close" onclick="App.closeModal()">×</button>
+      </div>
+      <div class="modal-body">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          <div>
+            <label style="font-size:12px;color:#64748b;">部门名称<span style="color:#c0392b;">*</span></label>
+            <input class="form-input" id="deptName" style="margin-top:4px;width:100%;" value="${d ? d.name : ''}" placeholder="如：采集三组" />
+          </div>
+          <div>
+            <label style="font-size:12px;color:#64748b;">类型</label>
+            <select class="form-select" id="deptType" style="margin-top:4px;width:100%;">
+              ${['公司','部门','组'].map(t => `<option ${d && d.type === t ? 'selected' : ''}>${t}</option>`).join('')}
+            </select>
+          </div>
+          <div>
+            <label style="font-size:12px;color:#64748b;">上级组织</label>
+            <select class="form-select" id="deptParent" style="margin-top:4px;width:100%;">
+              <option value="-">— 根节点（公司） —</option>
+              ${DEPARTMENTS.filter(x => x.type !== '组').map(x => `<option value="${x.id}" ${d && d.parent === x.id ? 'selected' : ''}>${x.name}</option>`).join('')}
+            </select>
+          </div>
+          <div>
+            <label style="font-size:12px;color:#64748b;">负责人</label>
+            <input class="form-input" id="deptLeader" style="margin-top:4px;width:100%;" value="${d ? d.leader : ''}" placeholder="选填" />
+          </div>
+          <div>
+            <label style="font-size:12px;color:#64748b;">状态</label>
+            <select class="form-select" id="deptStatus" style="margin-top:4px;width:100%;">
+              <option ${!d || d.status === '启用' ? 'selected' : ''}>启用</option>
+              <option ${d && d.status === '停用' ? 'selected' : ''}>停用</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" onclick="App.closeModal()">取消</button>
+        <button class="btn btn-primary" onclick="App.saveDeptModal('${id || ''}')">保存</button>
+      </div>
+    `;
+    document.getElementById('modalOverlay').classList.add('show');
+  },
+
+  saveDeptModal(id) {
+    const name = document.getElementById('deptName').value.trim();
+    if (!name) { this.toast('部门名称必填', 'warning'); return; }
+    const d = id ? DEPARTMENTS.find(x => x.id === id) : null;
+    if (d) {
+      d.name = name;
+      d.type = document.getElementById('deptType').value;
+      d.parent = document.getElementById('deptParent').value;
+      d.leader = document.getElementById('deptLeader').value;
+      d.status = document.getElementById('deptStatus').value;
+    } else {
+      DEPARTMENTS.push({ id: 'D' + String(DEPARTMENTS.length + 1).padStart(2, '0'), name, type: document.getElementById('deptType').value, parent: document.getElementById('deptParent').value, leader: document.getElementById('deptLeader').value, memberCount: 0, status: document.getElementById('deptStatus').value });
+    }
+    this.toast('部门信息已保存，组织架构已同步', 'success');
+    this.closeModal();
+    this.refreshContent();
+  },
+
+  // ========== 字典编辑 / 新增 ==========
+  openDictModal(id) {
+    const d = id ? DICT_ITEMS.find(x => x.id === id) : null;
+    const modal = document.getElementById('modal');
+    modal.innerHTML = `
+      <div class="modal-header">
+        <div class="modal-title">${d ? '编辑字典' : '新增字典'}</div>
+        <button class="modal-close" onclick="App.closeModal()">×</button>
+      </div>
+      <div class="modal-body">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          <div>
+            <label style="font-size:12px;color:#64748b;">字典编号</label>
+            <input class="form-input" style="margin-top:4px;width:100%;" value="${d ? d.id : 'DICT' + String(DICT_ITEMS.length + 1).padStart(2, '0')}" readonly />
+          </div>
+          <div>
+            <label style="font-size:12px;color:#64748b;">状态</label>
+            <select class="form-select" id="dictStatus" style="margin-top:4px;width:100%;">
+              <option ${!d || d.status === '启用' ? 'selected' : ''}>启用</option>
+              <option ${d && d.status === '停用' ? 'selected' : ''}>停用</option>
+            </select>
+          </div>
+          <div>
+            <label style="font-size:12px;color:#64748b;">字典名称<span style="color:#c0392b;">*</span></label>
+            <input class="form-input" id="dictName" style="margin-top:4px;width:100%;" value="${d ? d.name : ''}" placeholder="如：异常来源" />
+          </div>
+          <div>
+            <label style="font-size:12px;color:#64748b;">字典标识</label>
+            <input class="form-input" id="dictKey" style="margin-top:4px;width:100%;" value="${d ? d.key : ''}" placeholder="如：anomaly_source" />
+          </div>
+          <div style="grid-column:1 / -1;">
+            <label style="font-size:12px;color:#64748b;">字典项<span style="color:#c0392b;">*</span><span style="font-weight:400;color:#97a3b5;font-size:11px;">（每项一行）</span></label>
+            <textarea class="form-textarea" id="dictItems" style="margin-top:4px;width:100%;min-height:90px;" placeholder="每行一个字典项">${d ? d.items.split(' / ').join('\n') : ''}</textarea>
+          </div>
+          <div style="grid-column:1 / -1;">
+            <label style="font-size:12px;color:#64748b;">备注</label>
+            <textarea class="form-textarea" id="dictRemark" style="margin-top:4px;width:100%;min-height:60px;" placeholder="选填">${d ? d.remark : ''}</textarea>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" onclick="App.closeModal()">取消</button>
+        <button class="btn btn-primary" onclick="App.saveDictModal('${id || ''}')">保存</button>
+      </div>
+    `;
+    document.getElementById('modalOverlay').classList.add('show');
+  },
+
+  saveDictModal(id) {
+    const name = document.getElementById('dictName').value.trim();
+    const items = document.getElementById('dictItems').value.trim();
+    if (!name || !items) { this.toast('字典名称与字典项为必填项', 'warning'); return; }
+    const d = id ? DICT_ITEMS.find(x => x.id === id) : null;
+    const joined = items.split('\n').map(s => s.trim()).filter(Boolean).join(' / ');
+    if (d) {
+      d.name = name;
+      d.key = document.getElementById('dictKey').value.trim() || d.key;
+      d.items = joined;
+      d.remark = document.getElementById('dictRemark').value.trim();
+      d.status = document.getElementById('dictStatus').value;
+    } else {
+      DICT_ITEMS.push({ id: 'DICT' + String(DICT_ITEMS.length + 1).padStart(2, '0'), name, key: document.getElementById('dictKey').value.trim() || ('dict_' + Date.now()), items: joined, remark: document.getElementById('dictRemark').value.trim(), status: document.getElementById('dictStatus').value });
+    }
+    this.toast('字典已保存', 'success');
+    this.closeModal();
+    this.refreshContent();
   },
 
   // ========== 小程序预览 Tab 切换 ==========
