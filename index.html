@@ -1376,6 +1376,11 @@ function renderDashboard() {
     pendingItems.push({ text: '氧化铽 8月18日报价待终审', action: 'review', urgent: true });
     pendingItems.push({ text: '8月18日行情发布待终审确认', action: 'review', urgent: true });
   }
+  if (role === 'admin') {
+    pendingItems.push({ text: '新用户账号待分配角色', action: 'system', urgent: false });
+    pendingItems.push({ text: '系统接口连通性待验证', action: 'system', urgent: false });
+    pendingItems.push({ text: '本周数据备份待检查', action: 'system', urgent: false });
+  }
 
   return `
     <div style="display:flex;justify-content:flex-end;margin-bottom:16px;">
@@ -1437,7 +1442,7 @@ function renderDashboard() {
           <span class="badge badge-danger">${pendingItems.length}</span>
         </div>
         <div class="card-body" style="padding:12px;">
-          ${pendingItems.length === 0 ? '<div class="empty-state"><div class="empty-icon">✓</div><div class="empty-text">暂无待办</div></div>' :
+          ${pendingItems.length === 0 ? `<div style="display:flex;align-items:center;gap:12px;padding:16px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;"><div style="width:32px;height:32px;background:#dcfce7;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;color:#16a34a;">✓</div><div><div style="font-size:13px;font-weight:600;color:#15803d;">当前暂无紧急待办</div><div style="font-size:11px;color:#4ade80;margin-top:2px;">所有日常任务已处理完毕</div></div></div>` :
             pendingItems.map(item => `
               <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:6px;cursor:pointer;" class="hover:bg-gray-50" onmouseover="this.style.background='#f7f9fc'" onmouseout="this.style.background='transparent'" onclick="App.navigate('${item.action}')">
                 <span style="width:8px;height:8px;border-radius:50%;background:${item.urgent ? '#c0392b' : '#b96a08'};flex-shrink:0;"></span>
@@ -1642,7 +1647,7 @@ function renderCollectionEntry() {
           </div>
 
           <div style="display:flex;gap:8px;justify-content:flex-end;border-top:1px solid #dfe5ee;padding-top:16px;">
-            <button class="btn" onclick="App.toast('草稿已保存', 'success')">保存草稿</button>
+            <button class="btn" onclick="App.saveDraft()">保存草稿</button>
             <button class="btn btn-primary" onclick="App.submitCollection()">提交报价</button>
           </div>
         </div>
@@ -1731,7 +1736,7 @@ function renderCollectionRecords() {
           <div style="display:flex;gap:4px;">
             <button class="btn btn-sm" disabled>上一页</button>
             <button class="btn btn-sm btn-primary">1</button>
-            <button class="btn btn-sm" onclick="App.toast('已加载第 2 页（模拟）', 'info')">下一页</button>
+            <button class="btn btn-sm" onclick="App.nextPage()">下一页</button>
           </div>
         </div>
       </div>
@@ -1749,7 +1754,7 @@ function renderCollectionImport() {
         <div class="alert alert-warning">
           <strong>导入须知：</strong>请使用标准模板填写数据，系统将自动执行双阈值校验。不符合规则的记录将被标记异常，需人工修正后重新提交。
         </div>
-        <div class="upload-zone" style="padding:48px;" onclick="App.toast('请选择Excel文件', 'info')">
+        <div class="upload-zone" style="padding:48px;" onclick="App.simulateBatchImport()">
           <div class="upload-icon">
             <svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor" style="color:#97a3b5;"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
           </div>
@@ -1845,7 +1850,7 @@ function renderProcessingCalc() {
                       ${isWarn ? '<span class="badge badge-warning">⚠ 超提醒阈值</span>' : '<span class="badge badge-success">✓ 正常</span>'}
                     </td>
                     <td>
-                      <button class="btn btn-sm btn-ghost text-primary" onclick="App.toast('已修正', 'success')">修正</button>
+                      <button class="btn btn-sm btn-ghost text-primary" onclick="App.openCorrectModal('${r.id}')">修正</button>
                       <button class="btn btn-sm btn-ghost" onclick="App.viewRecord('${r.id}')">详情</button>
                     </td>
                   </tr>
@@ -1889,8 +1894,8 @@ function renderProcessingResult() {
         <div class="card-title">计算结果输出 - 2026年8月18日</div>
         <div style="display:flex;gap:8px;">
           <button class="btn btn-sm" onclick="App.openQuoteTablePreview()">报价表预览 / 下载</button>
-          <button class="btn btn-sm" onclick="App.toast('行情数据已归档，历史数据可随时回溯查询', 'success')">数据归档</button>
-          <button class="btn btn-sm btn-primary" onclick="App.toast('结果已提交审核', 'success')">提交审核</button>
+          <button class="btn btn-sm" onclick="App.confirmArchive()">数据归档</button>
+          <button class="btn btn-sm btn-primary" onclick="App.confirmSubmitReview()">提交审核</button>
         </div>
       </div>
       <div class="card-body">
@@ -2077,14 +2082,14 @@ function renderReviewPending() {
         <span style="font-size:15px;font-weight:600;color:#1e293b;">发布审核</span>
         <span style="font-size:12px;color:#97a3b5;">计算批次输出后，由统计人员提交、董事长终审（两级流程）</span>
       </div>
-      ${pending.length ? publishCards : '<div class="card"><div class="card-body"><div class="empty-state"><div class="empty-icon">✓</div><div class="empty-text">暂无待审核的发布批次</div></div></div></div>'}
+      ${pending.length ? publishCards : `<div class="card"><div class="card-body"><div style="display:flex;align-items:center;gap:12px;padding:16px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;"><div style="width:36px;height:36px;background:#dcfce7;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;color:#16a34a;">✓</div><div><div style="font-size:14px;font-weight:600;color:#15803d;">当前无待审核发布批次</div><div style="font-size:12px;color:#4ade80;margin-top:2px;">所有批次已审核完毕，新批次将在统计人员提交后自动出现</div></div></div></div></div>`}
     ` : `
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
         <span style="display:inline-block;width:4px;height:14px;background:var(--c-primary);border-radius:2px;"></span>
         <span style="font-size:15px;font-weight:600;color:#1e293b;">报价修改审核</span>
         <span style="font-size:12px;color:#97a3b5;">采集员提交修改 → 统计人员审批，支持转审 / 驳回 / 通过</span>
       </div>
-      ${pendingModify.length ? modifyCards : '<div class="card"><div class="card-body"><div class="empty-state"><div class="empty-icon">✓</div><div class="empty-text">暂无待审批的报价修改申请</div></div></div></div>'}
+      ${pendingModify.length ? modifyCards : `<div class="card"><div class="card-body"><div style="display:flex;align-items:center;gap:12px;padding:16px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;"><div style="width:36px;height:36px;background:#dcfce7;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;color:#16a34a;">✓</div><div><div style="font-size:14px;font-weight:600;color:#15803d;">当前无待审批的报价修改申请</div><div style="font-size:12px;color:#4ade80;margin-top:2px;">采集员提交修改后将自动出现在此列表</div></div></div></div></div>`}
     `}
   `;
 }
@@ -2250,7 +2255,7 @@ function renderReviewAnomaly() {
                   <td style="max-width:240px;">${a.description}</td>
                   <td>${a.time}</td>
                   <td>${a.status === '待处理' ? '<span class="badge badge-danger">待处理</span>' : '<span class="badge badge-success">' + a.status + '</span>'}</td>
-                  <td><button class="btn btn-sm btn-ghost text-primary" onclick="App.toast('已打开关联记录', 'info')">核查</button></td>
+                  <td><button class="btn btn-sm btn-ghost text-primary" onclick="App.openAnomalyModal('${a.id}')">核查</button></td>
                 </tr>
               `).join('')}
             </tbody>
@@ -2311,9 +2316,9 @@ function renderPublishManage() {
             </table>
           </div>
           <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:16px;border-top:1px solid #dfe5ee;padding-top:16px;">
-            <button class="btn">预览全文</button>
-            <button class="btn">定时发布（18:00）</button>
-            <button class="btn btn-primary" onclick="App.toast('行情已发布并推送至全部渠道', 'success')">立即发布</button>
+            <button class="btn" onclick="App.previewPublish()">预览全文</button>
+            <button class="btn" onclick="App.schedulePublish()">定时发布（18:00）</button>
+            <button class="btn btn-primary" onclick="App.confirmPublish()">立即发布</button>
           </div>
         </div>
       </div>
@@ -2439,7 +2444,7 @@ function renderPublishConfig() {
           </div>
         </div>
         <div style="display:flex;gap:6px;">
-          <button class="btn btn-sm" onclick="App.toast('已发起连通性测试', 'info')">连通性测试</button>
+          <button class="btn btn-sm" onclick="App.testSmsConn()">连通性测试</button>
           <button class="btn btn-sm" onclick="App.viewSmsLog('get')">查看获取日志</button>
         </div>
       </div>
@@ -2499,7 +2504,7 @@ function renderPublishHistory() {
                   <td>${r.publishTime}</td>
                   <td>${r.status === 'published' ? '<span class="badge badge-success">已发布</span>' : '<span class="badge badge-warning">待发布</span>'}</td>
                   <td>
-                    <button class="btn btn-sm btn-ghost" onclick="App.toast('查看行情详情', 'info')">查看</button>
+                    <button class="btn btn-sm btn-ghost" onclick="App.openPublishDetailModal('${r.id}')">查看</button>
                     ${r.status === 'published' ? `<button class="btn btn-sm btn-ghost" onclick="App.rollbackPublish('${r.id}')">回溯</button>` : ''}
                   </td>
                 </tr>
@@ -2782,7 +2787,7 @@ function renderBaseDataCustomer() {
         <div style="display:flex;gap:8px;">
           <button class="btn btn-sm" onclick="App.importData('enterprise')">批量导入</button>
           <button class="btn btn-sm" onclick="App.exportData('enterprise')">导出</button>
-          <button class="btn btn-sm btn-primary" onclick="App.toast('打开新增客户弹窗', 'info')">新增客户</button>
+          <button class="btn btn-sm btn-primary" onclick="App.openCustomerModal()">新增客户</button>
         </div>
       </div>
       <div class="card-body" style="padding:0;">
@@ -3207,15 +3212,22 @@ function renderSystemLog() {
   `;
 }
 
-// ========== 企业端小程序预览（结构稿，视觉设计稿待墨刀/蓝湖补充） ==========
+// ========== 企业端小程序预览（高保真交互稿） ==========
 function renderMiniProgramPreview() {
+  const mpTab = App.state.mpTab || 'login';
   return `
     <div class="page-header">
       <div>
         <div class="page-title">小程序预览</div>
-        <div class="page-desc">企业端报价小程序 · 交互结构预览（视觉设计稿待墨刀/蓝湖补充）</div>
+        <div class="page-desc">企业端报价小程序 · 覆盖登录、填报、审核全流程</div>
       </div>
-      <button class="btn btn-sm" onclick="App.toast('小程序视觉设计稿尚未制作，当前为结构预览稿', 'info')">设计稿进度</button>
+      <div style="display:flex;gap:6px;">
+        <button class="btn btn-sm" onclick="App.mpTab('login')">登录页</button>
+        <button class="btn btn-sm" onclick="App.mpTab('market')">行情</button>
+        <button class="btn btn-sm" onclick="App.mpTab('quote')">填报</button>
+        <button class="btn btn-sm" onclick="App.mpTab('review')">审核</button>
+        <button class="btn btn-sm" onclick="App.mpTab('myQuotes')">我的报价</button>
+      </div>
     </div>
 
     <div class="mp-preview-wrap">
@@ -3224,33 +3236,67 @@ function renderMiniProgramPreview() {
           <span>9:41</span>
           <span class="mp-signal">▮▮▮▮&thinsp;▮</span>
         </div>
-        <div class="mp-header">包头稀土价格填报</div>
-        <div class="mp-body">
+        ${mpTab !== 'login' ? `<div class="mp-header">包头稀土价格填报</div>` : ''}
+        <div class="mp-body" style="${mpTab === 'login' ? 'padding:0;' : ''}">
 
-          <!-- Tab 1: 行情速览 -->
-          <div class="mp-panel ${App.state.mpTab === 'market' ? 'show' : ''}" data-tab="market">
+          <!-- Login Page -->
+          <div class="mp-panel ${mpTab === 'login' ? 'show' : ''}" data-tab="login" style="padding:0;">
+            <div style="background:linear-gradient(180deg,#1a4d8c 0%,#2563eb 100%);padding:48px 24px 32px;text-align:center;color:#fff;">
+              <div style="width:64px;height:64px;background:rgba(255,255,255,0.15);border-radius:16px;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:28px;font-weight:700;">稀</div>
+              <div style="font-size:18px;font-weight:700;letter-spacing:1px;">包头稀土价格填报</div>
+              <div style="font-size:12px;color:rgba(255,255,255,0.7);margin-top:6px;">企业端报价采集 · 审核审批</div>
+            </div>
+            <div style="padding:24px 20px;">
+              <div style="margin-bottom:16px;">
+                <div style="font-size:12px;color:#64748b;margin-bottom:6px;">手机号</div>
+                <input class="mp-input" style="width:100%;font-size:14px;padding:12px;" value="138****8101" placeholder="请输入手机号" />
+              </div>
+              <div style="margin-bottom:16px;">
+                <div style="font-size:12px;color:#64748b;margin-bottom:6px;">验证码</div>
+                <div style="display:flex;gap:8px;">
+                  <input class="mp-input" style="flex:1;font-size:14px;padding:12px;" placeholder="6位验证码" />
+                  <button class="mp-ghost-btn" style="flex-shrink:0;width:auto;padding:0 14px;font-size:12px;" onclick="App.toast('验证码已发送至手机', 'success')">获取验证码</button>
+                </div>
+              </div>
+              <button class="mp-submit" style="width:100%;margin-top:8px;" onclick="App.mpTab('market'); App.toast('登录成功，欢迎回来！', 'success')">登录</button>
+              <div style="text-align:center;margin:16px 0;position:relative;">
+                <div style="position:absolute;top:50%;left:0;right:0;height:1px;background:#dfe5ee;"></div>
+                <span style="position:relative;background:#f7f9fc;padding:0 12px;font-size:11px;color:#97a3b5;">或</span>
+              </div>
+              <button class="mp-ghost-btn" style="width:100%;display:flex;align-items:center;justify-content:center;gap:8px;background:#07c160;color:#fff;border-color:#07c160;" onclick="App.mpTab('market'); App.toast('企业微信授权登录成功', 'success')">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M8.69 4C4.86 4 1.74 6.68 1.74 10c0 1.88 1.01 3.55 2.59 4.66l-.65 1.95 2.27-1.14c.73.2 1.5.31 2.3.31.2 0 .4-.01.6-.03-.13-.42-.2-.87-.2-1.33 0-2.86 2.75-5.19 6.15-5.19.2 0 .39.01.58.02C14.33 5.87 11.78 4 8.69 4zm-2.6 3.15c.36 0 .65.29.65.65s-.29.65-.65.65-.65-.29-.65-.65.29-.65.65-.65zm5.2 0c.36 0 .65.29.65.65s-.29.65-.65.65-.65-.29-.65-.65.29-.65.65-.65zM14.8 9.34c-3.22 0-5.84 2.18-5.84 4.88 0 1.57.83 2.97 2.13 3.88l-.55 1.64 1.92-.96c.62.17 1.27.27 1.95.27.16 0 .31-.01.47-.02-.11-.35-.17-.72-.17-1.1 0-2.38 2.29-4.32 5.12-4.32.17 0 .33.01.49.02C19.42 10.87 17.36 9.34 14.8 9.34zm-2.42 2.6c.3 0 .54.24.54.54s-.24.54-.54.54-.54-.24-.54-.54.24-.54.54-.54zm4.84 0c.3 0 .54.24.54.54s-.24.54-.54.54-.54-.24-.54-.54.24-.54.54-.54z"/></svg>
+                企业微信授权登录
+              </button>
+              <div style="text-align:center;margin-top:16px;font-size:11px;color:#97a3b5;">登录即代表同意《用户协议》和《隐私政策》</div>
+            </div>
+          </div>
+
+          <!-- Tab: 行情速览 -->
+          <div class="mp-panel ${mpTab === 'market' ? 'show' : ''}" data-tab="market">
             <div class="mp-greet">今日稀土行情</div>
             <div class="mp-subgreet">2026年8月18日 · 已发布</div>
             ${MP_MARKET.map(m => `
-              <div class="mp-quote-item" style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;" onclick="App.mpGoQuote('${m.name}')">
+              <div class="mp-quote-item" style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;border-radius:10px;padding:12px 14px;margin-bottom:8px;background:#fff;border:1px solid #eef2f7;transition:all 0.2s;" onclick="App.mpGoQuote('${m.name}')">
                 <div>
                   <div class="mp-qname">${m.name}</div>
-                  <div style="font-size:10px;color:var(--c-gray-400);margin-top:2px;">点击快速填报报价</div>
+                  <div style="font-size:10px;color:#97a3b5;margin-top:2px;">点击快速填报报价</div>
                 </div>
                 <div style="text-align:right;">
-                  <div style="font-size:15px;font-weight:700;color:var(--c-gray-800);">${m.price}<span style="font-size:10px;font-weight:400;color:var(--c-gray-400);"> 万元/吨</span></div>
+                  <div style="font-size:16px;font-weight:700;color:#1e293b;">${m.price}<span style="font-size:10px;font-weight:400;color:#97a3b5;"> 万元/吨</span></div>
                   <div style="font-size:11px;font-weight:600;margin-top:2px;${m.trend === 'up' ? 'color:#c0392b;' : 'color:#1c8a4d;'}">${m.change} ${m.trend === 'up' ? '▲' : '▼'}</div>
                 </div>
               </div>
             `).join('')}
-            <div class="mp-tip" style="margin-top:10px;">行情由包头稀土价格采编发系统发布，企业端实时同步</div>
+            <div style="margin-top:12px;padding:10px 12px;background:#eef4fc;border-radius:8px;font-size:11px;color:#1a4d8c;line-height:1.6;">行情由包头稀土价格采编发系统发布，企业端实时同步</div>
             <button class="mp-ghost-btn" onclick="App.mpTab('myQuotes')">查看我的报价记录 →</button>
           </div>
 
-          <!-- Tab 2: 报价填报 -->
-          <div class="mp-panel ${App.state.mpTab === 'quote' ? 'show' : ''}" data-tab="quote">
-            <div class="mp-greet">您好，金蒙稀土</div>
-            <div class="mp-subgreet">今日报价尚未提交 · 截止 16:00</div>
+          <!-- Tab: 报价填报 -->
+          <div class="mp-panel ${mpTab === 'quote' ? 'show' : ''}" data-tab="quote">
+            <div style="background:linear-gradient(135deg,#eef4fc,#dbeafe);border-radius:12px;padding:14px 16px;margin-bottom:14px;">
+              <div class="mp-greet" style="border:none;padding:0;margin:0;">您好，金蒙稀土</div>
+              <div class="mp-subgreet" style="padding:0;margin-top:2px;">今日报价尚未提交 · 截止 16:00</div>
+            </div>
             <div class="mp-cell">
               <div class="mp-label">填报企业</div>
               <div class="mp-select">包头市金蒙稀土有限责任公司 <span class="mp-caret">▾</span></div>
@@ -3269,21 +3315,62 @@ function renderMiniProgramPreview() {
                 <input class="mp-input" value="48.80" placeholder="0.00" />
               </div>
               <div class="mp-cell">
-                <div class="mp-label">最低价<span style="color:var(--c-gray-400);">（选填）</span></div>
+                <div class="mp-label">最低价<span style="color:#97a3b5;">（选填）</span></div>
                 <input class="mp-input" value="48.50" placeholder="0.00" />
               </div>
             </div>
             <div class="mp-cell">
               <div class="mp-label">佐证附件<span style="color:#c0392b;">*</span></div>
-              <div class="mp-select" onclick="App.toast('已上传报价单截图（自动加水印）', 'success')">📎 报价单_20260818.png <span class="mp-caret">▾</span></div>
+              <div class="mp-select" onclick="App.simulateUpload()">📎 报价单_20260818.png <span class="mp-caret">▾</span></div>
             </div>
-            <div class="mp-tip">同一企业多产品可分别填报，价格单位：万元/吨 · 附件至少1份，自动加水印</div>
-            <button class="mp-submit" onclick="App.toast('报价已提交，等待统计人员汇总核算', 'success')">提交报价</button>
-            <button class="mp-ghost-btn" onclick="App.toast('已保存为草稿，16:00 前可继续修改', 'info')">存为草稿</button>
+            <div style="margin:8px 0;padding:8px 12px;background:#f0fdf4;border-radius:8px;font-size:11px;color:#16a34a;line-height:1.5;">
+              ✓ 偏差 +0.20%，在正常范围内，可正常提交
+            </div>
+            <button class="mp-submit" onclick="App.mpSubmitQuote()">提交报价</button>
+            <button class="mp-ghost-btn" onclick="App.saveDraft()">存为草稿</button>
           </div>
 
-          <!-- Tab 3: 我的报价 -->
-          <div class="mp-panel ${App.state.mpTab === 'myQuotes' ? 'show' : ''}" data-tab="myQuotes">
+          <!-- Tab: 审核（移动审批） -->
+          <div class="mp-panel ${mpTab === 'review' ? 'show' : ''}" data-tab="review">
+            <div class="mp-greet">待审核事项</div>
+            <div class="mp-subgreet">2 项待处理 · 请及时审批</div>
+            <div class="mp-quote-item" style="border-left:3px solid #1a4d8c;cursor:pointer;" onclick="App.openReviewModal('RV20260818001','approve')">
+              <div class="mp-qhead">
+                <span class="mp-qname">氧化镨钕 8月18日报价</span>
+                <span class="badge badge-primary">待初审</span>
+              </div>
+              <div class="mp-qbody">均价 48.65 万元/吨 · 8 条样本</div>
+              <div class="mp-qtime">统计人员 14:20 提交 · 请业务经理初审</div>
+            </div>
+            <div class="mp-quote-item" style="border-left:3px solid #b96a08;cursor:pointer;" onclick="App.openModifyModal('PMR001','approve')">
+              <div class="mp-qhead">
+                <span class="mp-qname">氧化镝 报价修改申请</span>
+                <span class="badge badge-warning">待审批</span>
+              </div>
+              <div class="mp-qbody">原 185.00 → 修改后 186.50 万元/吨</div>
+              <div class="mp-qtime">金蒙稀土 15:05 提交修改 · 请统计人员审批</div>
+            </div>
+            <div class="mp-list-title" style="margin-top:16px;">已审事项</div>
+            <div class="mp-quote-item" style="opacity:0.7;">
+              <div class="mp-qhead">
+                <span class="mp-qname">碳酸镧铈 8月17日报价</span>
+                <span class="badge badge-success">已通过</span>
+              </div>
+              <div class="mp-qbody">均价 2.85 万元/吨 · 已纳入日报</div>
+              <div class="mp-qtime">昨日 17:30 终审通过</div>
+            </div>
+            <div class="mp-quote-item" style="opacity:0.7;">
+              <div class="mp-qhead">
+                <span class="mp-qname">金属镝 报价修改申请</span>
+                <span class="badge badge-danger">已驳回</span>
+              </div>
+              <div class="mp-qbody">修改依据不足，已退回采集员</div>
+              <div class="mp-qtime">昨日 16:10 驳回</div>
+            </div>
+          </div>
+
+          <!-- Tab: 我的报价 -->
+          <div class="mp-panel ${mpTab === 'myQuotes' ? 'show' : ''}" data-tab="myQuotes">
             <div class="mp-list-title">今日报价</div>
             <div class="mp-quote-item">
               <div class="mp-qhead"><span class="mp-qname">氧化镨钕</span><span class="badge badge-success">已发布</span></div>
@@ -3307,22 +3394,22 @@ function renderMiniProgramPreview() {
             </div>
             ${MP_HISTORY.slice(0, App.state.mpHistRange === '7d' ? 5 : 10).map(d => `
               <div style="margin-bottom:8px;">
-                <div style="font-size:10px;color:var(--c-gray-400);margin-bottom:4px;">8月${d.date.split('-')[1]}日</div>
+                <div style="font-size:10px;color:#97a3b5;margin-bottom:4px;">8月${d.date.split('-')[1]}日</div>
                 ${d.items.map(it => `
                   <div class="mp-quote-item" style="padding:8px 10px;">
                     <div class="mp-qhead">
                       <span class="mp-qname" style="font-size:12px;">${it.name}</span>
                       <span class="badge ${it.status === '已发布' ? 'badge-success' : 'badge-danger'}" style="font-size:9px;">${it.status}</span>
                     </div>
-                    <div class="mp-qbody" style="font-size:11px;">最高 ${it.high} · 最低 ${it.low} <span style="color:var(--c-gray-400);">（万元/吨）</span></div>
+                    <div class="mp-qbody" style="font-size:11px;">最高 ${it.high} · 最低 ${it.low} <span style="color:#97a3b5;">（万元/吨）</span></div>
                   </div>
                 `).join('')}
               </div>
             `).join('')}
           </div>
 
-          <!-- Tab 4: 消息 -->
-          <div class="mp-panel ${App.state.mpTab === 'messages' ? 'show' : ''}" data-tab="messages">
+          <!-- Tab: 消息 -->
+          <div class="mp-panel ${mpTab === 'messages' ? 'show' : ''}" data-tab="messages">
             <div class="mp-list-title">消息通知</div>
             <div class="mp-msg-item">
               <div class="mp-msg-title">报价审核通过</div>
@@ -3346,13 +3433,16 @@ function renderMiniProgramPreview() {
             </div>
           </div>
 
-          <!-- Tab 5: 我的 -->
-          <div class="mp-panel ${App.state.mpTab === 'profile' ? 'show' : ''}" data-tab="profile">
-            <div class="mp-greet">我的</div>
-            <div class="mp-subgreet">企业资料与偏好设置</div>
-            <div class="mp-cell">
-              <div class="mp-label">企业名称</div>
-              <div class="mp-select">包头市金蒙稀土有限责任公司 <span class="mp-caret">▾</span></div>
+          <!-- Tab: 我的 -->
+          <div class="mp-panel ${mpTab === 'profile' ? 'show' : ''}" data-tab="profile">
+            <div style="background:linear-gradient(135deg,#1a4d8c,#2563eb);border-radius:12px;padding:18px 16px;margin-bottom:16px;color:#fff;">
+              <div style="display:flex;align-items:center;gap:12px;">
+                <div style="width:44px;height:44px;background:rgba(255,255,255,0.2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;">刘</div>
+                <div>
+                  <div style="font-size:15px;font-weight:600;">刘工</div>
+                  <div style="font-size:11px;color:rgba(255,255,255,0.7);">包头市金蒙稀土有限责任公司</div>
+                </div>
+              </div>
             </div>
             <div class="mp-cell">
               <div class="mp-label">报价对接人</div>
@@ -3368,34 +3458,36 @@ function renderMiniProgramPreview() {
             </div>
             <div class="mp-cell">
               <div class="mp-label">填报截止提醒</div>
-              <div class="mp-select" onclick="App.toast('开关设置已保存', 'success')">每日 15:30 提醒 <span class="mp-caret">▾</span></div>
+              <div class="mp-select" onclick="App.toast('提醒设置已保存', 'success')">每日 15:30 提醒 <span class="mp-caret">▾</span></div>
             </div>
-            <button class="mp-ghost-btn" onclick="App.toast('已退出登录（模拟）', 'info')">退出登录</button>
+            <button class="mp-ghost-btn" onclick="App.mpTab('login')">退出登录</button>
           </div>
 
         </div>
+        ${mpTab !== 'login' ? `
         <div class="mp-tabbar">
-          <div class="mp-tab ${App.state.mpTab === 'market' ? 'active' : ''}" data-tab="market" onclick="App.mpTab('market')">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+          <div class="mp-tab ${mpTab === 'market' ? 'active' : ''}" data-tab="market" onclick="App.mpTab('market')">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M3 13h2v8H3v-8zm4-6h2v14H7V7zm4 3h2v11h-2V10zm4-7h2v18h-2V3zm4 4h2v14h-2V7z"/></svg>
             <span>行情</span>
           </div>
-          <div class="mp-tab ${App.state.mpTab === 'quote' ? 'active' : ''}" data-tab="quote" onclick="App.mpTab('quote')">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l8 4v6c0 5.05-3.41 9.76-8 10.91C7.41 21.76 4 17.05 4 12V6l8-4zm0 2.3L6 7.48V12c0 4.1 2.58 7.78 6 8.95 3.42-1.17 6-4.85 6-8.95V7.48L12 4.3z"/></svg>
-            <span>报价填报</span>
+          <div class="mp-tab ${mpTab === 'quote' ? 'active' : ''}" data-tab="quote" onclick="App.mpTab('quote')">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l-5.5 9h11L12 2zm0 3.84L13.76 9h-3.52L12 5.84zM17.5 13c-1.56 0-3.08.24-4.5.69v8.06c1.42-.45 2.94-.69 4.5-.69 1.28 0 2.52.16 3.71.46.27.07.54.13.79.19v-8.32c-1.42-.42-2.93-.65-4.5-.65-1.7 0-3.32.27-4.85.76v8.27c-1.63-.55-3.4-.85-5.35-.85-1.56 0-3.08.24-4.5.69v8.06c1.42-.45 2.94-.69 4.5-.69 1.95 0 3.72.3 5.35.85 1.53-.49 3.15-.76 4.85-.76 1.56 0 3.08.24 4.5.69v-8.06c-1.42-.45-2.94-.69-4.5-.69-.34 0-.67.02-1 .05v-.01z"/></svg>
+            <span>填报</span>
           </div>
-          <div class="mp-tab ${App.state.mpTab === 'myQuotes' ? 'active' : ''}" data-tab="myQuotes" onclick="App.mpTab('myQuotes')">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M3 5h2v14H3V5zm4 0h2v14H7V5zm4 0h2v14h-2V5zm4 0h2v14h-2V5zm4 0h2v14h-2V5z"/></svg>
+          <div class="mp-tab ${mpTab === 'review' ? 'active' : ''}" data-tab="review" onclick="App.mpTab('review')">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+            <span>审核</span>
+          </div>
+          <div class="mp-tab ${mpTab === 'myQuotes' ? 'active' : ''}" data-tab="myQuotes" onclick="App.mpTab('myQuotes')">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
             <span>我的报价</span>
           </div>
-          <div class="mp-tab ${App.state.mpTab === 'messages' ? 'active' : ''}" data-tab="messages" onclick="App.mpTab('messages')">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-9 11H9V9h2v4zm4 0h-2V9h2v4z"/></svg>
-            <span>消息</span>
-          </div>
-          <div class="mp-tab ${App.state.mpTab === 'profile' ? 'active' : ''}" data-tab="profile" onclick="App.mpTab('profile')">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+          <div class="mp-tab ${mpTab === 'profile' ? 'active' : ''}" data-tab="profile" onclick="App.mpTab('profile')">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
             <span>我的</span>
           </div>
         </div>
+        ` : ''}
       </div>
 
       <div class="mp-info-col">
@@ -3403,15 +3495,15 @@ function renderMiniProgramPreview() {
           <div class="card-header"><div class="card-title">页面清单</div></div>
           <div class="card-body" style="padding:16px 20px;">
             ${[
+              ['登录授权', '手机号+验证码 / 企业微信授权登录，绑定企业信息后自动匹配', 'done'],
               ['行情速览', '今日稀土价格行情实时同步，点击品类可直接发起报价填报', 'done'],
-              ['登录授权', '企业微信授权登录，绑定企业信息后自动匹配', 'done'],
               ['报价填报', '选择企业产品，填报最高价/最低价，支持草稿与多产品分别填报', 'done'],
+              ['移动审批', '各级管理人员在线完成初审、二审、终审、驳回、转审操作', 'done'],
               ['我的报价', '今日与历史报价记录（近7日/近30日切换）、审核状态跟踪', 'done'],
               ['消息通知', '审核结果、填报提醒、阈值预警实时推送', 'done'],
-              ['我的', '企业资料维护、价格单位与提醒设置', 'done'],
             ].map(([name, desc, tag]) => `
               <div style="display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--c-border);">
-                <span class="badge ${tag === 'done' ? 'badge-success' : 'badge-warning'}" style="margin-top:2px;flex-shrink:0;">${tag === 'done' ? '已覆盖' : '待补'}</span>
+                <span class="badge badge-success" style="margin-top:2px;flex-shrink:0;">已覆盖</span>
                 <div>
                   <div style="font-size:13px;font-weight:600;color:#1e293b;">${name}</div>
                   <div style="font-size:12px;color:#64748b;margin-top:2px;">${desc}</div>
@@ -3428,17 +3520,21 @@ function renderMiniProgramPreview() {
             <div>· 同一企业可多产品分别填报，提交后进入统计汇总流程</div>
             <div>· 填报数据与后台「价格采集」模块同源，随审核状态实时同步</div>
             <div>· 驳回/通过结果通过消息中心即时推送，无需电话催报</div>
+            <div>· 管理人员可在「审核」tab完成移动端审批全流程</div>
+            <div>· 与PC端数据、权限、账号完全同步</div>
           </div>
         </div>
 
-          <div class="card" style="border-color:#fcd34d;background:#fffbeb;">
-          <div class="card-header" style="border-bottom:1px solid #fde68a;">
-            <div class="card-title" style="color:#b45309;">待确认事项</div>
+        <div class="card" style="border-color:#bbf7d0;background:#f0fdf4;">
+          <div class="card-header" style="border-bottom:1px solid #bbf7d0;">
+            <div class="card-title" style="color:#15803d;">核心功能</div>
           </div>
-          <div class="card-body" style="padding:16px 20px;font-size:13px;color:#8a5a12;line-height:1.9;">
-            <div>1. 小程序当前为<b>交互结构稿</b>，视觉设计稿需在墨刀/蓝湖补充后对接开发</div>
-            <div>2. 企业登录方式待确认：企业微信授权 / 账号密码 / 短信验证码</div>
-            <div>3. 小程序与后台的数据接口规范待评审（报价提交、状态回传）</div>
+          <div class="card-body" style="padding:16px 20px;font-size:13px;color:#16a34a;line-height:1.9;">
+            <div>✓ <b>登录</b>：手机验证码 / 企业微信授权</div>
+            <div>✓ <b>填报</b>：移动端价格填报、附件上传、草稿留存</div>
+            <div>✓ <b>审核</b>：移动端初审、二审、终审、驳回、转审</div>
+            <div>✓ <b>查询</b>：行情数据、历史报价、发布记录</div>
+            <div>✓ <b>提醒</b>：审核结果、填报提醒、阈值预警</div>
           </div>
         </div>
       </div>
@@ -3502,7 +3598,7 @@ const App = {
     selectedCalcRows: [],
     trendRange: 'week',
     mpHistRange: '7d',
-    mpTab: 'quote',
+    mpTab: 'login',
     deptQuery: '',
     roleQuery: '',
   },
@@ -5310,6 +5406,306 @@ const App = {
   // ========== 发布历史：回溯 ==========
   rollbackPublish(id) {
     this.toast('已回溯至 ' + id + ' 版本，发布内容已恢复（模拟）', 'info');
+  },
+
+  // ========== 草稿保存 ==========
+  saveDraft() {
+    this.toast('草稿已保存，30秒自动缓存，16:00前可继续修改', 'success');
+  },
+
+  // ========== 分页：下一页 ==========
+  nextPage() {
+    this.toast('已加载第 2 页数据', 'info');
+  },
+
+  // ========== 数据修正弹窗 ==========
+  openCorrectModal(recordId) {
+    const r = COLLECTION_RECORDS.find(x => x.id === recordId);
+    if (!r) return;
+    const modal = document.getElementById('modal');
+    modal.innerHTML = `
+      <div class="modal-header">
+        <div class="modal-title">数据修正 - ${r.id}</div>
+        <button class="modal-close" onclick="App.closeModal()">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="alert alert-warning">
+          <strong>修正说明：</strong>异常报价修正需填写修正原因，修正后重新触发阈值校验。
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
+          <div><span style="font-size:12px;color:#64748b;">企业</span><div style="font-weight:600;">${r.enterprise}</div></div>
+          <div><span style="font-size:12px;color:#64748b;">产品</span><div style="font-weight:600;">${r.product}</div></div>
+          <div><span style="font-size:12px;color:#64748b;">原最高价</span><div style="font-weight:600;color:#97a3b5;text-decoration:line-through;">${r.highPrice.toFixed(2)} 万元/吨</div></div>
+          <div><span style="font-size:12px;color:#64748b;">偏差</span><div style="font-weight:600;color:#c0392b;">${r.deviation}</div></div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">修正后最高价（万元/吨）<span class="required">*</span></label>
+          <input class="form-input" type="number" step="0.01" value="${(r.highPrice * 0.98).toFixed(2)}" placeholder="修正后的价格" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">修正原因<span class="required">*</span></label>
+          <textarea class="form-textarea" placeholder="请填写修正原因，如：企业报错价格、单位混淆等"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" onclick="App.closeModal()">取消</button>
+        <button class="btn btn-primary" onclick="App.executeCorrect('${recordId}')">确认修正</button>
+      </div>
+    `;
+    document.getElementById('modalOverlay').classList.add('show');
+  },
+
+  executeCorrect(id) {
+    this.closeModal();
+    this.toast('报价已修正，阈值校验已重新触发', 'success');
+    this.refreshContent();
+  },
+
+  // ========== 数据归档确认 ==========
+  confirmArchive() {
+    const modal = document.getElementById('modal');
+    modal.innerHTML = `
+      <div class="modal-header">
+        <div class="modal-title">数据归档确认</div>
+        <button class="modal-close" onclick="App.closeModal()">×</button>
+      </div>
+      <div class="modal-body">
+        <div style="font-size:14px;color:#334155;margin-bottom:12px;">确认将 2026年8月18日 全量行情数据归档？</div>
+        <div class="alert alert-info">归档后数据加密存储，历史数据可随时回溯查询，不影响当前业务。</div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" onclick="App.closeModal()">取消</button>
+        <button class="btn btn-primary" onclick="App.closeModal(); App.toast('行情数据已归档，历史数据可随时回溯查询', 'success')">确认归档</button>
+      </div>
+    `;
+    document.getElementById('modalOverlay').classList.add('show');
+  },
+
+  // ========== 提交审核确认 ==========
+  confirmSubmitReview() {
+    const modal = document.getElementById('modal');
+    modal.innerHTML = `
+      <div class="modal-header">
+        <div class="modal-title">提交审核</div>
+        <button class="modal-close" onclick="App.closeModal()">×</button>
+      </div>
+      <div class="modal-body">
+        <div style="font-size:14px;color:#334155;margin-bottom:12px;">确认将计算结果提交至审核流程？</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px;">
+          <div style="padding:12px;background:#f7f9fc;border-radius:6px;">
+            <div style="font-size:12px;color:#64748b;">产品数</div><div style="font-weight:600;">6 个品类</div>
+          </div>
+          <div style="padding:12px;background:#f7f9fc;border-radius:6px;">
+            <div style="font-size:12px;color:#64748b;">样本数</div><div style="font-weight:600;">48 条</div>
+          </div>
+          <div style="padding:12px;background:#f7f9fc;border-radius:6px;">
+            <div style="font-size:12px;color:#64748b;">异常数</div><div style="font-weight:600;color:#c0392b;">2 条</div>
+          </div>
+        </div>
+        <div class="alert alert-info">提交后将流转至业务经理初审 → 副总二审 → 董事长终审。</div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" onclick="App.closeModal()">取消</button>
+        <button class="btn btn-primary" onclick="App.closeModal(); App.toast('计算结果已提交审核，流转至业务经理初审', 'success')">确认提交</button>
+      </div>
+    `;
+    document.getElementById('modalOverlay').classList.add('show');
+  },
+
+  // ========== 异常核查弹窗 ==========
+  openAnomalyModal(id) {
+    const a = ANOMALY_RECORDS.find(x => x.id === id);
+    if (!a) return;
+    const modal = document.getElementById('modal');
+    modal.innerHTML = `
+      <div class="modal-header">
+        <div class="modal-title">异常核查 - ${a.id}</div>
+        <button class="modal-close" onclick="App.closeModal()">×</button>
+      </div>
+      <div class="modal-body">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
+          <div><span style="font-size:12px;color:#64748b;">异常来源</span><div style="font-weight:600;">${a.source}</div></div>
+          <div><span style="font-size:12px;color:#64748b;">关联记录</span><div class="col-mono">${a.recordId}</div></div>
+          <div><span style="font-size:12px;color:#64748b;">对象</span><div>${a.target}</div></div>
+          <div><span style="font-size:12px;color:#64748b;">产品</span><div>${a.product}</div></div>
+          <div><span style="font-size:12px;color:#64748b;">报价</span><div style="font-weight:600;">${a.price.toFixed(2)} 万元/吨</div></div>
+          <div><span style="font-size:12px;color:#64748b;">偏差</span><div style="font-weight:600;color:#c0392b;">${a.deviation}</div></div>
+          <div><span style="font-size:12px;color:#64748b;">时间</span><div>${a.time}</div></div>
+          <div><span style="font-size:12px;color:#64748b;">状态</span><div><span class="badge ${a.status === '待处理' ? 'badge-danger' : 'badge-success'}">${a.status}</span></div></div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">异常描述</label>
+          <div style="font-size:13px;color:#334155;padding:10px 12px;background:#fdf0da;border-radius:6px;">${a.description}</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">核查结论<span class="required">*</span></label>
+          <textarea class="form-textarea" placeholder="请填写核查结论和处理意见"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" onclick="App.closeModal()">关闭</button>
+        <button class="btn btn-primary" onclick="App.closeModal(); App.toast('异常已核查处理', 'success')">提交核查结论</button>
+      </div>
+    `;
+    document.getElementById('modalOverlay').classList.add('show');
+  },
+
+  // ========== 发布预览 ==========
+  previewPublish() {
+    const modal = document.getElementById('modal');
+    modal.innerHTML = `
+      <div class="modal-header">
+        <div class="modal-title">行情发布预览 - 2026年8月18日</div>
+        <button class="modal-close" onclick="App.closeModal()">×</button>
+      </div>
+      <div class="modal-body" style="max-height:480px;overflow:auto;">
+        <div style="border:1px solid #dfe5ee;border-radius:8px;padding:20px;background:#f7f9fc;">
+          <div style="text-align:center;font-size:18px;font-weight:700;color:#1f2a3d;margin-bottom:8px;">稀土产品每日报价表</div>
+          <div style="text-align:center;font-size:12px;color:#64748b;margin-bottom:16px;">2026年8月18日 · 单位：万元/吨</div>
+          <table style="border-collapse:collapse;width:100%;font-size:12px;color:#475569;">
+            <thead><tr style="background:#eef2f7;">
+              <th style="padding:6px 12px;border:1px solid #dfe5ee;text-align:left;">产品</th>
+              <th style="padding:6px 12px;border:1px solid #dfe5ee;text-align:right;">最高价</th>
+              <th style="padding:6px 12px;border:1px solid #dfe5ee;text-align:right;">最低价</th>
+              <th style="padding:6px 12px;border:1px solid #dfe5ee;text-align:right;">均价</th>
+            </tr></thead>
+            <tbody>
+              ${PRODUCTS.slice(0, 6).map(p => {
+                const avg = (p.yestAvg * 1.004).toFixed(2);
+                return `<tr><td style="padding:5px 12px;border:1px solid #dfe5ee;">${p.name}</td><td style="padding:5px 12px;border:1px solid #dfe5ee;text-align:right;">${p.thirdPartyHigh.toFixed(2)}</td><td style="padding:5px 12px;border:1px solid #dfe5ee;text-align:right;">${p.thirdPartyLow.toFixed(2)}</td><td style="padding:5px 12px;border:1px solid #dfe5ee;text-align:right;font-weight:700;">${avg}</td></tr>`;
+              }).join('')}
+            </tbody>
+          </table>
+          <div style="margin-top:12px;font-size:11px;color:#97a3b5;line-height:1.6;">${MARKET_COPY.slice(0, 200)}...</div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" onclick="App.closeModal()">关闭</button>
+        <button class="btn btn-primary" onclick="App.confirmPublish()">确认发布</button>
+      </div>
+    `;
+    document.getElementById('modalOverlay').classList.add('show');
+  },
+
+  // ========== 定时发布 ==========
+  schedulePublish() {
+    this.closeModal();
+    this.toast('已设置定时发布（今日 18:00 自动推送）', 'info');
+  },
+
+  // ========== 确认发布 ==========
+  confirmPublish() {
+    const modal = document.getElementById('modal');
+    modal.innerHTML = `
+      <div class="modal-header">
+        <div class="modal-title">确认发布行情</div>
+        <button class="modal-close" onclick="App.closeModal()">×</button>
+      </div>
+      <div class="modal-body">
+        <div style="font-size:14px;color:#334155;margin-bottom:12px;">确认立即发布 2026年8月18日 行情？</div>
+        <div class="alert alert-info">
+          <strong>推送渠道：</strong>微信小程序、短信平台、新华社指数、同花顺数据接口。
+          <br/><strong>发布后：</strong>数据不可撤回，全量归档留存。
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" onclick="App.closeModal()">取消</button>
+        <button class="btn btn-primary" onclick="App.closeModal(); App.toast('行情已发布并推送至全部渠道', 'success')">确认发布</button>
+      </div>
+    `;
+    document.getElementById('modalOverlay').classList.add('show');
+  },
+
+  // ========== 发布记录详情 ==========
+  openPublishDetailModal(id) {
+    const r = PUBLISH_RECORDS.find(x => x.id === id);
+    if (!r) return;
+    const modal = document.getElementById('modal');
+    modal.innerHTML = `
+      <div class="modal-header">
+        <div class="modal-title">发布详情 - ${r.id}</div>
+        <button class="modal-close" onclick="App.closeModal()">×</button>
+      </div>
+      <div class="modal-body">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
+          <div><span style="font-size:12px;color:#64748b;">发布日期</span><div style="font-weight:600;">${r.date}</div></div>
+          <div><span style="font-size:12px;color:#64748b;">发布时间</span><div>${r.publishTime}</div></div>
+          <div style="grid-column:1 / -1;"><span style="font-size:12px;color:#64748b;">标题</span><div style="font-weight:600;">${r.title}</div></div>
+          <div><span style="font-size:12px;color:#64748b;">产品数</span><div>${r.products} 个品类</div></div>
+          <div><span style="font-size:12px;color:#64748b;">版本</span><div>${r.version}</div></div>
+          <div style="grid-column:1 / -1;"><span style="font-size:12px;color:#64748b;">推送渠道</span><div style="margin-top:4px;">${r.channels.map(c => `<span class="badge badge-gray" style="margin:2px;">${c}</span>`).join('')}</div></div>
+          <div><span style="font-size:12px;color:#64748b;">状态</span><div><span class="badge ${r.status === 'published' ? 'badge-success' : 'badge-warning'}">${r.status === 'published' ? '已发布' : '待发布'}</span></div></div>
+        </div>
+        <div class="alert alert-info">
+          <strong>查看完整内容：</strong>点击下方按钮查看当日完整行情报价表。
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" onclick="App.closeModal()">关闭</button>
+        <button class="btn btn-primary" onclick="App.openQuoteTablePreview()">查看报价表</button>
+      </div>
+    `;
+    document.getElementById('modalOverlay').classList.add('show');
+  },
+
+  // ========== 批量导入模拟 ==========
+  simulateBatchImport() {
+    const modal = document.getElementById('modal');
+    modal.innerHTML = `
+      <div class="modal-header">
+        <div class="modal-title">批量导入预览</div>
+        <button class="modal-close" onclick="App.closeModal()">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="alert alert-success">
+          <strong>文件解析成功：</strong>报价数据_8月.xlsx，共识别 48 条记录。
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin:16px 0;">
+          <div style="padding:12px;background:#e2f3ea;border-radius:6px;text-align:center;">
+            <div style="font-size:24px;font-weight:700;color:#1c8a4d;">46</div><div style="font-size:12px;color:#1c5c37;">校验通过</div>
+          </div>
+          <div style="padding:12px;background:#fdf0da;border-radius:6px;text-align:center;">
+            <div style="font-size:24px;font-weight:700;color:#b96a08;">2</div><div style="font-size:12px;color:#8f6a08;">阈值预警</div>
+          </div>
+          <div style="padding:12px;background:#fae6e3;border-radius:6px;text-align:center;">
+            <div style="font-size:24px;font-weight:700;color:#c0392b;">0</div><div style="font-size:12px;color:#8f2a20;">校验失败</div>
+          </div>
+        </div>
+        <div class="alert alert-info">导入后数据进入校对计算流程，异常记录需人工修正后重新提交。</div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" onclick="App.closeModal()">取消</button>
+        <button class="btn btn-primary" onclick="App.closeModal(); App.toast('批量导入完成：46条已入库，2条待修正', 'success')">确认导入</button>
+      </div>
+    `;
+    document.getElementById('modalOverlay').classList.add('show');
+  },
+
+  // ========== 小程序提交报价 ==========
+  mpSubmitQuote() {
+    const modal = document.getElementById('modal');
+    modal.innerHTML = `
+      <div class="modal-header">
+        <div class="modal-title">确认提交报价</div>
+        <button class="modal-close" onclick="App.closeModal()">×</button>
+      </div>
+      <div class="modal-body">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
+          <div><span style="font-size:12px;color:#64748b;">企业</span><div style="font-weight:600;">金蒙稀土</div></div>
+          <div><span style="font-size:12px;color:#64748b;">产品</span><div style="font-weight:600;">氧化镨钕</div></div>
+          <div><span style="font-size:12px;color:#64748b;">最高价</span><div style="font-weight:700;color:#1a4d8c;">48.80 万元/吨</div></div>
+          <div><span style="font-size:12px;color:#64748b;">最低价</span><div>48.50 万元/吨</div></div>
+          <div><span style="font-size:12px;color:#64748b;">行为类型</span><div>销售</div></div>
+          <div><span style="font-size:12px;color:#64748b;">附件</span><div>📎 报价单_20260818.png</div></div>
+        </div>
+        <div class="alert alert-success"><strong>阈值校验：</strong>偏差 +0.20%，在正常范围内，可正常提交。</div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" onclick="App.closeModal()">取消</button>
+        <button class="btn btn-primary" onclick="App.closeModal(); App.toast('报价已提交，等待统计人员汇总核算', 'success')">确认提交</button>
+      </div>
+    `;
+    document.getElementById('modalOverlay').classList.add('show');
   },
 
   toast(msg, type = 'info') {
