@@ -8,15 +8,15 @@
 /* ========== Design System ========== */
 :root {
   /* 国企政企蓝白主色：沉稳藏蓝 + 大面积白 + 浅蓝灰背景 */
-  --c-primary: #1a4d8c;
-  --c-primary-light: #e3ecf6;
-  --c-primary-dark: #123662;
-  --c-primary-hover: #1d5fae;
-  --c-sidebar-top: #123662;
-  --c-sidebar-bottom: #0d2a52;
-  --c-sidebar-text: #b9cdea;
-  --c-sidebar-text-dim: #7d9cc9;
-  --c-sidebar-active: rgba(255,255,255,0.14);
+  --c-primary: #1d4ed8;
+  --c-primary-light: #dbeafe;
+  --c-primary-dark: #1e3a8a;
+  --c-primary-hover: #2563eb;
+  --c-sidebar-top: #1e3a8a;
+  --c-sidebar-bottom: #172554;
+  --c-sidebar-text: #c9d9f7;
+  --c-sidebar-text-dim: #8fa8d8;
+  --c-sidebar-active: rgba(255,255,255,0.16);
   --c-sidebar-border: rgba(255,255,255,0.1);
   --c-accent: #3b82f6;
   --c-success: #1c8a4d;
@@ -37,17 +37,17 @@
   --c-gray-700: #334155;
   --c-gray-800: #1e293b;
   --c-gray-900: #0f172a;
-  --c-bg: #eef2f7;
+  --c-bg: #f5f7fa;
   --c-card: #ffffff;
   --c-text: #1f2a3d;
   --c-text-secondary: #64748b;
-  --c-border: #dfe5ee;
-  --shadow-sm: 0 1px 2px rgba(15,35,65,0.05);
-  --shadow-md: 0 4px 8px -2px rgba(15,35,65,0.08), 0 2px 4px -2px rgba(15,35,65,0.05);
-  --shadow-lg: 0 12px 24px -6px rgba(15,35,65,0.12), 0 4px 8px -4px rgba(15,35,65,0.06);
+  --c-border: #e4e8ee;
+  --shadow-sm: 0 1px 2px rgba(15,35,65,0.04);
+  --shadow-md: 0 4px 12px -2px rgba(15,35,65,0.06), 0 2px 6px -2px rgba(15,35,65,0.04);
+  --shadow-lg: 0 12px 28px -6px rgba(15,35,65,0.10), 0 4px 10px -4px rgba(15,35,65,0.04);
   --radius-sm: 6px;
-  --radius-md: 8px;
-  --radius-lg: 12px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
   --sidebar-w: 230px;
   --topbar-h: 56px;
 }
@@ -94,18 +94,18 @@ body {
 .sidebar-nav { flex: 1; overflow-y: auto; padding: 8px 0; }
 .nav-group-label {
   font-size: 11px; color: var(--c-sidebar-text-dim); font-weight: 600;
-  padding: 12px 20px 4px; text-transform: uppercase; letter-spacing: 0.5px;
+  padding: 14px 22px 4px; text-transform: uppercase; letter-spacing: 0.5px;
 }
 .nav-item {
   display: flex; align-items: center; gap: 10px;
-  padding: 9px 20px; cursor: pointer; color: var(--c-sidebar-text);
+  margin: 2px 10px; padding: 9px 14px; cursor: pointer; color: var(--c-sidebar-text);
   font-size: 13px; transition: all 0.15s; position: relative;
-  border-left: 3px solid transparent;
+  border-radius: 8px;
 }
-.nav-item:hover { background: rgba(255,255,255,0.06); color: #fff; }
+.nav-item:hover { background: rgba(255,255,255,0.08); color: #fff; }
 .nav-item.active {
-  background: var(--c-sidebar-active); color: #fff;
-  font-weight: 600; border-left-color: var(--c-accent);
+  background: linear-gradient(90deg, #2563eb, #3b82f6); color: #fff;
+  font-weight: 600; box-shadow: 0 4px 12px -2px rgba(37,99,235,0.45);
 }
 .nav-item .nav-icon { width: 18px; height: 18px; flex-shrink: 0; opacity: 0.8; }
 .nav-item .nav-badge {
@@ -116,24 +116,24 @@ body {
 .main-area { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
 .topbar {
   height: var(--topbar-h);
-  background: #fff;
-  border-bottom: 1px solid var(--c-border);
+  background: linear-gradient(90deg, #eff6ff 0%, #dbeafe 55%, #c7dbff 100%);
+  border-bottom: 1px solid #d3e3fb;
   display: flex; align-items: center;
   padding: 0 24px; gap: 16px; flex-shrink: 0;
 }
-.topbar-title { font-size: 16px; font-weight: 600; color: var(--c-gray-800); }
+.topbar-title { font-size: 16px; font-weight: 700; color: #1e3a8a; }
 .topbar-spacer { flex: 1; }
 
 /* 顶部全局搜索 */
 .topbar-search { position: relative; width: 320px; }
 .topbar-search .search-box {
   display: flex; align-items: center; gap: 8px;
-  background: var(--c-gray-50); border: 1px solid var(--c-gray-200);
+  background: rgba(255,255,255,0.85); border: 1px solid #c7d7f5;
   border-radius: var(--radius-md); padding: 6px 12px; transition: all 0.15s;
 }
 .topbar-search .search-box:focus-within {
   background: #fff; border-color: var(--c-primary);
-  box-shadow: 0 0 0 3px rgba(26,77,140,0.1);
+  box-shadow: 0 0 0 3px rgba(59,130,246,0.18);
 }
 .topbar-search input {
   border: none; outline: none; background: transparent;
@@ -182,7 +182,7 @@ body {
 .user-chip:hover { background: var(--c-gray-100); }
 .user-avatar {
   width: 32px; height: 32px; border-radius: 50%;
-  background: linear-gradient(135deg, var(--c-primary), var(--c-primary-dark));
+  background: linear-gradient(135deg, #3b82f6, #1e3a8a);
   display: flex; align-items: center; justify-content: center;
   color: #fff; font-size: 13px; font-weight: 600;
 }
@@ -230,6 +230,21 @@ body {
 }
 
 /* ========== Standard inline filter form ========== */
+.dash-hero {
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  background: linear-gradient(120deg, #1d4ed8 0%, #3b82f6 62%, #60a5fa 100%);
+  border-radius: var(--radius-lg); padding: 20px 26px; color: #fff; margin-bottom: 16px;
+  box-shadow: 0 10px 24px -8px rgba(29,78,216,0.4);
+}
+.dash-hero-title { font-size: 19px; font-weight: 700; }
+.dash-hero-sub { font-size: 13px; color: rgba(255,255,255,0.88); margin-top: 5px; }
+.dash-hero-btns { display: flex; gap: 10px; flex-shrink: 0; }
+.dash-hero-btns .btn {
+  background: rgba(255,255,255,0.16); border: 1px solid rgba(255,255,255,0.45);
+  color: #fff; border-radius: 10px; padding: 8px 18px; font-weight: 500;
+}
+.dash-hero-btns .btn:hover { background: rgba(255,255,255,0.28); color: #fff; border-color: #fff; }
+
 .filter-bar {
   display: flex; gap: 20px; align-items: center; flex-wrap: wrap;
   padding: 14px 16px; margin-bottom: 16px;
@@ -314,9 +329,11 @@ body {
 .page-desc { font-size: 13px; color: var(--c-gray-500); margin-top: 2px; }
 
 .card {
-  background: var(--c-card); border-radius: var(--radius-md);
+  background: var(--c-card); border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sm); border: 1px solid var(--c-border);
+  transition: box-shadow 0.2s;
 }
+.card:hover { box-shadow: var(--shadow-md); }
 .card-header {
   padding: 14px 20px; border-bottom: 1px solid var(--c-border);
   display: flex; align-items: center; justify-content: space-between;
@@ -330,27 +347,38 @@ body {
 .grid-4 { grid-template-columns: repeat(4, 1fr); }
 .grid-5 { grid-template-columns: repeat(5, 1fr); }
 
-/* KPI Cards */
+/* KPI Cards - modern dashboard style */
 .kpi-card {
-  background: #fff; border-radius: var(--radius-md);
+  background: #fff; border-radius: var(--radius-lg);
   padding: 18px 20px; box-shadow: var(--shadow-sm);
   border: 1px solid var(--c-border); position: relative; overflow: hidden;
+  display: flex; flex-direction: column; justify-content: space-between;
+  min-height: 116px; transition: all 0.2s;
 }
 .kpi-card::before {
-  content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px;
-  background: var(--c-primary);
+  content: ''; position: absolute; left: 0; top: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, var(--c-primary), var(--c-accent));
 }
-.kpi-card.success::before { background: var(--c-success); }
-.kpi-card.warning::before { background: var(--c-warning); }
-.kpi-card.danger::before { background: var(--c-danger); }
-.kpi-card.info::before { background: var(--c-info); }
-.kpi-label { font-size: 13px; color: var(--c-gray-500); margin-bottom: 8px; }
+.kpi-card.success::before { background: linear-gradient(90deg, var(--c-success), #34d399); }
+.kpi-card.warning::before { background: linear-gradient(90deg, var(--c-warning), #f59e0b); }
+.kpi-card.danger::before { background: linear-gradient(90deg, var(--c-danger), #f87171); }
+.kpi-card.info::before { background: linear-gradient(90deg, var(--c-info), #06b6d4); }
+.kpi-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+.kpi-top { display: flex; align-items: flex-start; justify-content: space-between; }
+.kpi-icon {
+  width: 38px; height: 38px; border-radius: 11px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center; color: #fff;
+}
+.kpi-label { font-size: 13px; color: var(--c-gray-500); }
 .kpi-value { font-size: 28px; font-weight: 700; color: var(--c-gray-800); line-height: 1.2; }
-.kpi-value .unit { font-size: 14px; font-weight: 400; color: var(--c-gray-400); margin-left: 4px; }
-.kpi-trend { font-size: 12px; margin-top: 6px; display: flex; align-items: center; gap: 4px; }
+.kpi-value .unit { font-size: 13px; font-weight: 400; color: var(--c-gray-400); margin-left: 4px; }
+.kpi-trend { font-size: 12px; margin-top: 10px; display: flex; align-items: center; gap: 4px; }
 .kpi-trend.up { color: var(--c-danger); }
 .kpi-trend.down { color: var(--c-success); }
 .kpi-trend.flat { color: var(--c-gray-400); }
+.kpi-spark {
+  margin-top: 8px; height: 30px; opacity: 0.7;
+}
 
 /* Tabs */
 .tabs {
@@ -375,7 +403,7 @@ table.data-table {
   width: 100%; border-collapse: collapse; font-size: 13px;
 }
 .data-table th {
-  background: var(--c-gray-50); color: var(--c-gray-600);
+  background: #eef4ff; color: #1e3a8a;
   font-weight: 600; text-align: left; padding: 10px 14px;
   border-bottom: 1px solid var(--c-border); white-space: nowrap;
   font-size: 12px; text-transform: uppercase; letter-spacing: 0.3px;
@@ -384,14 +412,23 @@ table.data-table {
   padding: 11px 14px; border-bottom: 1px solid var(--c-gray-100);
   color: var(--c-gray-700);
 }
-.data-table tbody tr:hover { background: var(--c-gray-50); }
+.data-table tbody tr:hover { background: #f4f8ff; }
 .data-table .col-num { font-variant-numeric: tabular-nums; text-align: right; }
-.data-table .col-mono { font-family: "SF Mono", "Fira Code", monospace; font-size: 12px; }
+/* 编号列：使用主字体 + 等宽数字，避免在 Linux/Windows 下 SF Mono 回退造成的字距过宽 */
+.data-table .col-mono {
+  font-family: inherit; font-size: 13px;
+  font-variant-numeric: tabular-nums; font-feature-settings: "tnum" 1;
+  letter-spacing: -0.2px; white-space: nowrap;
+}
+.data-table .col-actions { white-space: nowrap; width: 1%; }
+.data-table .col-attachment { white-space: nowrap; width: 1%; }
+.data-table .col-time { white-space: nowrap; color: var(--c-gray-500); font-size: 12px; }
 
 /* Badges */
 .badge {
   display: inline-flex; align-items: center; gap: 4px;
   padding: 2px 10px; border-radius: 12px; font-size: 12px; font-weight: 500;
+  white-space: nowrap; line-height: 1.5;
 }
 .badge-primary { background: var(--c-primary-light); color: var(--c-primary); }
 .badge-success { background: var(--c-success-light); color: var(--c-success); }
@@ -411,7 +448,7 @@ table.data-table {
 /* Buttons */
 .btn {
   display: inline-flex; align-items: center; gap: 6px;
-  padding: 7px 16px; border-radius: var(--radius-sm);
+  padding: 7px 16px; border-radius: var(--radius-md);
   font-size: 13px; font-weight: 500; cursor: pointer;
   border: 1px solid var(--c-border); background: #fff;
   color: var(--c-gray-700); transition: all 0.15s;
@@ -419,17 +456,88 @@ table.data-table {
 }
 .btn:hover { border-color: var(--c-primary); color: var(--c-primary); }
 .btn-primary {
-  background: var(--c-primary); border-color: var(--c-primary); color: #fff;
+  background: linear-gradient(90deg, var(--c-primary), var(--c-accent)); border-color: var(--c-primary); color: #fff;
+  box-shadow: 0 2px 8px -2px rgba(29,78,216,0.4);
 }
-.btn-primary:hover { background: var(--c-primary-hover); border-color: var(--c-primary-hover); color: #fff; }
+.btn-primary:hover { background: linear-gradient(90deg, var(--c-primary-hover), #60a5fa); border-color: var(--c-primary-hover); color: #fff; }
 .btn-success { background: var(--c-success); border-color: var(--c-success); color: #fff; }
 .btn-success:hover { opacity: 0.9; color: #fff; }
 .btn-danger { background: var(--c-danger); border-color: var(--c-danger); color: #fff; }
 .btn-danger:hover { opacity: 0.9; color: #fff; }
 .btn-ghost { border-color: transparent; background: transparent; }
 .btn-sm { padding: 4px 10px; font-size: 12px; }
+.btn-xs {
+  padding: 3px 10px; font-size: 12px; border-radius: 4px;
+  display: inline-flex; align-items: center; gap: 4px;
+  border: 1px solid var(--c-border); background: #fff; color: var(--c-gray-700);
+  cursor: pointer; transition: all 0.15s; font-family: inherit;
+}
+.btn-xs:hover { border-color: var(--c-primary); color: var(--c-primary); }
+.btn-xs.btn-primary {
+  background: var(--c-primary); border-color: var(--c-primary); color: #fff;
+}
+.btn-xs.btn-primary:hover { background: var(--c-primary-hover); border-color: var(--c-primary-hover); color: #fff; }
+.btn-xs.btn-danger {
+  background: #fff; border-color: var(--c-danger); color: var(--c-danger);
+}
+.btn-xs.btn-danger:hover { background: var(--c-danger); color: #fff; }
+.btn-xs + .btn-xs { margin-left: 6px; }
 .btn-lg { padding: 10px 24px; font-size: 14px; }
 .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* ========== Pagination ========== */
+.pagination-bar {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 12px 16px; margin-top: 0;
+  border-top: 1px solid var(--c-border); background: var(--c-gray-50);
+  border-bottom-left-radius: var(--radius-md); border-bottom-right-radius: var(--radius-md);
+}
+.pagination-info {
+  font-size: 13px; color: var(--c-gray-500);
+}
+.pagination-info b { color: var(--c-gray-800); font-weight: 600; }
+.pagination {
+  display: flex; align-items: center; gap: 4px;
+}
+.pagination .page-btn {
+  min-width: 30px; height: 30px; padding: 0 8px;
+  display: inline-flex; align-items: center; justify-content: center;
+  border: 1px solid var(--c-border); background: #fff; color: var(--c-gray-700);
+  border-radius: 4px; font-size: 12px; cursor: pointer; transition: all 0.15s;
+  font-family: inherit; user-select: none;
+}
+.pagination .page-btn:hover:not(:disabled):not(.active) {
+  border-color: var(--c-primary); color: var(--c-primary);
+}
+.pagination .page-btn.active {
+  background: var(--c-primary); border-color: var(--c-primary); color: #fff;
+  font-weight: 600;
+}
+.pagination .page-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.pagination .page-ellipsis {
+  min-width: 30px; text-align: center; color: var(--c-gray-400);
+}
+.pagination .page-jump {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 12px; color: var(--c-gray-500); margin-left: 8px;
+}
+.pagination .page-jump input {
+  width: 50px; height: 30px; padding: 0 8px;
+  border: 1px solid var(--c-border); border-radius: 4px;
+  font-size: 12px; text-align: center;
+  font-family: inherit;
+}
+.pagination .page-jump input:focus {
+  outline: none; border-color: var(--c-primary);
+}
+.pagination .page-size {
+  height: 30px; padding: 0 24px 0 10px; border: 1px solid var(--c-border);
+  border-radius: 4px; font-size: 12px; color: var(--c-gray-700);
+  background: #fff; cursor: pointer; font-family: inherit;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'><path fill='%2364748b' d='M5 7L1 3h8z'/></svg>");
+  background-repeat: no-repeat; background-position: right 8px center;
+  -webkit-appearance: none; appearance: none;
+}
 
 /* Forms */
 .form-group { margin-bottom: 16px; }
@@ -678,8 +786,8 @@ table.data-table {
 /* ========== 企业端小程序预览（手机壳） ========== */
 .mp-preview-wrap { display: flex; gap: 28px; align-items: flex-start; flex-wrap: wrap; }
 .mp-phone {
-  width: 300px; flex-shrink: 0; border-radius: 34px;
-  border: 7px solid var(--c-gray-800); background: #fff;
+  width: 300px; flex-shrink: 0; border-radius: 36px;
+  border: 7px solid var(--c-gray-800); background: #f5f7fa;
   box-shadow: var(--shadow-lg); overflow: hidden; position: relative;
 }
 .mp-phone::before {
@@ -693,62 +801,137 @@ table.data-table {
 }
 .mp-signal { font-size: 9px; letter-spacing: 1px; color: var(--c-gray-500); }
 .mp-header {
-  background: var(--c-primary); color: #fff; text-align: center;
-  font-size: 14px; font-weight: 600; padding: 9px 0; position: relative; z-index: 1;
+  background: #fff; color: var(--c-gray-800); text-align: center;
+  font-size: 15px; font-weight: 600; padding: 10px 0; position: relative; z-index: 1;
+  border-bottom: 1px solid var(--c-border);
 }
-.mp-body { height: 472px; overflow-y: auto; background: var(--c-gray-50); }
-.mp-panel { display: none; padding: 14px; }
+.mp-body { height: 472px; overflow-y: auto; background: #f5f7fa; }
+.mp-panel { display: none; padding: 0; }
 .mp-panel.show { display: block; }
-.mp-greet { font-size: 15px; font-weight: 700; color: var(--c-gray-800); }
-.mp-subgreet { font-size: 11px; color: var(--c-gray-500); margin: 3px 0 14px; }
-.mp-cell { margin-bottom: 12px; }
-.mp-label { font-size: 11px; color: var(--c-gray-500); margin-bottom: 5px; }
-.mp-select {
-  background: #fff; border: 1px solid var(--c-border); border-radius: 8px;
-  padding: 9px 12px; font-size: 12px; color: var(--c-gray-800);
-  display: flex; justify-content: space-between; align-items: center;
+
+/* 登录页 */
+.mp-login-head {
+  background: linear-gradient(180deg, #3b82f6 0%, #60a5fa 100%);
+  padding: 52px 24px 36px; text-align: center; color: #fff; position: relative;
 }
-.mp-caret { color: var(--c-gray-400); }
-.mp-row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.mp-login-head::after {
+  content: ''; position: absolute; left: 0; right: 0; bottom: -20px; height: 40px;
+  background: #f5f7fa; border-radius: 20px 20px 0 0;
+}
+.mp-login-logo {
+  width: 64px; height: 64px; background: rgba(255,255,255,0.2); border-radius: 18px;
+  display: flex; align-items: center; justify-content: center; margin: 0 auto 16px;
+  font-size: 28px; font-weight: 700; position: relative; z-index: 1;
+}
+.mp-login-title { font-size: 18px; font-weight: 700; letter-spacing: 1px; position: relative; z-index: 1; }
+.mp-login-sub { font-size: 12px; color: rgba(255,255,255,0.85); margin-top: 6px; position: relative; z-index: 1; }
+.mp-login-card {
+  background: #fff; border-radius: var(--radius-lg); margin: -10px 16px 16px;
+  padding: 22px 18px; box-shadow: var(--shadow-md); position: relative; z-index: 1;
+}
+.mp-form-cell { margin-bottom: 16px; }
+.mp-form-label { font-size: 13px; color: var(--c-gray-700); font-weight: 500; margin-bottom: 6px; }
+.mp-form-label .required { color: var(--c-danger); margin-right: 2px; }
 .mp-input {
-  width: 100%; border: 1px solid var(--c-border); border-radius: 8px;
-  padding: 9px 12px; font-size: 13px; background: #fff; outline: none;
+  width: 100%; border: 1px solid var(--c-border); border-radius: 10px;
+  padding: 10px 12px; font-size: 14px; background: #fff; outline: none;
 }
-.mp-input:focus { border-color: var(--c-primary); }
-.mp-tip { font-size: 10px; color: var(--c-gray-400); margin: 2px 0 14px; line-height: 1.5; }
+.mp-input:focus { border-color: var(--c-primary); box-shadow: 0 0 0 3px rgba(59,130,246,0.1); }
+.mp-input-row { display: flex; gap: 8px; }
+.mp-input-row .mp-input { flex: 1; }
+.mp-code-btn {
+  flex-shrink: 0; padding: 0 14px; border: 1px solid var(--c-primary); background: #fff;
+  color: var(--c-primary); border-radius: 10px; font-size: 12px; cursor: pointer; font-weight: 500;
+}
 .mp-submit {
-  width: 100%; background: var(--c-primary); color: #fff; border: none;
-  border-radius: 8px; padding: 11px 0; font-size: 14px; font-weight: 600;
-  cursor: pointer; margin-bottom: 8px;
+  width: 100%; background: linear-gradient(90deg, #3b82f6, #60a5fa); color: #fff; border: none;
+  border-radius: 12px; padding: 12px 0; font-size: 15px; font-weight: 600; cursor: pointer;
+  box-shadow: 0 4px 12px rgba(59,130,246,0.25);
 }
-.mp-submit:hover { background: var(--c-primary-hover); }
 .mp-ghost-btn {
   width: 100%; background: #fff; color: var(--c-primary); border: 1px solid var(--c-primary);
-  border-radius: 8px; padding: 10px 0; font-size: 13px; cursor: pointer;
+  border-radius: 12px; padding: 11px 0; font-size: 14px; cursor: pointer; font-weight: 500;
 }
-.mp-list-title { font-size: 12px; font-weight: 600; color: var(--c-gray-500); margin-bottom: 8px; }
-.mp-quote-item {
+.mp-wechat-btn {
+  width: 100%; background: #07c160; color: #fff; border: none;
+  border-radius: 12px; padding: 11px 0; font-size: 14px; cursor: pointer; font-weight: 600;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.mp-divider {
+  display: flex; align-items: center; gap: 12px; margin: 16px 0; color: var(--c-gray-400); font-size: 12px;
+}
+.mp-divider::before, .mp-divider::after { content: ''; flex: 1; height: 1px; background: var(--c-border); }
+.mp-agree { text-align: center; font-size: 11px; color: var(--c-gray-400); margin-top: 14px; }
+
+/* 页面通用 */
+.mp-top-card {
+  background: linear-gradient(135deg, #3b82f6, #60a5fa); border-radius: 0 0 20px 20px;
+  padding: 16px 16px 28px; color: #fff; position: relative; margin-bottom: -16px;
+}
+.mp-top-card .mp-greet { font-size: 16px; font-weight: 700; }
+.mp-top-card .mp-subgreet { font-size: 12px; color: rgba(255,255,255,0.85); margin-top: 4px; }
+.mp-page-body { padding: 0 14px 14px; }
+.mp-card {
+  background: #fff; border-radius: var(--radius-lg); padding: 16px;
+  box-shadow: var(--shadow-sm); margin-bottom: 12px;
+}
+.mp-card-title {
+  font-size: 14px; font-weight: 700; color: var(--c-gray-800); margin-bottom: 14px;
+  display: flex; align-items: center; gap: 6px;
+}
+.mp-card-title::before {
+  content: ''; width: 4px; height: 14px; background: var(--c-primary); border-radius: 2px;
+}
+.mp-form-row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.mp-select {
   background: #fff; border: 1px solid var(--c-border); border-radius: 10px;
-  padding: 12px; margin-bottom: 10px;
+  padding: 10px 12px; font-size: 14px; color: var(--c-gray-800);
+  display: flex; justify-content: space-between; align-items: center;
 }
-.mp-qhead { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
-.mp-qname { font-size: 13px; font-weight: 600; color: var(--c-gray-800); }
-.mp-qbody { font-size: 12px; color: var(--c-gray-700); }
-.mp-qtime { font-size: 10px; color: var(--c-gray-400); margin-top: 6px; }
-.mp-hist-link { font-size: 12px; color: var(--c-primary); cursor: pointer; padding: 10px 0; }
-.mp-msg-item { background: #fff; border: 1px solid var(--c-border); border-radius: 10px; padding: 12px; margin-bottom: 10px; }
-.mp-msg-title { font-size: 13px; font-weight: 600; color: var(--c-gray-800); }
-.mp-msg-desc { font-size: 11px; color: var(--c-gray-500); margin: 4px 0; line-height: 1.6; }
-.mp-msg-time { font-size: 10px; color: var(--c-gray-400); }
+.mp-tip {
+  font-size: 11px; color: var(--c-gray-400); margin: 2px 0 12px; line-height: 1.5;
+}
+.mp-status-ok {
+  margin: 10px 0; padding: 10px 12px; background: #f0fdf4; border-radius: 10px;
+  font-size: 12px; color: #16a34a; display: flex; align-items: center; gap: 6px;
+}
+.mp-status-warn {
+  margin: 10px 0; padding: 10px 12px; background: #fefce8; border-radius: 10px;
+  font-size: 12px; color: #ca8a04; display: flex; align-items: center; gap: 6px;
+}
+
+/* 列表项 */
+.mp-list-item {
+  background: #fff; border-radius: var(--radius-lg); padding: 14px; margin-bottom: 10px;
+  box-shadow: var(--shadow-sm); position: relative; overflow: hidden;
+}
+.mp-list-item::before {
+  content: ''; position: absolute; left: 0; top: 12px; bottom: 12px; width: 3px;
+  border-radius: 0 3px 3px 0;
+}
+.mp-list-item.blue::before { background: var(--c-primary); }
+.mp-list-item.orange::before { background: var(--c-warning); }
+.mp-list-item.green::before { background: var(--c-success); }
+.mp-list-item.red::before { background: var(--c-danger); }
+.mp-item-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+.mp-item-title { font-size: 14px; font-weight: 700; color: var(--c-gray-800); }
+.mp-item-body { font-size: 12px; color: var(--c-gray-600); line-height: 1.6; }
+.mp-item-time { font-size: 11px; color: var(--c-gray-400); margin-top: 6px; }
+.mp-item-price { font-size: 16px; font-weight: 700; color: var(--c-gray-800); }
+.mp-item-price .unit { font-size: 10px; font-weight: 400; color: var(--c-gray-400); margin-left: 2px; }
+
+/* Tabbar */
 .mp-tabbar {
-  display: flex; border-top: 1px solid var(--c-border); background: #fff;
+  display: flex; border-top: 1px solid var(--c-border); background: #fff; padding: 6px 0 8px;
 }
 .mp-tab {
-  flex: 1; text-align: center; padding: 8px 0 6px; font-size: 10px;
+  flex: 1; text-align: center; font-size: 11px;
   color: var(--c-gray-400); cursor: pointer; display: flex; flex-direction: column;
-  align-items: center; gap: 2px; transition: color 0.15s;
+  align-items: center; gap: 3px; transition: color 0.15s;
 }
 .mp-tab.active { color: var(--c-primary); font-weight: 600; }
+.mp-tab svg { width: 22px; height: 22px; }
+
 .mp-info-col { flex: 1; min-width: 320px; display: grid; gap: 16px; }
 .mp-info-col .badge { font-size: 10px; }
 
@@ -1120,7 +1303,7 @@ function svgLineChart(data, series, options = {}) {
   const pad = { top: 20, right: 20, bottom: 36, left: 56 };
   const cw = w - pad.left - pad.right;
   const ch = h - pad.top - pad.bottom;
-  const colors = options.colors || ['#1a4d8c', '#c0392b', '#1c8a4d', '#b96a08', '#0e7490'];
+  const colors = options.colors || ['#1d4ed8', '#c0392b', '#1c8a4d', '#b96a08', '#0e7490'];
 
   const allVals = series.flatMap(s => data.map(d => d[s.key]).filter(v => v != null));
   const maxVal = Math.max(...allVals) * 1.1;
@@ -1243,7 +1426,7 @@ function svgPieChart(data, options = {}) {
   const cy = h / 2 - 10;
   const r = options.radius || 90;
   const innerR = options.innerRadius || 0;
-  const colors = options.colors || ['#1a4d8c', '#c0392b', '#1c8a4d', '#b96a08', '#0e7490', '#8b5cf6'];
+  const colors = options.colors || ['#1d4ed8', '#c0392b', '#1c8a4d', '#b96a08', '#0e7490', '#8b5cf6'];
 
   const total = data.reduce((s, d) => s + d.value, 0);
   let cumAngle = -Math.PI / 2;
@@ -1302,7 +1485,7 @@ function svgPieChart(data, options = {}) {
   `;
 }
 
-function svgMiniLine(data, color = '#1a4d8c', options = {}) {
+function svgMiniLine(data, color = '#1d4ed8', options = {}) {
   const w = options.width || 120;
   const h = options.height || 40;
   const max = Math.max(...data);
@@ -1329,23 +1512,95 @@ function svgMiniLine(data, color = '#1a4d8c', options = {}) {
 // ========== Page Renderers ==========
 
 // 标准行内筛选表单（支持折叠：字段带 fold:true 时收进"更多"里）
-function filterBar(fields) {
+// listKey: 筛选域标识，筛选/重置按钮会绑定 App.applyFilter(listKey) / App.resetFilter(listKey)
+function filterBar(fields, listKey) {
+  const labelToKey = {
+    '企业名称': 'enterprise', '产品': 'product', '状态': 'status', '日期': 'date',
+    '采集员': 'collector', '流程类型': 'flowType', '企业分类': 'category',
+    '企业评级': 'rating', '当前状态': 'status', '绑定采集员': 'collector',
+    '所在省': 'province', '产品名称': 'name', '产品类型': 'category',
+    '中重稀土分类': 'rareClass', '产品状态': 'status', '客户名称': 'name',
+    '跟进阶段': 'stage', '菜单名称': 'name', '菜单状态': 'status',
+    '部门名称': 'name', '部门状态': 'status', '字典名称': 'name',
+    '字典类型': 'type', '用户账号': 'account', '用户状态': 'status',
+    '角色名称': 'name', '角色状态': 'status'
+  };
+  const injectFlt = (f) => {
+    const key = labelToKey[f.label];
+    if (!key || f.control.includes('data-flt=')) return f.control;
+    // 给第一个 select / input 标签注入 data-flt
+    return f.control.replace(/<(select|input)([^>]*)>/i, (m, tag, attrs) => {
+      return `<${tag}${attrs} data-flt="${key}">`;
+    });
+  };
   const foldFields = fields.filter(f => f.fold);
   const mainFields = fields.filter(f => !f.fold);
   const item = (f) => `
     <div class="filter-item">
       <label class="filter-label">${f.label}</label>
-      ${f.control}
+      ${injectFlt(f)}
     </div>
   `;
   return `
-    <div class="filter-bar">
+    <div class="filter-bar" data-filter-key="${listKey || ''}">
       ${mainFields.map(item).join('')}
       ${foldFields.length > 0 ? `<div class="filter-more">${foldFields.map(item).join('')}</div>` : ''}
       <div class="filter-actions">
         ${foldFields.length > 0 ? `<button class="btn btn-sm filter-toggle" onclick="App.toggleMoreFilter(this)">更多筛选</button>` : ''}
-        <button class="btn">重置</button>
-        <button class="btn btn-primary">筛选</button>
+        <button class="btn" onclick="App.resetFilter('${listKey}')">重置</button>
+        <button class="btn btn-primary" onclick="App.applyFilter('${listKey}')">筛选</button>
+      </div>
+    </div>
+  `;
+}
+
+// 读取当前筛选域下某字段的值（select/input 直接读 value；msel 组件读勾选值）
+function flt(listKey, field) {
+  const store = App.state.filters && App.state.filters[listKey];
+  if (!store) return '';
+  const v = store[field];
+  return v === undefined || v === null ? '' : v;
+}
+
+// 通用分页栏：total 总条数 / current 当前页 / size 每页条数 / listKey 分页域
+function renderPagination(total, current, size, listKey) {
+  const cur = current || 1;
+  const pageSize = size || 10;
+  const pages = Math.max(1, Math.ceil(total / pageSize));
+  const key = listKey || 'default';
+  const btn = (p, label, opts) => {
+    const o = opts || {};
+    return `<button class="page-btn${o.active ? ' active' : ''}" ${o.disabled ? 'disabled' : `onclick="App.goPage('${key}', ${p})"`}>${label}</button>`;
+  };
+  let items = '';
+  // 页码列表（最多展示 5 个，含省略号）
+  const pageList = [];
+  const start = Math.max(1, Math.min(cur - 2, pages - 4));
+  const end = Math.min(pages, start + 4);
+  for (let i = start; i <= end; i++) pageList.push(i);
+  if (start > 1) { pageList.unshift('...'); pageList.unshift(1); }
+  if (end < pages) { pageList.push('...'); pageList.push(pages); }
+  items = pageList.map(p => p === '...'
+    ? '<span class="page-ellipsis">…</span>'
+    : btn(p, p, { active: p === cur })
+  ).join('');
+  return `
+    <div class="pagination-bar" data-total="${total}" data-size="${pageSize}" data-key="${key}">
+      <div class="pagination-info">
+        共 <b>${total}</b> 条记录&nbsp;&nbsp;每页
+        <select class="page-size" onchange="App.changePageSize('${key}', this.value)">
+          <option value="10"${pageSize === 10 ? ' selected' : ''}>10 条</option>
+          <option value="20"${pageSize === 20 ? ' selected' : ''}>20 条</option>
+          <option value="50"${pageSize === 50 ? ' selected' : ''}>50 条</option>
+        </select>
+      </div>
+      <div class="pagination">
+        ${btn(1, '«', { disabled: cur <= 1 })}
+        ${btn(Math.max(1, cur - 1), '‹', { disabled: cur <= 1 })}
+        ${items}
+        ${btn(Math.min(pages, cur + 1), '›', { disabled: cur >= pages })}
+        ${btn(pages, '»', { disabled: cur >= pages })}
+        <span class="page-jump">跳至 <input type="number" min="1" max="${pages}" value="${cur}" onkeydown="if(event.key==='Enter')App.goPage('${key}', this.value)" /> 页</span>
       </div>
     </div>
   `;
@@ -1383,36 +1638,66 @@ function renderDashboard() {
   }
 
   return `
-    <div style="display:flex;justify-content:flex-end;margin-bottom:16px;">
-      <button class="btn" onclick="App.navigate('collection')">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
-        快捷填报
-      </button>
+    <div class="dash-hero">
+      <div>
+        <div class="dash-hero-title">${App.state.role === 'admin' ? '您好' : '早上好'}，${roleObj ? roleObj.user : '用户'}<span style="font-size:13px;font-weight:500;margin-left:10px;opacity:0.9;">${roleObj ? roleObj.name : ''}</span></div>
+        <div class="dash-hero-sub">${new Date().toLocaleDateString('zh-CN', { month: 'long', day: 'numeric', weekday: 'long' })} · 稀土价格数据采编发工作台 · ${pendingItems.length} 项待办待处理</div>
+      </div>
+      <div class="dash-hero-btns">
+        <button class="btn" onclick="App.navigate('collection')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+          快捷填报
+        </button>
+        <button class="btn" onclick="App.navigate('review')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+          去审核
+        </button>
+      </div>
     </div>
 
     <div class="grid grid-5 mb-16">
       <div class="kpi-card">
-        <div class="kpi-label">当日有效报价</div>
+        <div class="kpi-top">
+          <div class="kpi-label">当日有效报价</div><div class="kpi-icon" style="background:linear-gradient(135deg,#3b82f6,#1d4ed8);">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+          </div>
+        </div>
         <div class="kpi-value">${s.todayReports}<span class="unit">条</span></div>
         <div class="kpi-trend up">↑ 较昨日 +3条</div>
       </div>
       <div class="kpi-card warning">
-        <div class="kpi-label">当日异常报价</div>
+        <div class="kpi-top">
+          <div class="kpi-label">当日异常报价</div><div class="kpi-icon" style="background:linear-gradient(135deg,#f59e0b,#b96a08);">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>
+          </div>
+        </div>
         <div class="kpi-value">${s.todayAnomalies}<span class="unit">条</span></div>
         <div class="kpi-trend down">↓ 较昨日 -1条</div>
       </div>
       <div class="kpi-card success">
-        <div class="kpi-label">本周发布次数</div>
+        <div class="kpi-top">
+          <div class="kpi-label">本周发布次数</div><div class="kpi-icon" style="background:linear-gradient(135deg,#34d399,#1c8a4d);">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+          </div>
+        </div>
         <div class="kpi-value">${s.weekPublishes}<span class="unit">次</span></div>
         <div class="kpi-trend flat">— 本周已发布5次</div>
       </div>
       <div class="kpi-card info">
-        <div class="kpi-label">合作企业总数</div>
+        <div class="kpi-top">
+          <div class="kpi-label">合作企业总数</div><div class="kpi-icon" style="background:linear-gradient(135deg,#06b6d4,#0e7490);">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 7V3H2v18h20V7H12zM6 19H4v-2h2v2zm0-4H4v-2h2v2zm0-4H4V9h2v2zm0-4H4V5h2v2zm4 12H8v-2h2v2zm0-4H8v-2h2v2zm0-4H8V9h2v2zm0-4H8V5h2v2zm10 12h-8v-2h2v-2h-2v-2h2v-2h-2V9h8v10zm-2-8h-2v2h2v-2zm0 4h-2v2h2v-2z"/></svg>
+          </div>
+        </div>
         <div class="kpi-value">${s.totalEnterprises}<span class="unit">家</span></div>
         <div class="kpi-trend flat">— 核心企业5家</div>
       </div>
       <div class="kpi-card danger">
-        <div class="kpi-label">整体价格涨跌率</div>
+        <div class="kpi-top">
+          <div class="kpi-label">整体价格涨跌率</div><div class="kpi-icon" style="background:linear-gradient(135deg,#f87171,#c0392b);">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/></svg>
+          </div>
+        </div>
         <div class="kpi-value">${s.priceChangeRate}</div>
         <div class="kpi-trend up">氧化镨钕领涨</div>
       </div>
@@ -1532,7 +1817,7 @@ function renderCollection() {
 
 function renderCollectionEntry() {
   return `
-    <div class="grid" style="grid-template-columns:1fr 340px;gap:16px;">
+    <div class="grid" style="grid-template-columns:1fr;gap:16px;">
       <div class="card">
         <div class="card-header">
           <div class="card-title">价格填报</div>
@@ -1658,6 +1943,29 @@ function renderCollectionEntry() {
 }
 
 function renderCollectionRecords() {
+  // ===== 筛选逻辑 =====
+  const fv = App.state.filters.cr || {};
+  const statusMapAll = {
+    draft: ['草稿', 'badge-gray'], submitted: ['已提交', 'badge-primary'], reviewing: ['审核中', 'badge-info'],
+    warning: ['预警', 'badge-warning'], blocked: ['已拦截', 'badge-danger'], published: ['已发布', 'badge-success'],
+  };
+  let records = COLLECTION_RECORDS.slice();
+  const entSel = (fv.enterprise || []).filter(Boolean);
+  if (entSel.length) records = records.filter(r => entSel.includes(r.enterprise));
+  const prodSel = (fv.product || []).filter(Boolean);
+  if (prodSel.length) records = records.filter(r => prodSel.includes(r.product));
+  if (fv.status) records = records.filter(r => (statusMapAll[r.status] || [''])[0] === fv.status);
+  if (fv.date) records = records.filter(r => r.date === fv.date);
+  if (fv.collector) records = records.filter(r => r.collector === fv.collector);
+  App.state.filterCounts.cr = records.length;
+
+  // ===== 分页 =====
+  const pg = App.state.pages.cr = App.state.pages.cr || { current: 1, size: 10 };
+  const total = records.length;
+  const pages = Math.max(1, Math.ceil(total / pg.size));
+  if (pg.current > pages) pg.current = pages;
+  const pageRecords = records.slice((pg.current - 1) * pg.size, pg.current * pg.size);
+
   return `
     <div class="card">
       <div class="card-header">
@@ -1668,12 +1976,12 @@ function renderCollectionRecords() {
       </div>
       <div class="card-body" style="padding:16px;">
         ${filterBar([
-          { label: '企业名称', control: App.mselFilter('filterEnt', '企业', ENTERPRISES.map(e => e.name)) },
-          { label: '产品', control: App.mselFilter('filterProd', '产品', PRODUCTS.map(p => p.name)) },
-          { label: '状态', control: '<select class="form-select"><option value="">全部</option><option>草稿</option><option>已提交</option><option>审核中</option><option>预警</option><option>已拦截</option><option>已发布</option></select>' },
-          { label: '日期', control: '<input class="form-input" type="date" value="2026-08-18" />' },
-          { label: '采集员', control: '<select class="form-select"><option value="">全部</option><option>张明</option><option>李芳</option><option>王强</option></select>', fold: true },
-        ])}
+          { label: '企业名称', control: App.mselFilter('flt_cr_enterprise', '企业', ENTERPRISES.map(e => e.name)).replace('class="msel" id="flt_cr_enterprise"', 'class="msel" id="flt_cr_enterprise" data-flt="enterprise"') },
+          { label: '产品', control: App.mselFilter('flt_cr_product', '产品', PRODUCTS.map(p => p.name)).replace('class="msel" id="flt_cr_product"', 'class="msel" id="flt_cr_product" data-flt="product"') },
+          { label: '状态', control: '<select class="form-select" data-flt="status"><option value="">全部</option><option>草稿</option><option>已提交</option><option>审核中</option><option>预警</option><option>已拦截</option><option>已发布</option></select>' },
+          { label: '日期', control: '<input class="form-input" type="date" data-flt="date" />' },
+          { label: '采集员', control: '<select class="form-select" data-flt="collector"><option value="">全部</option><option>张明</option><option>李芳</option><option>王强</option></select>', fold: true },
+        ], 'cr')}
         <div class="table-wrap">
           <table class="data-table">
             <thead>
@@ -1689,20 +1997,12 @@ function renderCollectionRecords() {
                 <th>附件</th>
                 <th>提交时间</th>
                 <th>状态</th>
-                <th>操作</th>
+                <th class="col-actions">操作</th>
               </tr>
             </thead>
             <tbody>
-              ${COLLECTION_RECORDS.map(r => {
-                const statusMap = {
-                  draft: ['草稿', 'badge-gray'],
-                  submitted: ['已提交', 'badge-primary'],
-                  reviewing: ['审核中', 'badge-info'],
-                  warning: ['预警', 'badge-warning'],
-                  blocked: ['已拦截', 'badge-danger'],
-                  published: ['已发布', 'badge-success'],
-                };
-                const [stext, scls] = statusMap[r.status] || ['未知', 'badge-gray'];
+              ${pageRecords.map(r => {
+                const [stext, scls] = statusMapAll[r.status] || ['未知', 'badge-gray'];
                 const attName = r.attachment && r.attachment[0] ? r.attachment[0] : r.id + '_报价单.png';
                 return `
                 <tr>
@@ -1714,31 +2014,25 @@ function renderCollectionRecords() {
                   <td class="col-num font-bold">${r.highPrice.toFixed(2)}</td>
                   <td class="col-num">${r.lowPrice ? r.lowPrice.toFixed(2) : '—'}</td>
                   <td class="col-num ${r.deviation.startsWith('+') ? 'text-danger' : r.deviation.startsWith('-') ? 'text-success' : ''}">${r.deviation}</td>
-                  <td>
+                  <td class="col-attachment">
                     ${r.hasAttachment
-                      ? `<span class="file-link" onclick="App.previewAttachment('${attName}')">预览</span> · <span class="file-link" onclick="App.downloadAttachment('${attName}')">下载</span>`
+                      ? `<button class="btn-xs" onclick="App.previewAttachment('${attName}')">预览</button><button class="btn-xs" onclick="App.downloadAttachment('${attName}')">下载</button>`
                       : '<span class="text-danger">未上传</span>'}
                   </td>
-                  <td>${r.submitTime}</td>
+                  <td class="col-time">${r.submitTime}</td>
                   <td><span class="badge ${scls}">${stext}</span></td>
-                  <td>
-                    <button class="btn btn-sm btn-ghost" onclick="App.viewRecord('${r.id}')">详情</button>
-                    ${r.status === 'draft' ? `<button class="btn btn-sm btn-ghost text-primary" onclick="App.openRecordModal('${r.id}')">编辑</button>` : ''}
+                  <td class="col-actions">
+                    <button class="btn-xs" onclick="App.viewRecord('${r.id}')">详情</button>
+                    ${r.status === 'draft' ? `<button class="btn-xs btn-primary" onclick="App.openRecordModal('${r.id}')">编辑</button>` : ''}
                   </td>
                 </tr>
                 `;
               }).join('')}
+              ${pageRecords.length === 0 ? `<tr><td colspan="12" style="text-align:center;padding:32px 0;color:#97a3b5;">没有符合筛选条件的记录，请调整筛选条件或 <a href="javascript:void(0)" onclick="App.resetFilter('cr')" style="color:#1d4ed8;">重置筛选</a></td></tr>` : ''}
             </tbody>
           </table>
         </div>
-        <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0 0;">
-          <span style="font-size:12px;color:#64748b;">共 ${COLLECTION_RECORDS.length} 条记录</span>
-          <div style="display:flex;gap:4px;">
-            <button class="btn btn-sm" disabled>上一页</button>
-            <button class="btn btn-sm btn-primary">1</button>
-            <button class="btn btn-sm" onclick="App.nextPage()">下一页</button>
-          </div>
-        </div>
+        ${renderPagination(total, pg.current, pg.size, 'cr')}
       </div>
     </div>
   `;
@@ -1850,8 +2144,8 @@ function renderProcessingCalc() {
                       ${isWarn ? '<span class="badge badge-warning">⚠ 超提醒阈值</span>' : '<span class="badge badge-success">✓ 正常</span>'}
                     </td>
                     <td>
-                      <button class="btn btn-sm btn-ghost text-primary" onclick="App.openCorrectModal('${r.id}')">修正</button>
-                      <button class="btn btn-sm btn-ghost" onclick="App.viewRecord('${r.id}')">详情</button>
+                      <button class="btn-xs btn-primary" onclick="App.openCorrectModal('${r.id}')">修正</button>
+                      <button class="btn-xs" onclick="App.viewRecord('${r.id}')">详情</button>
                     </td>
                   </tr>
                   `;
@@ -1874,7 +2168,7 @@ function renderProcessingCalc() {
           </div>
           <div style="padding:12px;background:#f7f9fc;border-radius:6px;">
             <div style="font-size:12px;color:#64748b;">已勾选参与计算</div>
-            <div style="font-size:24px;font-weight:700;color:#1a4d8c;">${records.length}<span style="font-size:14px;color:#64748b;font-weight:400;"> 条</span></div>
+            <div style="font-size:24px;font-weight:700;color:#1d4ed8;">${records.length}<span style="font-size:14px;color:#64748b;font-weight:400;"> 条</span></div>
           </div>
         </div>
       </div>
@@ -2011,7 +2305,7 @@ function renderReviewPending() {
             <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-top:1px solid #dfe5ee;margin-top:8px;">
               <div>
                 <span style="font-size:12px;color:#64748b;">计算均价：</span>
-                <span style="font-size:20px;font-weight:700;color:#1a4d8c;">${r.avgPrice.toFixed(2)}</span>
+                <span style="font-size:20px;font-weight:700;color:#1d4ed8;">${r.avgPrice.toFixed(2)}</span>
                 <span style="font-size:12px;color:#97a3b5;">万元/吨</span>
               </div>
               <div style="display:flex;gap:6px;">
@@ -2049,10 +2343,10 @@ function renderReviewPending() {
                 <div style="font-size:11px;color:#97a3b5;">原${m.priceType}</div>
                 <div style="font-size:20px;font-weight:600;color:#97a3b5;text-decoration:line-through;">${m.original.toFixed(2)}</div>
               </div>
-              <svg width="26" height="26" viewBox="0 0 24 24" fill="#1a4d8c"><path d="M4 11h12.2l-4.6-4.6L13 5l7 7-7 7-1.4-1.4 4.6-4.6H4v-2z"/></svg>
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="#1d4ed8"><path d="M4 11h12.2l-4.6-4.6L13 5l7 7-7 7-1.4-1.4 4.6-4.6H4v-2z"/></svg>
               <div style="text-align:center;">
                 <div style="font-size:11px;color:#97a3b5;">修改后${m.priceType}</div>
-                <div style="font-size:20px;font-weight:700;color:#1a4d8c;">${m.modified.toFixed(2)}</div>
+                <div style="font-size:20px;font-weight:700;color:#1d4ed8;">${m.modified.toFixed(2)}</div>
               </div>
               <div style="font-size:11px;color:#97a3b5;">万元/吨</div>
             </div>
@@ -2095,13 +2389,21 @@ function renderReviewPending() {
 }
 
 function renderReviewHistory() {
+  const _pg_be = App.state.pages['be'] = App.state.pages['be'] || { current: 1, size: 10 };
+  const _src_be = REVIEW_RECORDS;
+  const _total_be = _src_be.length;
+  const _rows_be = _src_be.slice((_pg_be.current - 1) * _pg_be.size, _pg_be.current * _pg_be.size);
+  const _pg_pm = App.state.pages['pm'] = App.state.pages['pm'] || { current: 1, size: 10 };
+  const _src_pm = PRICE_MODIFY_REVIEWS;
+  const _total_pm = _src_pm.length;
+  const _rows_pm = _src_pm.slice((_pg_pm.current - 1) * _pg_pm.size, _pg_pm.current * _pg_pm.size);
   return `
     ${filterBar([
       { label: '流程类型', control: '<select class="form-select"><option value="">全部</option><option>发布审核</option><option>报价修改审核</option></select>' },
       { label: '产品', control: '<select class="form-select"><option value="">全部</option>' + PRODUCTS.map(p => '<option>' + p.name + '</option>').join('') + '</select>' },
       { label: '状态', control: '<select class="form-select"><option value="">全部</option><option>审核中</option><option>已通过</option><option>已驳回</option></select>' },
       { label: '日期', control: '<input class="form-input" type="date" value="2026-08-18" />' },
-    ])}
+    ], 'be')}
     <div class="card mb-16">
       <div class="card-header">
         <div class="card-title">发布审核记录<span style="font-size:12px;color:#97a3b5;font-weight:400;margin-left:8px;">流程2 · 统计人员提交 → 董事长终审</span></div>
@@ -2124,7 +2426,7 @@ function renderReviewHistory() {
               </tr>
             </thead>
             <tbody>
-              ${REVIEW_RECORDS.map(r => {
+              ${_rows_be.map(r => {
                 const statusMap = {
                   pending_chairman: ['待终审', 'badge-warning'],
                   published: ['已发布', 'badge-success'],
@@ -2142,12 +2444,16 @@ function renderReviewHistory() {
                   <td>${s[0].status === 'done' ? '<span class="text-success">✓ ' + s[0].time + '</span>' : '<span class="text-gray">—</span>'}</td>
                   <td>${s[1].status === 'done' ? '<span class="text-success">✓ ' + s[1].time + '</span>' : s[1].status === 'rejected' ? '<span class="text-danger">✗ 驳回</span>' : '<span class="text-warning">待终审</span>'}</td>
                   <td><span class="badge ${scls}">${stext}</span></td>
-                  <td><button class="btn btn-sm btn-ghost" onclick="App.viewReviewDetail('${r.id}')">详情</button></td>
+                  <td><button class="btn-xs" onclick="App.viewReviewDetail('${r.id}')">详情</button></td>
                 </tr>
                 `;
               }).join('')}
             </tbody>
           </table>
+          ${renderPagination(_total_pm, _pg_pm.current, _pg_pm.size, 'pm')}
+
+          ${renderPagination(_total_be, _pg_be.current, _pg_be.size, 'be')}
+
         </div>
       </div>
     </div>
@@ -2174,7 +2480,7 @@ function renderReviewHistory() {
               </tr>
             </thead>
             <tbody>
-              ${PRICE_MODIFY_REVIEWS.map(m => {
+              ${_rows_pm.map(m => {
                 const statusMap = {
                   pending: ['待审批', 'badge-primary'],
                   approved: ['已通过', 'badge-success'],
@@ -2195,8 +2501,8 @@ function renderReviewHistory() {
                   <td>${m.approver ? m.approver + '<br/><span style="font-size:11px;color:#97a3b5;">' + m.approveTime + '</span>' : '<span class="text-gray">—</span>'}</td>
                   <td>
                     ${m.status === 'pending'
-                      ? '<button class="btn btn-sm btn-ghost text-primary" onclick="App.openModifyModal(\'' + m.id + '\', \'approve\')">审批</button>'
-                      : '<button class="btn btn-sm btn-ghost" onclick="App.viewModifyDetail(\'' + m.id + '\')">详情</button>'}
+                      ? '<button class="btn-xs btn-primary" onclick="App.openModifyModal(\'' + m.id + '\', \'approve\')">审批</button>'
+                      : '<button class="btn-xs" onclick="App.viewModifyDetail(\'' + m.id + '\')">详情</button>'}
                   </td>
                 </tr>
                 `;
@@ -2255,7 +2561,7 @@ function renderReviewAnomaly() {
                   <td style="max-width:240px;">${a.description}</td>
                   <td>${a.time}</td>
                   <td>${a.status === '待处理' ? '<span class="badge badge-danger">待处理</span>' : '<span class="badge badge-success">' + a.status + '</span>'}</td>
-                  <td><button class="btn btn-sm btn-ghost text-primary" onclick="App.openAnomalyModal('${a.id}')">核查</button></td>
+                  <td><button class="btn-xs btn-primary" onclick="App.openAnomalyModal('${a.id}')">核查</button></td>
                 </tr>
               `).join('')}
             </tbody>
@@ -2333,7 +2639,7 @@ function renderPublishManage() {
             </div>
           `).join('')}
           <div style="margin-top:14px;padding:12px;background:#eaf1fa;border-radius:8px;font-size:12px;line-height:1.8;color:#334155;">
-            <div style="font-weight:600;color:#1a4d8c;margin-bottom:4px;">发布方式说明</div>
+            <div style="font-weight:600;color:#1d4ed8;margin-bottom:4px;">发布方式说明</div>
             <div>· 每日报价表：手动发布至微信公众号，系统内不做推送</div>
             <div>· 基期指数：推送至新华社</div>
             <div>· 预期指数：具体发布渠道尚未确定，参数预留可配置</div>
@@ -2371,7 +2677,7 @@ function renderPublishConfig() {
                   <td style="max-width:320px;"><textarea class="form-input" style="height:56px;resize:none;font-size:12px;" onchange="App.toast('模板内容已修改，保存后生效', 'info')">${t.content}</textarea></td>
                   <td>${t.updated}</td>
                   <td>${t.status === '启用' ? '<span class="badge badge-success">启用</span>' : '<span class="badge badge-gray">停用</span>'}</td>
-                  <td><button class="btn btn-sm btn-ghost text-primary" onclick="App.toast('${t.name} 已保存', 'success')">保存</button></td>
+                  <td><button class="btn-xs btn-primary" onclick="App.toast('${t.name} 已保存', 'success')">保存</button></td>
                 </tr>
               `).join('')}
             </tbody>
@@ -2468,7 +2774,7 @@ function renderPublishConfig() {
                   <td><input class="form-input" value="${md.endpoint}" readonly style="font-family:monospace;font-size:11px;width:260px;" /></td>
                   <td class="col-num"><input class="form-input" style="width:80px;text-align:right;padding:4px 8px;" value="${md.maxTokens}" /></td>
                   <td class="col-num"><input class="form-input" style="width:70px;text-align:right;padding:4px 8px;" value="${md.temperature}" /></td>
-                  <td><button class="btn btn-sm btn-ghost text-primary" onclick="App.toast('模型参数已保存', 'success')">保存</button></td>
+                  <td><button class="btn-xs btn-primary" onclick="App.toast('模型参数已保存', 'success')">保存</button></td>
                 </tr>
               `).join('')}
             </tbody>
@@ -2504,8 +2810,8 @@ function renderPublishHistory() {
                   <td>${r.publishTime}</td>
                   <td>${r.status === 'published' ? '<span class="badge badge-success">已发布</span>' : '<span class="badge badge-warning">待发布</span>'}</td>
                   <td>
-                    <button class="btn btn-sm btn-ghost" onclick="App.openPublishDetailModal('${r.id}')">查看</button>
-                    ${r.status === 'published' ? `<button class="btn btn-sm btn-ghost" onclick="App.rollbackPublish('${r.id}')">回溯</button>` : ''}
+                    <button class="btn-xs" onclick="App.openPublishDetailModal('${r.id}')">查看</button>
+                    ${r.status === 'published' ? `<button class="btn-xs" onclick="App.rollbackPublish('${r.id}')">回溯</button>` : ''}
                   </td>
                 </tr>
               `).join('')}
@@ -2635,7 +2941,7 @@ function renderReportsEnterprise() {
       <div class="card-header"><div class="card-title">省份分布</div></div>
       <div class="card-body">
         ${svgPieChart([
-          { label: '内蒙古', value: 5, color: '#1a4d8c' },
+          { label: '内蒙古', value: 5, color: '#1d4ed8' },
           { label: '江西', value: 1, color: '#c0392b' },
           { label: '四川', value: 1, color: '#1c8a4d' },
           { label: '湖南', value: 1, color: '#b96a08' },
@@ -2664,6 +2970,10 @@ function renderBaseData() {
 }
 
 function renderBaseDataEnterprise() {
+  const _pg_bp = App.state.pages['bp'] = App.state.pages['bp'] || { current: 1, size: 10 };
+  const _src_bp = ENTERPRISES;
+  const _total_bp = _src_bp.length;
+  const _rows_bp = _src_bp.slice((_pg_bp.current - 1) * _pg_bp.size, _pg_bp.current * _pg_bp.size);
   return `
     <div class="card">
       <div class="card-header">
@@ -2682,14 +2992,14 @@ function renderBaseDataEnterprise() {
           { label: '当前状态', control: '<select class="form-select"><option value="">全部</option><option>合作中</option><option>已停用</option><option>待审核</option></select>' },
           { label: '绑定采集员', control: '<select class="form-select"><option value="">全部</option><option>张明</option><option>李芳</option><option>王强</option></select>', fold: true },
           { label: '所在省', control: '<select class="form-select"><option value="">全部</option><option>内蒙古</option><option>江西</option><option>四川</option><option>湖南</option><option>江苏</option><option>浙江</option></select>', fold: true },
-        ])}
+        ], 'bp')}
         <div class="table-wrap">
           <table class="data-table">
             <thead>
               <tr><th>企业名称</th><th>企业分类</th><th>企业评级</th><th>所在省</th><th>价格采集对接人</th><th>业务对接人</th><th>联系电话</th><th>绑定采集员</th><th>当前状态</th><th>操作</th></tr>
             </thead>
             <tbody>
-              ${ENTERPRISES.map(e => {
+              ${_rows_bp.map(e => {
                 const linked = ENTERPRISE_PRODUCTS[e.id] || [];
                 const statusCls = e.status === '合作中' ? 'badge-success' : e.status === '已停用' ? 'badge-danger' : 'badge-warning';
                 return `
@@ -2704,14 +3014,16 @@ function renderBaseDataEnterprise() {
                   <td>${e.collector}</td>
                   <td><span class="badge ${statusCls}">${e.status}</span></td>
                   <td>
-                    <button class="btn btn-sm btn-ghost text-primary" onclick="App.openEnterpriseModal('${e.id}')">编辑</button>
-                    <button class="btn btn-sm btn-ghost" onclick="App.openEnterpriseProductModal('${e.id}')">产品关联 <span class="badge badge-gray" style="font-size:9px;margin-left:2px;">${linked.length}</span></button>
+                    <button class="btn-xs btn-primary" onclick="App.openEnterpriseModal('${e.id}')">编辑</button>
+                    <button class="btn-xs" onclick="App.openEnterpriseProductModal('${e.id}')">产品关联 <span class="badge badge-gray" style="font-size:9px;margin-left:2px;">${linked.length}</span></button>
                   </td>
                 </tr>
                 `;
               }).join('')}
             </tbody>
           </table>
+          ${renderPagination(_total_bp, _pg_bp.current, _pg_bp.size, 'bp')}
+
         </div>
       </div>
     </div>
@@ -2719,6 +3031,10 @@ function renderBaseDataEnterprise() {
 }
 
 function renderBaseDataProduct() {
+  const _pg_bc = App.state.pages['bc'] = App.state.pages['bc'] || { current: 1, size: 10 };
+  const _src_bc = PRODUCTS;
+  const _total_bc = _src_bc.length;
+  const _rows_bc = _src_bc.slice((_pg_bc.current - 1) * _pg_bc.size, _pg_bc.current * _pg_bc.size);
   return `
     <div class="card">
       <div class="card-header">
@@ -2731,14 +3047,14 @@ function renderBaseDataProduct() {
           { label: '产品类型', control: '<select class="form-select"><option value="">全部</option><option>氧化物</option><option>金属</option><option>合金</option><option>盐类</option><option>抛光粉</option><option>其他</option></select>' },
           { label: '中重稀土分类', control: '<select class="form-select"><option value="">全部</option><option>轻稀土</option><option>中稀土</option><option>重稀土</option><option>无分类</option></select>', fold: true },
           { label: '产品状态', control: '<select class="form-select"><option value="">全部</option><option>启用</option><option>停用</option></select>', fold: true },
-        ])}
+        ], 'bc')}
         <div class="table-wrap">
           <table class="data-table">
             <thead>
               <tr><th>产品编码</th><th>产品名称</th><th>产品类型</th><th>中重稀土分类</th><th>产品规格</th><th class="col-num">报价提醒阈值</th><th class="col-num">报价限制阈值</th><th class="col-num">计算阈值</th><th>产品状态</th><th>操作</th></tr>
             </thead>
             <tbody>
-              ${PRODUCTS.map(p => `
+              ${_rows_bc.map(p => `
                 <tr>
                   <td class="col-mono">${p.id}</td>
                   <td class="font-bold">${p.name}</td>
@@ -2765,14 +3081,16 @@ function renderBaseDataProduct() {
                   </td>
                   <td><span class="badge badge-success">启用</span></td>
                   <td>
-                    <button class="btn btn-sm btn-ghost text-primary" onclick="App.openProductModal('${p.id}')">编辑</button>
-                    <button class="btn btn-sm btn-ghost" onclick="App.toast('产品已停用', 'warning')">停用</button>
+                    <button class="btn-xs btn-primary" onclick="App.openProductModal('${p.id}')">编辑</button>
+                    <button class="btn-xs" onclick="App.toast('产品已停用', 'warning')">停用</button>
                   </td>
                 </tr>
                 `
               ).join('')}
             </tbody>
           </table>
+          ${renderPagination(_total_bc, _pg_bc.current, _pg_bc.size, 'bc')}
+
         </div>
       </div>
     </div>
@@ -2780,6 +3098,10 @@ function renderBaseDataProduct() {
 }
 
 function renderBaseDataCustomer() {
+  const _pg_cu = App.state.pages['cu'] = App.state.pages['cu'] || { current: 1, size: 10 };
+  const _src_cu = POTENTIAL_CUSTOMERS;
+  const _total_cu = _src_cu.length;
+  const _rows_cu = _src_cu.slice((_pg_cu.current - 1) * _pg_cu.size, _pg_cu.current * _pg_cu.size);
   return `
     <div class="card">
       <div class="card-header">
@@ -2797,7 +3119,7 @@ function renderBaseDataCustomer() {
               <tr><th>客户名称</th><th>所在区域</th><th>联系人</th><th>电话</th><th>跟进阶段</th><th>下次跟进</th><th>备注</th><th>操作</th></tr>
             </thead>
             <tbody>
-              ${POTENTIAL_CUSTOMERS.map(c => {
+              ${_rows_cu.map(c => {
                 const stageMap = {
                   '初步接洽': 'badge-gray',
                   '方案沟通': 'badge-info',
@@ -2813,14 +3135,16 @@ function renderBaseDataCustomer() {
                   <td>${c.followUp}</td>
                   <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${c.note}</td>
                   <td>
-                    <button class="btn btn-sm btn-ghost text-primary" onclick="App.openCustomerModal('${c.id}')">编辑</button>
-                    <button class="btn btn-sm btn-ghost text-primary">跟进</button>
+                    <button class="btn-xs btn-primary" onclick="App.openCustomerModal('${c.id}')">编辑</button>
+                    <button class="btn-xs btn-primary">跟进</button>
                   </td>
                 </tr>
                 `;
               }).join('')}
             </tbody>
           </table>
+          ${renderPagination(_total_cu, _pg_cu.current, _pg_cu.size, 'cu')}
+
         </div>
       </div>
     </div>
@@ -2907,6 +3231,10 @@ function renderSystem() {
 }
 
 function renderSystemMenu() {
+  const _pg_bm = App.state.pages['bm'] = App.state.pages['bm'] || { current: 1, size: 10 };
+  const _src_bm = MENU_LIST;
+  const _total_bm = _src_bm.length;
+  const _rows_bm = _src_bm.slice((_pg_bm.current - 1) * _pg_bm.size, _pg_bm.current * _pg_bm.size);
   return `
     <div class="card">
       <div class="card-header">
@@ -2922,14 +3250,14 @@ function renderSystemMenu() {
           { label: '菜单名称', control: '<input class="form-input" placeholder="菜单名称关键词" />' },
           { label: '所属分组', control: '<select class="form-select"><option value="">全部</option><option>概览</option><option>业务</option><option>分析</option><option>管理</option></select>' },
           { label: '状态', control: '<select class="form-select"><option value="">全部</option><option>启用</option><option>停用</option></select>', fold: true },
-        ])}
+        ], 'bm')}
         <div class="table-wrap">
           <table class="data-table">
             <thead>
               <tr><th>菜单名称</th><th>所属分组</th><th>类型</th><th>上级菜单</th><th>图标</th><th class="col-num">排序</th><th>状态</th><th>操作</th></tr>
             </thead>
             <tbody>
-              ${MENU_LIST.map(m => `
+              ${_rows_bm.map(m => `
                 <tr>
                   <td class="font-bold">${m.parent === '-' ? m.label : '&nbsp;&nbsp;└ ' + m.label}</td>
                   <td><span class="badge badge-gray">${m.group}</span></td>
@@ -2939,14 +3267,16 @@ function renderSystemMenu() {
                   <td class="col-num">${m.sort}</td>
                   <td><span class="badge badge-success">${m.status}</span></td>
                   <td>
-                    <button class="btn btn-sm btn-ghost text-primary" onclick="App.openMenuModal('${m.id}')">编辑</button>
-                    <button class="btn btn-sm btn-ghost" onclick="App.toast('菜单已隐藏', 'warning')">停用</button>
-                    <button class="btn btn-sm btn-ghost text-danger" onclick="App.toast('菜单已删除', 'success')">删除</button>
+                    <button class="btn-xs btn-primary" onclick="App.openMenuModal('${m.id}')">编辑</button>
+                    <button class="btn-xs" onclick="App.toast('菜单已隐藏', 'warning')">停用</button>
+                    <button class="btn-xs btn-danger" onclick="App.toast('菜单已删除', 'success')">删除</button>
                   </td>
                 </tr>
               `).join('')}
             </tbody>
           </table>
+          ${renderPagination(_total_bm, _pg_bm.current, _pg_bm.size, 'bm')}
+
         </div>
       </div>
     </div>
@@ -2956,6 +3286,10 @@ function renderSystemMenu() {
 function renderSystemDept() {
   const root = DEPARTMENTS.find(d => d.parent === '-');
   const children = DEPARTMENTS.filter(d => d.parent !== '-');
+  const _pg_bd = App.state.pages['bd'] = App.state.pages['bd'] || { current: 1, size: 10 };
+  const _src_bd = DEPARTMENTS.filter(d => !App.state.deptQuery || d.name.toLowerCase().includes(App.state.deptQuery.toLowerCase()));
+  const _total_bd = _src_bd.length;
+  const _rows_bd = _src_bd.slice((_pg_bd.current - 1) * _pg_bd.size, _pg_bd.current * _pg_bd.size);
   return `
     <div class="grid" style="grid-template-columns:1fr 2fr;gap:16px;">
       <div class="card">
@@ -2988,14 +3322,14 @@ function renderSystemDept() {
             { label: '部门名称', control: '<input class="form-input" placeholder="部门名称关键词" oninput="App.filterDept(this.value)" value="${App.state.deptQuery}" />' },
             { label: '类型', control: '<select class="form-select"><option value="">全部</option><option>公司</option><option>中心</option><option>部门</option><option>小组</option></select>' },
             { label: '状态', control: '<select class="form-select"><option value="">全部</option><option>启用</option><option>停用</option></select>', fold: true },
-          ])}
+          ], 'bd')}
           <div class="table-wrap">
             <table class="data-table">
               <thead>
                 <tr><th>部门名称</th><th>类型</th><th>上级组织</th><th>负责人</th><th class="col-num">成员数</th><th>状态</th><th>操作</th></tr>
               </thead>
               <tbody>
-                ${DEPARTMENTS.filter(d => !App.state.deptQuery || d.name.toLowerCase().includes(App.state.deptQuery.toLowerCase())).map(d => `
+                ${_rows_bd.map(d => `
                   <tr>
                     <td class="font-bold">${d.name}</td>
                     <td><span class="badge badge-gray">${d.type}</span></td>
@@ -3004,13 +3338,15 @@ function renderSystemDept() {
                     <td class="col-num">${d.memberCount}</td>
                     <td>${d.status === '启用' ? '<span class="badge badge-success">启用</span>' : '<span class="badge badge-danger">停用</span>'}</td>
                     <td>
-                      <button class="btn btn-sm btn-ghost text-primary" onclick="App.openDeptModal('${d.id}')">编辑</button>
-                      <button class="btn btn-sm btn-ghost" onclick="App.toast('部门已删除，成员自动移出', 'success')">删除</button>
+                      <button class="btn-xs btn-primary" onclick="App.openDeptModal('${d.id}')">编辑</button>
+                      <button class="btn-xs" onclick="App.toast('部门已删除，成员自动移出', 'success')">删除</button>
                     </td>
                   </tr>
                 `).join('')}
               </tbody>
             </table>
+          ${renderPagination(_total_bd, _pg_bd.current, _pg_bd.size, 'bd')}
+
           </div>
         </div>
       </div>
@@ -3019,6 +3355,10 @@ function renderSystemDept() {
 }
 
 function renderSystemDict() {
+  const _pg_bdict = App.state.pages['bdict'] = App.state.pages['bdict'] || { current: 1, size: 10 };
+  const _src_bdict = DICT_ITEMS;
+  const _total_bdict = _src_bdict.length;
+  const _rows_bdict = _src_bdict.slice((_pg_bdict.current - 1) * _pg_bdict.size, _pg_bdict.current * _pg_bdict.size);
   return `
     <div class="card">
       <div class="card-header">
@@ -3033,14 +3373,14 @@ function renderSystemDict() {
         ${filterBar([
           { label: '字典名称', control: '<input class="form-input" placeholder="字典名称关键词" />' },
           { label: '状态', control: '<select class="form-select"><option value="">全部</option><option>启用</option><option>停用</option></select>' },
-        ])}
+        ], 'bdict')}
         <div class="table-wrap">
           <table class="data-table">
             <thead>
               <tr><th>字典编号</th><th>字典名称</th><th>字典标识</th><th>字典项</th><th>备注</th><th>状态</th><th>操作</th></tr>
             </thead>
             <tbody>
-              ${DICT_ITEMS.map(d => `
+              ${_rows_bdict.map(d => `
                 <tr>
                   <td class="col-mono">${d.id}</td>
                   <td class="font-bold">${d.name}</td>
@@ -3049,13 +3389,15 @@ function renderSystemDict() {
                   <td style="max-width:200px;color:#64748b;">${d.remark}</td>
                   <td><span class="badge badge-success">${d.status}</span></td>
                   <td>
-                    <button class="btn btn-sm btn-ghost text-primary" onclick="App.openDictModal('${d.id}')">编辑</button>
-                    <button class="btn btn-sm btn-ghost text-danger" onclick="App.toast('字典已删除', 'success')">删除</button>
+                    <button class="btn-xs btn-primary" onclick="App.openDictModal('${d.id}')">编辑</button>
+                    <button class="btn-xs btn-danger" onclick="App.toast('字典已删除', 'success')">删除</button>
                   </td>
                 </tr>
               `).join('')}
             </tbody>
           </table>
+          ${renderPagination(_total_bdict, _pg_bdict.current, _pg_bdict.size, 'bdict')}
+
         </div>
       </div>
     </div>
@@ -3063,6 +3405,10 @@ function renderSystemDict() {
 }
 
 function renderSystemUser() {
+  const _pg_bu = App.state.pages['bu'] = App.state.pages['bu'] || { current: 1, size: 10 };
+  const _src_bu = SYSTEM_USERS;
+  const _total_bu = _src_bu.length;
+  const _rows_bu = _src_bu.slice((_pg_bu.current - 1) * _pg_bu.size, _pg_bu.current * _pg_bu.size);
   return `
     <div class="card">
       <div class="card-header">
@@ -3079,14 +3425,14 @@ function renderSystemUser() {
           { label: '所属角色', control: '<select class="form-select"><option value="">全部</option>' + ROLES.map(r => '<option>' + r.name + '</option>').join('') + '</select>' },
           { label: '所属部门', control: '<select class="form-select"><option value="">全部</option>' + DEPARTMENTS.filter(d => d.status === '启用').map(d => '<option>' + d.name + '</option>').join('') + '</select>' },
           { label: '状态', control: '<select class="form-select"><option value="">全部</option><option>启用</option><option>禁用</option></select>', fold: true },
-        ])}
+        ], 'bu')}
         <div class="table-wrap">
           <table class="data-table">
             <thead>
               <tr><th>工号</th><th>姓名</th><th>角色</th><th>所属部门（组织架构）</th><th>联系电话</th><th>状态</th><th>最近登录</th><th>操作</th></tr>
             </thead>
             <tbody>
-              ${SYSTEM_USERS.map(u => {
+              ${_rows_bu.map(u => {
                 const dept = DEPARTMENTS.find(d => d.id === u.deptId);
                 return `
                 <tr>
@@ -3109,15 +3455,17 @@ function renderSystemUser() {
                   <td>${u.status === '启用' ? '<span class="badge badge-success">启用</span>' : '<span class="badge badge-danger">禁用</span>'}</td>
                   <td>${u.lastLogin}</td>
                   <td>
-                    <button class="btn btn-sm btn-ghost text-primary" onclick="App.openUserModal('${u.id}')">编辑</button>
-                    <button class="btn btn-sm btn-ghost" onclick="App.toast('重置密码链接已发送至管理员邮箱', 'info')">重置密码</button>
-                    <button class="btn btn-sm btn-ghost text-danger" onclick="App.deleteUser('${u.id}')">删除</button>
+                    <button class="btn-xs btn-primary" onclick="App.openUserModal('${u.id}')">编辑</button>
+                    <button class="btn-xs" onclick="App.toast('重置密码链接已发送至管理员邮箱', 'info')">重置密码</button>
+                    <button class="btn-xs btn-danger" onclick="App.deleteUser('${u.id}')">删除</button>
                   </td>
                 </tr>
                 `;
               }).join('')}
             </tbody>
           </table>
+          ${renderPagination(_total_bu, _pg_bu.current, _pg_bu.size, 'bu')}
+
         </div>
       </div>
     </div>
@@ -3125,6 +3473,10 @@ function renderSystemUser() {
 }
 
 function renderSystemRole() {
+  const _pg_br = App.state.pages['br'] = App.state.pages['br'] || { current: 1, size: 10 };
+  const _src_br = ROLES.filter(r => !App.state.roleQuery || r.name.toLowerCase().includes(App.state.roleQuery.toLowerCase()) || r.id.toLowerCase().includes(App.state.roleQuery.toLowerCase()));
+  const _total_br = _src_br.length;
+  const _rows_br = _src_br.slice((_pg_br.current - 1) * _pg_br.size, _pg_br.current * _pg_br.size);
   return `
     <div class="card">
       <div class="card-header">
@@ -3140,14 +3492,14 @@ function renderSystemRole() {
           { label: '角色名称', control: '<input class="form-input" placeholder="角色名称关键词" oninput="App.filterRole(this.value)" value="${App.state.roleQuery}" />' },
           { label: '角色编码', control: '<input class="form-input" placeholder="角色编码" />' },
           { label: '状态', control: '<select class="form-select"><option value="">全部</option><option>启用</option><option>停用</option></select>', fold: true },
-        ])}
+        ], 'br')}
         <div class="table-wrap">
           <table class="data-table">
             <thead>
               <tr><th>角色名称</th><th>角色编码</th><th class="col-num">成员数</th><th>职责描述</th><th>状态</th><th>操作</th></tr>
             </thead>
             <tbody>
-              ${ROLES.filter(r => !App.state.roleQuery || r.name.toLowerCase().includes(App.state.roleQuery.toLowerCase()) || r.id.toLowerCase().includes(App.state.roleQuery.toLowerCase())).map(r => `
+              ${_rows_br.map(r => `
                 <tr>
                   <td><span class="badge badge-primary">${r.name}</span></td>
                   <td class="col-mono">${r.id}</td>
@@ -3155,15 +3507,17 @@ function renderSystemRole() {
                   <td style="max-width:360px;color:#64748b;">${r.desc}</td>
                   <td><span class="badge badge-success">启用</span></td>
                   <td>
-                    <button class="btn btn-sm btn-ghost text-primary" onclick="App.openRoleModal('${r.id}')">编辑</button>
-                    <button class="btn btn-sm btn-ghost text-primary" onclick="App.openRolePermissionModal('${r.id}')">配置权限</button>
-                    <button class="btn btn-sm btn-ghost text-danger" onclick="App.toast('角色已停用', 'warning')">停用</button>
-                    <button class="btn btn-sm btn-ghost text-danger" onclick="App.deleteRole('${r.id}')">删除</button>
+                    <button class="btn-xs btn-primary" onclick="App.openRoleModal('${r.id}')">编辑</button>
+                    <button class="btn-xs btn-primary" onclick="App.openRolePermissionModal('${r.id}')">配置权限</button>
+                    <button class="btn-xs btn-danger" onclick="App.toast('角色已停用', 'warning')">停用</button>
+                    <button class="btn-xs btn-danger" onclick="App.deleteRole('${r.id}')">删除</button>
                   </td>
                 </tr>
               `).join('')}
             </tbody>
           </table>
+          ${renderPagination(_total_br, _pg_br.current, _pg_br.size, 'br')}
+
         </div>
       </div>
     </div>
@@ -3171,6 +3525,10 @@ function renderSystemRole() {
 }
 
 function renderSystemLog() {
+  const _pg_log = App.state.pages['log'] = App.state.pages['log'] || { current: 1, size: 10 };
+  const _src_log = OPERATION_LOGS;
+  const _total_log = _src_log.length;
+  const _rows_log = _src_log.slice((_pg_log.current - 1) * _pg_log.size, _pg_log.current * _pg_log.size);
   return `
     <div class="card">
       <div class="card-header">
@@ -3184,14 +3542,14 @@ function renderSystemLog() {
           { label: '操作类型', control: '<select class="form-select"><option value="">全部</option><option>填报提交</option><option>审核操作</option><option>发布操作</option><option>数据导出</option><option>接口调用</option><option>系统操作</option></select>' },
           { label: '操作人', control: '<select class="form-select"><option value="">全部</option><option>张明</option><option>李芳</option><option>王强</option><option>陈思远</option><option>刘建国</option><option>赵慧敏</option><option>孙志强</option></select>' },
           { label: '日期', control: '<input class="form-input" type="date" value="2026-08-18" />' },
-        ])}
+        ], 'log')}
         <div class="table-wrap">
           <table class="data-table">
             <thead>
               <tr><th>时间</th><th>操作人</th><th>操作类型</th><th>操作对象</th><th>IP地址</th><th>详情</th></tr>
             </thead>
             <tbody>
-              ${OPERATION_LOGS.map(log => `
+              ${_rows_log.map(log => `
                 <tr>
                   <td class="col-mono">${log.time}</td>
                   <td class="font-bold">${log.user}</td>
@@ -3203,6 +3561,8 @@ function renderSystemLog() {
               `).join('')}
             </tbody>
           </table>
+          ${renderPagination(_total_log, _pg_log.current, _pg_log.size, 'log')}
+
         </div>
         <div style="padding:12px 20px;font-size:12px;color:#64748b;">
           日志不可删改 · 所有敏感操作全程审计留痕
@@ -3215,18 +3575,18 @@ function renderSystemLog() {
 // ========== 企业端小程序预览（高保真交互稿） ==========
 function renderMiniProgramPreview() {
   const mpTab = App.state.mpTab || 'login';
+  const quoteFilled = App.state.mpQuoteFilled;
   return `
     <div class="page-header">
       <div>
         <div class="page-title">小程序预览</div>
-        <div class="page-desc">企业端报价小程序 · 覆盖登录、填报、审核全流程</div>
+        <div class="page-desc">企业端报价小程序 · 登录 / 填报 / 审核 / 我的</div>
       </div>
       <div style="display:flex;gap:6px;">
         <button class="btn btn-sm" onclick="App.mpTab('login')">登录页</button>
-        <button class="btn btn-sm" onclick="App.mpTab('market')">行情</button>
         <button class="btn btn-sm" onclick="App.mpTab('quote')">填报</button>
         <button class="btn btn-sm" onclick="App.mpTab('review')">审核</button>
-        <button class="btn btn-sm" onclick="App.mpTab('myQuotes')">我的报价</button>
+        <button class="btn btn-sm" onclick="App.mpTab('profile')">我的</button>
       </div>
     </div>
 
@@ -3236,254 +3596,196 @@ function renderMiniProgramPreview() {
           <span>9:41</span>
           <span class="mp-signal">▮▮▮▮&thinsp;▮</span>
         </div>
+
+        <!-- Login Page -->
+        <div class="mp-panel ${mpTab === 'login' ? 'show' : ''}" data-tab="login" style="padding:0;">
+          <div class="mp-login-head">
+            <div class="mp-login-logo">稀</div>
+            <div class="mp-login-title">包头稀土价格填报</div>
+            <div class="mp-login-sub">企业端报价采集 · 移动审批</div>
+          </div>
+          <div class="mp-login-card">
+            <div class="mp-form-cell">
+              <div class="mp-form-label"><span class="required">*</span>手机号</div>
+              <input class="mp-input" value="138****8101" placeholder="请输入手机号" />
+            </div>
+            <div class="mp-form-cell">
+              <div class="mp-form-label"><span class="required">*</span>验证码</div>
+              <div class="mp-input-row">
+                <input class="mp-input" placeholder="请输入验证码" />
+                <button class="mp-code-btn" onclick="App.toast('验证码已发送至手机', 'success')">获取验证码</button>
+              </div>
+            </div>
+            <button class="mp-submit" style="margin-top:8px;" onclick="App.mpTab('quote'); App.toast('登录成功，欢迎回来！', 'success')">登录</button>
+            <div class="mp-divider">或</div>
+            <button class="mp-wechat-btn" onclick="App.mpTab('quote'); App.toast('企业微信授权登录成功', 'success')">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M8.69 4C4.86 4 1.74 6.68 1.74 10c0 1.88 1.01 3.55 2.59 4.66l-.65 1.95 2.27-1.14c.73.2 1.5.31 2.3.31.2 0 .4-.01.6-.03-.13-.42-.2-.87-.2-1.33 0-2.86 2.75-5.19 6.15-5.19.2 0 .39.01.58.02C14.33 5.87 11.78 4 8.69 4zm-2.6 3.15c.36 0 .65.29.65.65s-.29.65-.65.65-.65-.29-.65-.65.29-.65.65-.65zm5.2 0c.36 0 .65.29.65.65s-.29.65-.65.65-.65-.29-.65-.65.29-.65.65-.65zM14.8 9.34c-3.22 0-5.84 2.18-5.84 4.88 0 1.57.83 2.97 2.13 3.88l-.55 1.64 1.92-.96c.62.17 1.27.27 1.95.27.16 0 .31-.01.47-.02-.11-.35-.17-.72-.17-1.1 0-2.38 2.29-4.32 5.12-4.32.17 0 .33.01.49.02C19.42 10.87 17.36 9.34 14.8 9.34zm-2.42 2.6c.3 0 .54.24.54.54s-.24.54-.54.54-.54-.24-.54-.54.24-.54.54-.54zm4.84 0c.3 0 .54.24.54.54s-.24.54-.54.54-.54-.24-.54-.54.24-.54.54-.54z"/></svg>
+              企业微信授权登录
+            </button>
+            <div class="mp-agree">登录即代表同意《用户协议》和《隐私政策》</div>
+          </div>
+        </div>
+
         ${mpTab !== 'login' ? `<div class="mp-header">包头稀土价格填报</div>` : ''}
         <div class="mp-body" style="${mpTab === 'login' ? 'padding:0;' : ''}">
 
-          <!-- Login Page -->
-          <div class="mp-panel ${mpTab === 'login' ? 'show' : ''}" data-tab="login" style="padding:0;">
-            <div style="background:linear-gradient(180deg,#1a4d8c 0%,#2563eb 100%);padding:48px 24px 32px;text-align:center;color:#fff;">
-              <div style="width:64px;height:64px;background:rgba(255,255,255,0.15);border-radius:16px;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:28px;font-weight:700;">稀</div>
-              <div style="font-size:18px;font-weight:700;letter-spacing:1px;">包头稀土价格填报</div>
-              <div style="font-size:12px;color:rgba(255,255,255,0.7);margin-top:6px;">企业端报价采集 · 审核审批</div>
-            </div>
-            <div style="padding:24px 20px;">
-              <div style="margin-bottom:16px;">
-                <div style="font-size:12px;color:#64748b;margin-bottom:6px;">手机号</div>
-                <input class="mp-input" style="width:100%;font-size:14px;padding:12px;" value="138****8101" placeholder="请输入手机号" />
-              </div>
-              <div style="margin-bottom:16px;">
-                <div style="font-size:12px;color:#64748b;margin-bottom:6px;">验证码</div>
-                <div style="display:flex;gap:8px;">
-                  <input class="mp-input" style="flex:1;font-size:14px;padding:12px;" placeholder="6位验证码" />
-                  <button class="mp-ghost-btn" style="flex-shrink:0;width:auto;padding:0 14px;font-size:12px;" onclick="App.toast('验证码已发送至手机', 'success')">获取验证码</button>
-                </div>
-              </div>
-              <button class="mp-submit" style="width:100%;margin-top:8px;" onclick="App.mpTab('market'); App.toast('登录成功，欢迎回来！', 'success')">登录</button>
-              <div style="text-align:center;margin:16px 0;position:relative;">
-                <div style="position:absolute;top:50%;left:0;right:0;height:1px;background:#dfe5ee;"></div>
-                <span style="position:relative;background:#f7f9fc;padding:0 12px;font-size:11px;color:#97a3b5;">或</span>
-              </div>
-              <button class="mp-ghost-btn" style="width:100%;display:flex;align-items:center;justify-content:center;gap:8px;background:#07c160;color:#fff;border-color:#07c160;" onclick="App.mpTab('market'); App.toast('企业微信授权登录成功', 'success')">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M8.69 4C4.86 4 1.74 6.68 1.74 10c0 1.88 1.01 3.55 2.59 4.66l-.65 1.95 2.27-1.14c.73.2 1.5.31 2.3.31.2 0 .4-.01.6-.03-.13-.42-.2-.87-.2-1.33 0-2.86 2.75-5.19 6.15-5.19.2 0 .39.01.58.02C14.33 5.87 11.78 4 8.69 4zm-2.6 3.15c.36 0 .65.29.65.65s-.29.65-.65.65-.65-.29-.65-.65.29-.65.65-.65zm5.2 0c.36 0 .65.29.65.65s-.29.65-.65.65-.65-.29-.65-.65.29-.65.65-.65zM14.8 9.34c-3.22 0-5.84 2.18-5.84 4.88 0 1.57.83 2.97 2.13 3.88l-.55 1.64 1.92-.96c.62.17 1.27.27 1.95.27.16 0 .31-.01.47-.02-.11-.35-.17-.72-.17-1.1 0-2.38 2.29-4.32 5.12-4.32.17 0 .33.01.49.02C19.42 10.87 17.36 9.34 14.8 9.34zm-2.42 2.6c.3 0 .54.24.54.54s-.24.54-.54.54-.54-.24-.54-.54.24-.54.54-.54zm4.84 0c.3 0 .54.24.54.54s-.24.54-.54.54-.54-.24-.54-.54.24-.54.54-.54z"/></svg>
-                企业微信授权登录
-              </button>
-              <div style="text-align:center;margin-top:16px;font-size:11px;color:#97a3b5;">登录即代表同意《用户协议》和《隐私政策》</div>
-            </div>
-          </div>
-
-          <!-- Tab: 行情速览 -->
-          <div class="mp-panel ${mpTab === 'market' ? 'show' : ''}" data-tab="market">
-            <div class="mp-greet">今日稀土行情</div>
-            <div class="mp-subgreet">2026年8月18日 · 已发布</div>
-            ${MP_MARKET.map(m => `
-              <div class="mp-quote-item" style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;border-radius:10px;padding:12px 14px;margin-bottom:8px;background:#fff;border:1px solid #eef2f7;transition:all 0.2s;" onclick="App.mpGoQuote('${m.name}')">
-                <div>
-                  <div class="mp-qname">${m.name}</div>
-                  <div style="font-size:10px;color:#97a3b5;margin-top:2px;">点击快速填报报价</div>
-                </div>
-                <div style="text-align:right;">
-                  <div style="font-size:16px;font-weight:700;color:#1e293b;">${m.price}<span style="font-size:10px;font-weight:400;color:#97a3b5;"> 万元/吨</span></div>
-                  <div style="font-size:11px;font-weight:600;margin-top:2px;${m.trend === 'up' ? 'color:#c0392b;' : 'color:#1c8a4d;'}">${m.change} ${m.trend === 'up' ? '▲' : '▼'}</div>
-                </div>
-              </div>
-            `).join('')}
-            <div style="margin-top:12px;padding:10px 12px;background:#eef4fc;border-radius:8px;font-size:11px;color:#1a4d8c;line-height:1.6;">行情由包头稀土价格采编发系统发布，企业端实时同步</div>
-            <button class="mp-ghost-btn" onclick="App.mpTab('myQuotes')">查看我的报价记录 →</button>
-          </div>
-
           <!-- Tab: 报价填报 -->
           <div class="mp-panel ${mpTab === 'quote' ? 'show' : ''}" data-tab="quote">
-            <div style="background:linear-gradient(135deg,#eef4fc,#dbeafe);border-radius:12px;padding:14px 16px;margin-bottom:14px;">
-              <div class="mp-greet" style="border:none;padding:0;margin:0;">您好，金蒙稀土</div>
-              <div class="mp-subgreet" style="padding:0;margin-top:2px;">今日报价尚未提交 · 截止 16:00</div>
+            <div class="mp-top-card">
+              <div class="mp-greet">您好，金蒙稀土</div>
+              <div class="mp-subgreet">今日报价尚未提交 · 截止 16:00</div>
             </div>
-            <div class="mp-cell">
-              <div class="mp-label">填报企业</div>
-              <div class="mp-select">包头市金蒙稀土有限责任公司 <span class="mp-caret">▾</span></div>
-            </div>
-            <div class="mp-cell">
-              <div class="mp-label">报价产品</div>
-              <div class="mp-select">氧化镨钕（万元/吨） <span class="mp-caret">▾</span></div>
-            </div>
-            <div class="mp-cell">
-              <div class="mp-label">行为类型</div>
-              <div class="mp-select">销售 <span class="mp-caret">▾</span></div>
-            </div>
-            <div class="mp-row2">
-              <div class="mp-cell">
-                <div class="mp-label">最高价<span style="color:#c0392b;">*</span></div>
-                <input class="mp-input" value="48.80" placeholder="0.00" />
+            <div class="mp-page-body">
+              <div class="mp-card">
+                <div class="mp-card-title">填写报价信息</div>
+                <div class="mp-form-cell">
+                  <div class="mp-form-label"><span class="required">*</span>填报企业</div>
+                  <div class="mp-select">包头市金蒙稀土有限责任公司 <span style="color:#97a3b5;">▾</span></div>
+                </div>
+                <div class="mp-form-cell">
+                  <div class="mp-form-label"><span class="required">*</span>报价产品</div>
+                  <div class="mp-select">氧化镨钕（万元/吨） <span style="color:#97a3b5;">▾</span></div>
+                </div>
+                <div class="mp-form-cell">
+                  <div class="mp-form-label"><span class="required">*</span>行为类型</div>
+                  <div class="mp-select">销售 <span style="color:#97a3b5;">▾</span></div>
+                </div>
+                <div class="mp-form-row2">
+                  <div class="mp-form-cell">
+                    <div class="mp-form-label"><span class="required">*</span>最高价</div>
+                    <input class="mp-input" value="48.80" placeholder="0.00" />
+                  </div>
+                  <div class="mp-form-cell">
+                    <div class="mp-form-label">最低价 <span style="color:#97a3b5;font-weight:400;">（选填）</span></div>
+                    <input class="mp-input" value="48.50" placeholder="0.00" />
+                  </div>
+                </div>
+                <div class="mp-form-cell">
+                  <div class="mp-form-label"><span class="required">*</span>佐证附件</div>
+                  <div class="mp-select" onclick="App.simulateUpload()">📎 报价单_20260818.png <span style="color:#97a3b5;">▾</span></div>
+                </div>
+                <div class="mp-status-ok">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                  偏差 +0.20%，在正常范围内，可正常提交
+                </div>
+                <button class="mp-submit" onclick="App.mpSubmitQuote()">提交报价</button>
+                <button class="mp-ghost-btn" style="margin-top:8px;" onclick="App.saveDraft()">存为草稿</button>
               </div>
-              <div class="mp-cell">
-                <div class="mp-label">最低价<span style="color:#97a3b5;">（选填）</span></div>
-                <input class="mp-input" value="48.50" placeholder="0.00" />
+
+              <div class="mp-card">
+                <div class="mp-card-title">今日已填报</div>
+                <div class="mp-list-item green">
+                  <div class="mp-item-head">
+                    <span class="mp-item-title">氧化镝</span>
+                    <span class="badge badge-success">已发布</span>
+                  </div>
+                  <div class="mp-item-body">最高 185.50 · 最低 184.00 <span style="color:#97a3b5;">万元/吨</span></div>
+                  <div class="mp-item-time">8月17日 14:32 提交</div>
+                </div>
+                <div class="mp-list-item blue">
+                  <div class="mp-item-head">
+                    <span class="mp-item-title">碳酸镧铈</span>
+                    <span class="badge badge-primary">待终审</span>
+                  </div>
+                  <div class="mp-item-body">最高 2.90 · 最低 2.80 <span style="color:#97a3b5;">万元/吨</span></div>
+                  <div class="mp-item-time">8月17日 15:05 提交</div>
+                </div>
               </div>
             </div>
-            <div class="mp-cell">
-              <div class="mp-label">佐证附件<span style="color:#c0392b;">*</span></div>
-              <div class="mp-select" onclick="App.simulateUpload()">📎 报价单_20260818.png <span class="mp-caret">▾</span></div>
-            </div>
-            <div style="margin:8px 0;padding:8px 12px;background:#f0fdf4;border-radius:8px;font-size:11px;color:#16a34a;line-height:1.5;">
-              ✓ 偏差 +0.20%，在正常范围内，可正常提交
-            </div>
-            <button class="mp-submit" onclick="App.mpSubmitQuote()">提交报价</button>
-            <button class="mp-ghost-btn" onclick="App.saveDraft()">存为草稿</button>
           </div>
 
           <!-- Tab: 审核（移动审批） -->
           <div class="mp-panel ${mpTab === 'review' ? 'show' : ''}" data-tab="review">
-            <div class="mp-greet">待审核事项</div>
-            <div class="mp-subgreet">2 项待处理 · 请及时审批</div>
-            <div class="mp-quote-item" style="border-left:3px solid #1a4d8c;cursor:pointer;" onclick="App.openReviewModal('RV20260818001','approve')">
-              <div class="mp-qhead">
-                <span class="mp-qname">氧化镨钕 8月18日报价</span>
-                <span class="badge badge-primary">待初审</span>
-              </div>
-              <div class="mp-qbody">均价 48.65 万元/吨 · 8 条样本</div>
-              <div class="mp-qtime">统计人员 14:20 提交 · 请业务经理初审</div>
+            <div class="mp-top-card">
+              <div class="mp-greet">待审核事项</div>
+              <div class="mp-subgreet">2 项待处理 · 请及时审批</div>
             </div>
-            <div class="mp-quote-item" style="border-left:3px solid #b96a08;cursor:pointer;" onclick="App.openModifyModal('PMR001','approve')">
-              <div class="mp-qhead">
-                <span class="mp-qname">氧化镝 报价修改申请</span>
-                <span class="badge badge-warning">待审批</span>
-              </div>
-              <div class="mp-qbody">原 185.00 → 修改后 186.50 万元/吨</div>
-              <div class="mp-qtime">金蒙稀土 15:05 提交修改 · 请统计人员审批</div>
-            </div>
-            <div class="mp-list-title" style="margin-top:16px;">已审事项</div>
-            <div class="mp-quote-item" style="opacity:0.7;">
-              <div class="mp-qhead">
-                <span class="mp-qname">碳酸镧铈 8月17日报价</span>
-                <span class="badge badge-success">已通过</span>
-              </div>
-              <div class="mp-qbody">均价 2.85 万元/吨 · 已纳入日报</div>
-              <div class="mp-qtime">昨日 17:30 终审通过</div>
-            </div>
-            <div class="mp-quote-item" style="opacity:0.7;">
-              <div class="mp-qhead">
-                <span class="mp-qname">金属镝 报价修改申请</span>
-                <span class="badge badge-danger">已驳回</span>
-              </div>
-              <div class="mp-qbody">修改依据不足，已退回采集员</div>
-              <div class="mp-qtime">昨日 16:10 驳回</div>
-            </div>
-          </div>
-
-          <!-- Tab: 我的报价 -->
-          <div class="mp-panel ${mpTab === 'myQuotes' ? 'show' : ''}" data-tab="myQuotes">
-            <div class="mp-list-title">今日报价</div>
-            <div class="mp-quote-item">
-              <div class="mp-qhead"><span class="mp-qname">氧化镨钕</span><span class="badge badge-success">已发布</span></div>
-              <div class="mp-qbody">最高 48.80 · 最低 48.50 <span style="color:#1c8a4d;">（万元/吨）</span></div>
-              <div class="mp-qtime">8月17日 14:32 提交 · 已纳入日报</div>
-            </div>
-            <div class="mp-quote-item">
-              <div class="mp-qhead"><span class="mp-qname">氧化镝</span><span class="badge badge-primary">待终审</span></div>
-              <div class="mp-qbody">最高 185.50 · 最低 184.00 <span style="color:#97a3b5;">（万元/吨）</span></div>
-              <div class="mp-qtime">8月17日 15:05 提交 · 统计汇总中</div>
-            </div>
-            <div class="mp-quote-item">
-              <div class="mp-qhead"><span class="mp-qname">碳酸镧铈</span><span class="badge badge-danger">已驳回</span></div>
-              <div class="mp-qbody">样本不足，请补充数据后重新提交</div>
-              <div class="mp-qtime">8月16日 · 驳回原因见消息中心</div>
-            </div>
-            <div class="mp-list-title" style="margin-top:16px;">历史报价（近${App.state.mpHistRange === '7d' ? '7' : '30'}日）</div>
-            <div style="display:flex;gap:6px;margin-bottom:8px;">
-              <button class="btn btn-sm ${App.state.mpHistRange === '7d' ? 'btn-primary' : ''}" onclick="App.mpHist('7d')">近7日</button>
-              <button class="btn btn-sm ${App.state.mpHistRange === '30d' ? 'btn-primary' : ''}" onclick="App.mpHist('30d')">近30日</button>
-            </div>
-            ${MP_HISTORY.slice(0, App.state.mpHistRange === '7d' ? 5 : 10).map(d => `
-              <div style="margin-bottom:8px;">
-                <div style="font-size:10px;color:#97a3b5;margin-bottom:4px;">8月${d.date.split('-')[1]}日</div>
-                ${d.items.map(it => `
-                  <div class="mp-quote-item" style="padding:8px 10px;">
-                    <div class="mp-qhead">
-                      <span class="mp-qname" style="font-size:12px;">${it.name}</span>
-                      <span class="badge ${it.status === '已发布' ? 'badge-success' : 'badge-danger'}" style="font-size:9px;">${it.status}</span>
-                    </div>
-                    <div class="mp-qbody" style="font-size:11px;">最高 ${it.high} · 最低 ${it.low} <span style="color:#97a3b5;">（万元/吨）</span></div>
+            <div class="mp-page-body">
+              <div class="mp-card" style="padding-bottom:6px;">
+                <div class="mp-list-item blue" onclick="App.openReviewModal('RV20260818001','approve')">
+                  <div class="mp-item-head">
+                    <span class="mp-item-title">氧化镨钕 8月18日报价</span>
+                    <span class="badge badge-primary">待初审</span>
                   </div>
-                `).join('')}
+                  <div class="mp-item-body">均价 48.65 万元/吨 · 8 条样本</div>
+                  <div class="mp-item-time">统计人员 14:20 提交</div>
+                </div>
+                <div class="mp-list-item orange" onclick="App.openModifyModal('PMR001','approve')">
+                  <div class="mp-item-head">
+                    <span class="mp-item-title">氧化镝 报价修改申请</span>
+                    <span class="badge badge-warning">待审批</span>
+                  </div>
+                  <div class="mp-item-body">原 185.00 → 修改后 186.50 万元/吨</div>
+                  <div class="mp-item-time">金蒙稀土 15:05 提交</div>
+                </div>
               </div>
-            `).join('')}
-          </div>
 
-          <!-- Tab: 消息 -->
-          <div class="mp-panel ${mpTab === 'messages' ? 'show' : ''}" data-tab="messages">
-            <div class="mp-list-title">消息通知</div>
-            <div class="mp-msg-item">
-              <div class="mp-msg-title">报价审核通过</div>
-              <div class="mp-msg-desc">8月17日氧化镨钕报价已通过终审并纳入日报发布</div>
-              <div class="mp-msg-time">昨天 17:30</div>
-            </div>
-            <div class="mp-msg-item">
-              <div class="mp-msg-title">报价被驳回</div>
-              <div class="mp-msg-desc">碳酸镧铈报价因样本不足被驳回，请补充后重新提交</div>
-              <div class="mp-msg-time">昨天 15:40</div>
-            </div>
-            <div class="mp-msg-item">
-              <div class="mp-msg-title">填报提醒</div>
-              <div class="mp-msg-desc">今日报价将于 16:00 截止，请及时提交</div>
-              <div class="mp-msg-time">今天 08:30</div>
-            </div>
-            <div class="mp-msg-item">
-              <div class="mp-msg-title">阈值预警确认</div>
-              <div class="mp-msg-desc">金属镝报价偏差 +12.24%，请确认报价依据后提交</div>
-              <div class="mp-msg-time">昨天 15:35</div>
+              <div class="mp-card">
+                <div class="mp-card-title">已审事项</div>
+                <div class="mp-list-item green" style="opacity:0.75;">
+                  <div class="mp-item-head">
+                    <span class="mp-item-title">碳酸镧铈 8月17日报价</span>
+                    <span class="badge badge-success">已通过</span>
+                  </div>
+                  <div class="mp-item-body">均价 2.85 万元/吨 · 已纳入日报</div>
+                  <div class="mp-item-time">昨日 17:30 终审通过</div>
+                </div>
+                <div class="mp-list-item red" style="opacity:0.75;">
+                  <div class="mp-item-head">
+                    <span class="mp-item-title">金属镝 报价修改申请</span>
+                    <span class="badge badge-danger">已驳回</span>
+                  </div>
+                  <div class="mp-item-body">修改依据不足，已退回采集员</div>
+                  <div class="mp-item-time">昨日 16:10 驳回</div>
+                </div>
+              </div>
             </div>
           </div>
 
           <!-- Tab: 我的 -->
           <div class="mp-panel ${mpTab === 'profile' ? 'show' : ''}" data-tab="profile">
-            <div style="background:linear-gradient(135deg,#1a4d8c,#2563eb);border-radius:12px;padding:18px 16px;margin-bottom:16px;color:#fff;">
-              <div style="display:flex;align-items:center;gap:12px;">
-                <div style="width:44px;height:44px;background:rgba(255,255,255,0.2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;">刘</div>
+            <div class="mp-top-card" style="padding-bottom:36px;">
+              <div style="display:flex;align-items:center;gap:14px;">
+                <div style="width:54px;height:54px;background:rgba(255,255,255,0.2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;">刘</div>
                 <div>
-                  <div style="font-size:15px;font-weight:600;">刘工</div>
-                  <div style="font-size:11px;color:rgba(255,255,255,0.7);">包头市金蒙稀土有限责任公司</div>
+                  <div style="font-size:17px;font-weight:700;">刘工</div>
+                  <div style="font-size:12px;color:rgba(255,255,255,0.85);margin-top:3px;">包头市金蒙稀土有限责任公司</div>
+                  <div style="font-size:11px;color:rgba(255,255,255,0.7);margin-top:2px;">报价对接人</div>
                 </div>
               </div>
             </div>
-            <div class="mp-cell">
-              <div class="mp-label">报价对接人</div>
-              <input class="mp-input" value="刘工" />
+            <div class="mp-page-body">
+              <div class="mp-card">
+                <div class="mp-form-cell">
+                  <div class="mp-form-label">联系电话</div>
+                  <input class="mp-input" value="138****8101" />
+                </div>
+                <div class="mp-form-cell">
+                  <div class="mp-form-label">价格单位</div>
+                  <div class="mp-select">万元/吨 <span style="color:#97a3b5;">▾</span></div>
+                </div>
+                <div class="mp-form-cell">
+                  <div class="mp-form-label">填报截止提醒</div>
+                  <div class="mp-select" onclick="App.toast('提醒设置已保存', 'success')">每日 15:30 提醒 <span style="color:#97a3b5;">▾</span></div>
+                </div>
+              </div>
+              <button class="mp-ghost-btn" onclick="App.mpTab('login')">退出登录</button>
             </div>
-            <div class="mp-cell">
-              <div class="mp-label">联系电话</div>
-              <input class="mp-input" value="138****8101" />
-            </div>
-            <div class="mp-cell">
-              <div class="mp-label">价格单位</div>
-              <div class="mp-select">万元/吨 <span class="mp-caret">▾</span></div>
-            </div>
-            <div class="mp-cell">
-              <div class="mp-label">填报截止提醒</div>
-              <div class="mp-select" onclick="App.toast('提醒设置已保存', 'success')">每日 15:30 提醒 <span class="mp-caret">▾</span></div>
-            </div>
-            <button class="mp-ghost-btn" onclick="App.mpTab('login')">退出登录</button>
           </div>
 
         </div>
         ${mpTab !== 'login' ? `
         <div class="mp-tabbar">
-          <div class="mp-tab ${mpTab === 'market' ? 'active' : ''}" data-tab="market" onclick="App.mpTab('market')">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M3 13h2v8H3v-8zm4-6h2v14H7V7zm4 3h2v11h-2V10zm4-7h2v18h-2V3zm4 4h2v14h-2V7z"/></svg>
-            <span>行情</span>
-          </div>
           <div class="mp-tab ${mpTab === 'quote' ? 'active' : ''}" data-tab="quote" onclick="App.mpTab('quote')">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l-5.5 9h11L12 2zm0 3.84L13.76 9h-3.52L12 5.84zM17.5 13c-1.56 0-3.08.24-4.5.69v8.06c1.42-.45 2.94-.69 4.5-.69 1.28 0 2.52.16 3.71.46.27.07.54.13.79.19v-8.32c-1.42-.42-2.93-.65-4.5-.65-1.7 0-3.32.27-4.85.76v8.27c-1.63-.55-3.4-.85-5.35-.85-1.56 0-3.08.24-4.5.69v8.06c1.42-.45 2.94-.69 4.5-.69 1.95 0 3.72.3 5.35.85 1.53-.49 3.15-.76 4.85-.76 1.56 0 3.08.24 4.5.69v-8.06c-1.42-.45-2.94-.69-4.5-.69-.34 0-.67.02-1 .05v-.01z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l-5.5 9h11L12 2zm0 3.84L13.76 9h-3.52L12 5.84zM17.5 13c-1.56 0-3.08.24-4.5.69v8.06c1.42-.45 2.94-.69 4.5-.69 1.28 0 2.52.16 3.71.46.27.07.54.13.79.19v-8.32c-1.42-.42-2.93-.65-4.5-.65-1.7 0-3.32.27-4.85.76v8.27c-1.63-.55-3.4-.85-5.35-.85-1.56 0-3.08.24-4.5.69v8.06c1.42-.45 2.94-.69 4.5-.69 1.95 0 3.72.3 5.35.85 1.53-.49 3.15-.76 4.85-.76 1.56 0 3.08.24 4.5.69v-8.06c-1.42-.45-2.94-.69-4.5-.69-.34 0-.67.02-1 .05v-.01z"/></svg>
             <span>填报</span>
           </div>
           <div class="mp-tab ${mpTab === 'review' ? 'active' : ''}" data-tab="review" onclick="App.mpTab('review')">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
             <span>审核</span>
           </div>
-          <div class="mp-tab ${mpTab === 'myQuotes' ? 'active' : ''}" data-tab="myQuotes" onclick="App.mpTab('myQuotes')">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
-            <span>我的报价</span>
-          </div>
           <div class="mp-tab ${mpTab === 'profile' ? 'active' : ''}" data-tab="profile" onclick="App.mpTab('profile')">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
             <span>我的</span>
           </div>
         </div>
@@ -3496,11 +3798,9 @@ function renderMiniProgramPreview() {
           <div class="card-body" style="padding:16px 20px;">
             ${[
               ['登录授权', '手机号+验证码 / 企业微信授权登录，绑定企业信息后自动匹配', 'done'],
-              ['行情速览', '今日稀土价格行情实时同步，点击品类可直接发起报价填报', 'done'],
-              ['报价填报', '选择企业产品，填报最高价/最低价，支持草稿与多产品分别填报', 'done'],
+              ['报价填报', '选择企业产品，填报最高价/最低价，支持草稿与附件上传', 'done'],
               ['移动审批', '各级管理人员在线完成初审、二审、终审、驳回、转审操作', 'done'],
-              ['我的报价', '今日与历史报价记录（近7日/近30日切换）、审核状态跟踪', 'done'],
-              ['消息通知', '审核结果、填报提醒、阈值预警实时推送', 'done'],
+              ['我的', '企业信息、报价对接人、提醒设置、退出登录', 'done'],
             ].map(([name, desc, tag]) => `
               <div style="display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--c-border);">
                 <span class="badge badge-success" style="margin-top:2px;flex-shrink:0;">已覆盖</span>
@@ -3516,12 +3816,12 @@ function renderMiniProgramPreview() {
         <div class="card">
           <div class="card-header"><div class="card-title">交互说明</div></div>
           <div class="card-body" style="padding:16px 20px;font-size:13px;color:#475569;line-height:1.9;">
-            <div>· 企业每日 <b style="color:#1a4d8c;">16:00</b> 前完成当日报价填报</div>
+            <div>· 企业每日 <b style="color:#1d4ed8;">16:00</b> 前完成当日报价填报</div>
             <div>· 同一企业可多产品分别填报，提交后进入统计汇总流程</div>
             <div>· 填报数据与后台「价格采集」模块同源，随审核状态实时同步</div>
-            <div>· 驳回/通过结果通过消息中心即时推送，无需电话催报</div>
-            <div>· 管理人员可在「审核」tab完成移动端审批全流程</div>
-            <div>· 与PC端数据、权限、账号完全同步</div>
+            <div>· 驳回/通过结果通过消息即时推送，无需电话催报</div>
+            <div>· 管理人员可在「审核」tab 完成移动端审批全流程</div>
+            <div>· 与 PC 端数据、权限、账号完全同步</div>
           </div>
         </div>
 
@@ -3533,7 +3833,7 @@ function renderMiniProgramPreview() {
             <div>✓ <b>登录</b>：手机验证码 / 企业微信授权</div>
             <div>✓ <b>填报</b>：移动端价格填报、附件上传、草稿留存</div>
             <div>✓ <b>审核</b>：移动端初审、二审、终审、驳回、转审</div>
-            <div>✓ <b>查询</b>：行情数据、历史报价、发布记录</div>
+            <div>✓ <b>查询</b>：历史报价、发布记录</div>
             <div>✓ <b>提醒</b>：审核结果、填报提醒、阈值预警</div>
           </div>
         </div>
@@ -3556,7 +3856,7 @@ function renderMessages() {  return `
             system: 'M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65z',
           };
           const typeColor = {
-            review: '#1a4d8c',
+            review: '#1d4ed8',
             warning: '#c0392b',
             publish: '#1c8a4d',
             system: '#64748b',
@@ -3601,6 +3901,9 @@ const App = {
     mpTab: 'login',
     deptQuery: '',
     roleQuery: '',
+    filters: {},   // 各列表筛选条件 { listKey: { field: value } }
+    pages: {},     // 各列表分页状态 { listKey: { current: 1, size: 10 } }
+    filterCounts: {}, // 各列表筛选后的结果数（用于 toast 提示与分页计算）
   },
 
   init() {
@@ -4408,6 +4711,93 @@ const App = {
     const isOpen = more.classList.toggle('show');
     btn.classList.toggle('open', isOpen);
     btn.innerHTML = isOpen ? '收起筛选 <span class="arrow">▲</span>' : '更多筛选 <span class="arrow">▼</span>';
+  },
+
+  // ========== 列表筛选 / 分页 ==========
+  // 读取多选下拉当前勾选值
+  getMselValues(id) {
+    const root = document.getElementById(id);
+    if (!root) return [];
+    return [...root.querySelectorAll('input[type="checkbox"]:checked')].map(c => c.value);
+  },
+
+  // 应用筛选：收集当前页面筛选控件的值，存入 state.filters 后重渲染
+  applyFilter(listKey) {
+    if (!listKey) return;
+    const vals = {};
+    const barSelector = '.filter-bar[data-filter-key="' + listKey + '"]';
+    document.querySelectorAll(barSelector + ' [data-flt]').forEach(el => {
+      const key = el.dataset.flt;
+      if (el.classList.contains('msel')) {
+        vals[key] = this.getMselValues(el.id);
+      } else {
+        vals[key] = el.value;
+      }
+    });
+    this.state.filters[listKey] = vals;
+    if (this.state.pages[listKey]) this.state.pages[listKey].current = 1;
+    this.render();
+    setTimeout(() => this._domFilter(listKey), 0);
+  },
+
+  // 通用表格行过滤：根据筛选条件显示/隐藏同一 filter-bar 后的表格行
+  _domFilter(listKey) {
+    const bar = document.querySelector('.filter-bar[data-filter-key="' + listKey + '"]');
+    if (!bar) return;
+    const table = bar.parentElement && bar.parentElement.querySelector('table.data-table');
+    if (!table) return;
+    const vals = this.state.filters[listKey] || {};
+    const active = Object.entries(vals).filter(([k, v]) => {
+      if (Array.isArray(v)) return v.length > 0;
+      return v && String(v).trim() !== '';
+    });
+    const rows = table.querySelectorAll('tbody tr');
+    let visible = 0;
+    rows.forEach(tr => {
+      let show = true;
+      for (const [key, raw] of active) {
+        const expected = Array.isArray(raw) ? raw : [String(raw)];
+        const rowText = tr.textContent || '';
+        const match = expected.some(v => rowText.toLowerCase().includes(String(v).toLowerCase()));
+        if (!match) { show = false; break; }
+      }
+      tr.style.display = show ? '' : 'none';
+      if (show) visible++;
+    });
+    const info = table.parentElement.parentElement.querySelector('.pagination-info b');
+    if (info) info.textContent = visible;
+  },
+
+  // 重置筛选：清空该列表的条件并重渲染
+  resetFilter(listKey) {
+    if (!listKey) return;
+    this.state.filters[listKey] = {};
+    if (this.state.pages[listKey]) this.state.pages[listKey].current = 1;
+    this.render();
+    this.toast('筛选条件已重置', 'info');
+  },
+
+  // 分页跳转（总条数从当前分页栏的 data-total 读取）
+  goPage(listKey, p) {
+    const pg = this.state.pages[listKey] = this.state.pages[listKey] || { current: 1, size: 10 };
+    const bar = document.querySelector('.filter-bar[data-filter-key="' + listKey + '"]');
+    const pbar = bar ? bar.parentElement.querySelector('.pagination-bar') : null;
+    const total = pbar ? (parseInt(pbar.dataset.total, 10) || 0) : 0;
+    const pages = Math.max(1, Math.ceil(total / pg.size));
+    const target = Math.min(Math.max(1, parseInt(p, 10) || 1), pages);
+    if (target === pg.current) return;
+    pg.current = target;
+    this.render();
+    this.toast(`已切换到第 ${target} 页`, 'info');
+  },
+
+  // 修改每页条数
+  changePageSize(listKey, size) {
+    const pg = this.state.pages[listKey] = this.state.pages[listKey] || { current: 1, size: 10 };
+    pg.size = parseInt(size, 10) || 10;
+    pg.current = 1;
+    this.render();
+    this.toast(`每页显示 ${pg.size} 条`, 'info');
   },
 
   // ========== 发布审核：标记异常 ==========
@@ -5725,6 +6115,9 @@ if (document.readyState === 'loading') {
 } else {
   App.init();
 }
+
+// Expose App for external scripts / screenshots
+window.App = App;
 
 </script>
 </body>
