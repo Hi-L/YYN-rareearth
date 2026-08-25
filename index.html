@@ -802,10 +802,15 @@ table.data-table {
 }
 .mp-signal { font-size: 9px; letter-spacing: 1px; color: var(--c-gray-500); }
 .mp-header {
-  background: #fff; color: var(--c-gray-800); text-align: center;
-  font-size: 15px; font-weight: 600; padding: 10px 0; position: relative; z-index: 1;
-  border-bottom: 1px solid var(--c-border);
+  background: linear-gradient(135deg, #dbeafe 0%, #eff6ff 45%, #fce7f3 100%);
+  color: var(--c-gray-800);
+  padding: 10px 16px 14px;
+  position: relative; z-index: 1;
+  display: flex; align-items: center; justify-content: space-between;
+  min-height: 52px;
 }
+.mp-header-title { font-size: 17px; font-weight: 700; color: #1e293b; }
+.mp-header-icons { display: flex; gap: 12px; color: var(--c-gray-700); align-items: center; }
 .mp-body { flex: 1; min-height: 0; overflow-y: auto; background: #f5f7fa; }
 .mp-panel { display: none; padding: 0; }
 .mp-panel.show { display: block; }
@@ -830,7 +835,7 @@ table.data-table {
   background: #fff; border-radius: var(--radius-lg); margin: -10px 16px 16px;
   padding: 22px 18px; box-shadow: var(--shadow-md); position: relative; z-index: 1;
 }
-.mp-form-cell { margin-bottom: 16px; }
+.mp-form-cell { margin-bottom: 14px; }
 .mp-form-label { font-size: 13px; color: var(--c-gray-700); font-weight: 500; margin-bottom: 6px; }
 .mp-form-label .required { color: var(--c-danger); margin-right: 2px; }
 .mp-input {
@@ -866,14 +871,26 @@ table.data-table {
 
 /* 页面通用 */
 .mp-top-card {
-  background: linear-gradient(135deg, #3b82f6, #60a5fa); border-radius: 0 0 20px 20px;
-  padding: 16px 16px 28px; color: #fff; position: relative; margin-bottom: -16px;
+  background: #fff; border-radius: var(--radius-lg);
+  padding: 16px; margin-bottom: 12px;
+  box-shadow: 0 4px 16px rgba(30,58,138,0.06);
 }
-.mp-top-card .mp-greet { font-size: 16px; font-weight: 700; }
-.mp-top-card .mp-subgreet { font-size: 12px; color: rgba(255,255,255,0.85); margin-top: 4px; }
-.mp-page-body { padding: 0 14px 14px; }
+.mp-top-card .mp-greet { font-size: 16px; font-weight: 700; color: var(--c-gray-800); }
+.mp-top-card .mp-subgreet { font-size: 12px; color: var(--c-gray-500); margin-top: 4px; }
+.mp-info-bar {
+  background: #eff6ff;
+  border: 1px solid #dbeafe;
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 12px;
+  color: #1e40af;
+  display: flex; align-items: center; gap: 8px;
+  margin-bottom: 12px;
+}
+.mp-info-bar svg { width: 16px; height: 16px; fill: currentColor; flex-shrink: 0; }
+.mp-page-body { padding: 0 12px 14px; }
 .mp-card {
-  background: #fff; border-radius: var(--radius-lg); padding: 16px;
+  background: #fff; border-radius: var(--radius-lg); padding: 12px;
   box-shadow: var(--shadow-sm); margin-bottom: 12px;
 }
 .mp-card-title {
@@ -886,11 +903,14 @@ table.data-table {
 .mp-form-row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .mp-select {
   width: 100%; background: #fff; border: 1px solid var(--c-border); border-radius: 10px;
-  padding: 10px 28px 10px 12px; font-size: 14px; color: var(--c-gray-800);
-  appearance: none; -webkit-appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='%2397a3b5'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
-  background-repeat: no-repeat; background-position: right 10px center;
+  padding: 10px 12px; font-size: 14px; color: var(--c-gray-800);
   outline: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.mp-select::after {
+  content: ''; width: 7px; height: 7px;
+  border-right: 1.5px solid #97a3b5; border-bottom: 1.5px solid #97a3b5;
+  transform: rotate(45deg); flex-shrink: 0; margin-left: 8px;
 }
 .mp-select:focus { border-color: var(--c-primary); box-shadow: 0 0 0 3px rgba(59,130,246,0.1); }
 .mp-select:disabled { background: #f8fafc; color: var(--c-gray-400); cursor: not-allowed; }
@@ -941,24 +961,64 @@ table.data-table {
 
 /* 我的页面 */
 .mp-profile-head {
-  background: #fff; border-radius: var(--radius-lg); padding: 20px 16px; margin-bottom: 12px;
-  display: flex; align-items: center; gap: 14px; box-shadow: var(--shadow-sm);
+  background: transparent; border-radius: 0; padding: 8px 0 16px;
+  margin-bottom: 0; display: flex; align-items: center; gap: 14px;
+  box-shadow: none;
 }
 .mp-avatar {
-  width: 56px; height: 56px; border-radius: 50%; background: #e5e7eb;
+  width: 58px; height: 58px; border-radius: 50%; background: #e5e7eb;
   display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden;
+  border: 2px solid #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
 }
+.mp-avatar-img { width: 100%; height: 100%; object-fit: cover; }
 .mp-avatar svg { width: 36px; height: 36px; fill: #9ca3af; }
 .mp-profile-meta { flex: 1; min-width: 0; }
+.mp-profile-name-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 .mp-profile-name { font-size: 17px; font-weight: 700; color: var(--c-gray-800); }
-.mp-profile-company { font-size: 12px; color: var(--c-gray-500); margin-top: 3px; }
+.mp-profile-company { font-size: 12px; color: var(--c-gray-500); margin-top: 4px; }
 .mp-profile-tag {
-  display: inline-flex; align-items: center; margin-top: 6px;
-  background: #eff6ff; color: var(--c-primary); font-size: 11px; font-weight: 600;
-  padding: 3px 8px; border-radius: 999px;
+  display: inline-flex; align-items: center;
+  background: rgba(29,78,216,0.08); color: var(--c-primary); font-size: 11px; font-weight: 600;
+  padding: 2px 8px; border-radius: 999px;
 }
 .mp-info-col { flex: 1; min-width: 320px; display: grid; gap: 16px; }
 .mp-info-col .badge { font-size: 10px; }
+
+/* 小程序底部弹窗选择器 */
+.mp-sheet-overlay {
+  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.45); z-index: 200; opacity: 0; visibility: hidden;
+  transition: all 0.25s ease; border-radius: 36px;
+}
+.mp-sheet-overlay.show { opacity: 1; visibility: visible; }
+.mp-sheet {
+  position: absolute; left: 0; right: 0; bottom: 0;
+  background: #fff; border-radius: 20px 20px 0 0;
+  padding-bottom: 12px;
+  transform: translateY(100%); transition: transform 0.25s ease;
+  max-height: 70vh; display: flex; flex-direction: column;
+}
+.mp-sheet-overlay.show .mp-sheet { transform: translateY(0); }
+.mp-sheet-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 16px; border-bottom: 1px solid var(--c-border);
+}
+.mp-sheet-title { font-size: 15px; font-weight: 600; color: var(--c-gray-800); }
+.mp-sheet-close { font-size: 14px; color: var(--c-gray-400); background: none; border: none; cursor: pointer; padding: 4px; }
+.mp-sheet-options { overflow-y: auto; padding: 8px 0; }
+.mp-sheet-option {
+  padding: 14px 16px; font-size: 15px; color: var(--c-gray-700);
+  text-align: center; cursor: pointer; transition: background 0.15s;
+  border-bottom: 1px solid #f1f5f9;
+}
+.mp-sheet-option:last-child { border-bottom: none; }
+.mp-sheet-option:active { background: #f8fafc; }
+.mp-sheet-option.selected { color: var(--c-primary); font-weight: 600; background: #eff6ff; }
+.mp-sheet-done {
+  margin: 4px 16px 0; padding: 12px 0; background: var(--c-primary); color: #fff;
+  border: none; border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer;
+}
 
 .text-center { text-align: center; }
 .text-right { text-align: right; }
@@ -3602,6 +3662,18 @@ function renderSystemLog() {
 function renderMiniProgramPreview() {
   const mpTab = App.state.mpTab || 'login';
   const quoteFilled = App.state.mpQuoteFilled;
+  const mpUnit = App.state.mpUnit || '万元/吨';
+  const mpReminder = App.state.mpReminder || '每日 15:30 提醒';
+  const mpCompany = App.state.mpCompany || '包头市金蒙稀土有限责任公司';
+  const mpProduct = App.state.mpProduct || '氧化镨钕（万元/吨）';
+  const mpBehavior = App.state.mpBehavior || '销售';
+  const mpAvatar = 'data:image/jpeg;base64,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';
+  const mpTitles = { quote: '报价填报', review: '移动审批', profile: '我的' };
+  const mpHeaderIcons = {
+    quote: `<svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>`,
+    review: `<svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2zm-2 1H8v-6c0-2.48 1.51-4.5 4-4.5s4 2.02 4 4.5v6z"/></svg>`,
+    profile: `<svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>`
+  };
   return `
     <div class="page-header">
       <div>
@@ -3652,42 +3724,36 @@ function renderMiniProgramPreview() {
           </div>
         </div>
 
-        ${mpTab !== 'login' ? `<div class="mp-header">包头稀土价格填报</div>` : ''}
+        ${mpTab !== 'login' ? `<div class="mp-header">
+          <div class="mp-header-title">${mpTitles[mpTab]}</div>
+          <div class="mp-header-icons">${mpHeaderIcons[mpTab]}</div>
+        </div>` : ''}
         <div class="mp-body" style="${mpTab === 'login' ? 'padding:0;' : ''}">
 
           <!-- Tab: 报价填报 -->
           <div class="mp-panel ${mpTab === 'quote' ? 'show' : ''}" data-tab="quote">
             <div class="mp-top-card">
               <div class="mp-greet">您好，金蒙稀土</div>
-              <div class="mp-subgreet">今日报价尚未提交 · 截止 16:00</div>
+              <div class="mp-subgreet">欢迎进行今日报价填报</div>
             </div>
             <div class="mp-page-body">
+              <div class="mp-info-bar">
+                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                <span>今日报价尚未提交 · 截止 16:00</span>
+              </div>
               <div class="mp-card">
                 <div class="mp-card-title">填写报价信息</div>
                 <div class="mp-form-cell">
                   <div class="mp-form-label"><span class="required">*</span>填报企业</div>
-                  <select class="mp-select">
-                    <option selected>包头市金蒙稀土有限责任公司</option>
-                    <option>北方稀土高科股份有限公司</option>
-                    <option>中国北方稀土（集团）高科技股份有限公司</option>
-                    <option>包头市玺骏稀土有限责任公司</option>
-                  </select>
+                  <div class="mp-select" onclick="App.openMpSheet('enterprise')">${mpCompany} <span style="color:#97a3b5;">▾</span></div>
                 </div>
                 <div class="mp-form-cell">
                   <div class="mp-form-label"><span class="required">*</span>报价产品</div>
-                  <select class="mp-select">
-                    <option selected>氧化镨钕（万元/吨）</option>
-                    <option>氧化镝（万元/吨）</option>
-                    <option>碳酸镧铈（万元/吨）</option>
-                    <option>金属镝（万元/吨）</option>
-                  </select>
+                  <div class="mp-select" onclick="App.openMpSheet('product')">${mpProduct} <span style="color:#97a3b5;">▾</span></div>
                 </div>
                 <div class="mp-form-cell">
                   <div class="mp-form-label"><span class="required">*</span>行为类型</div>
-                  <select class="mp-select">
-                    <option selected>销售</option>
-                    <option>采购</option>
-                  </select>
+                  <div class="mp-select" onclick="App.openMpSheet('behavior')">${mpBehavior} <span style="color:#97a3b5;">▾</span></div>
                 </div>
                 <div class="mp-form-row2">
                   <div class="mp-form-cell">
@@ -3740,9 +3806,13 @@ function renderMiniProgramPreview() {
           <div class="mp-panel ${mpTab === 'review' ? 'show' : ''}" data-tab="review">
             <div class="mp-top-card">
               <div class="mp-greet">待审核事项</div>
-              <div class="mp-subgreet">2 项待处理 · 请及时审批</div>
+              <div class="mp-subgreet">请及时处理下方报价审核</div>
             </div>
             <div class="mp-page-body">
+              <div class="mp-info-bar">
+                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                <span>2 项待处理 · 请及时审批</span>
+              </div>
               <div class="mp-card" style="padding-bottom:6px;">
                 <div class="mp-list-item blue" onclick="App.openReviewModal('RV20260818001','approve')">
                   <div class="mp-item-head">
@@ -3789,15 +3859,16 @@ function renderMiniProgramPreview() {
             <div class="mp-page-body" style="padding-top:14px;">
               <div class="mp-profile-head">
                 <div class="mp-avatar">
-                  <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                  <img class="mp-avatar-img" src="${mpAvatar}" alt="头像">
                 </div>
                 <div class="mp-profile-meta">
-                  <div class="mp-profile-name">刘工</div>
+                  <div class="mp-profile-name-row">
+                    <div class="mp-profile-name">刘工</div>
+                    <span class="mp-profile-tag">报价对接人</span>
+                  </div>
                   <div class="mp-profile-company">包头市金蒙稀土有限责任公司</div>
-                  <span class="mp-profile-tag">报价对接人</span>
                 </div>
               </div>
-              <div class="mp-card">
               <div class="mp-card">
                 <div class="mp-form-cell">
                   <div class="mp-form-label">联系电话</div>
@@ -3805,11 +3876,11 @@ function renderMiniProgramPreview() {
                 </div>
                 <div class="mp-form-cell">
                   <div class="mp-form-label">价格单位</div>
-                  <div class="mp-select">万元/吨 <span style="color:#97a3b5;">▾</span></div>
+                  <div class="mp-select" onclick="App.openMpSheet('unit')">${mpUnit} <span style="color:#97a3b5;">▾</span></div>
                 </div>
                 <div class="mp-form-cell">
                   <div class="mp-form-label">填报截止提醒</div>
-                  <div class="mp-select" onclick="App.toast('提醒设置已保存', 'success')">每日 15:30 提醒 <span style="color:#97a3b5;">▾</span></div>
+                  <div class="mp-select" onclick="App.openMpSheet('reminder')">${mpReminder} <span style="color:#97a3b5;">▾</span></div>
                 </div>
               </div>
               <button class="mp-ghost-btn" onclick="App.mpTab('login')">退出登录</button>
@@ -3819,7 +3890,6 @@ function renderMiniProgramPreview() {
         </div>
         
 
-      </div>
 ${mpTab !== 'login' ? `
         <div class="mp-tabbar">
           <div class="mp-tab ${mpTab === 'quote' ? 'active' : ''}" data-tab="quote" onclick="App.mpTab('quote')">
@@ -3836,6 +3906,18 @@ ${mpTab !== 'login' ? `
           </div>
         </div>
         ` : ''}
+        <!-- 底部弹窗选择器 -->
+        <div id="mpSheetOverlay" class="mp-sheet-overlay" onclick="if(event.target===this)App.closeMpSheet()">
+          <div class="mp-sheet">
+            <div class="mp-sheet-header">
+              <div></div>
+              <div class="mp-sheet-title" id="mpSheetTitle">请选择</div>
+              <button class="mp-sheet-close" onclick="App.closeMpSheet()">取消</button>
+            </div>
+            <div class="mp-sheet-options" id="mpSheetOptions"></div>
+            <button class="mp-sheet-done" onclick="App.closeMpSheet()">确定</button>
+          </div>
+        </div>
     </div>
       <div class="mp-info-col">
         <div class="card">
@@ -3945,6 +4027,11 @@ const App = {
     trendRange: 'week',
     mpHistRange: '7d',
     mpTab: 'login',
+    mpUnit: '万元/吨',
+    mpReminder: '每日 15:30 提醒',
+    mpCompany: '包头市金蒙稀土有限责任公司',
+    mpProduct: '氧化镨钕（万元/吨）',
+    mpBehavior: '销售',
     deptQuery: '',
     roleQuery: '',
     filters: {},   // 各列表筛选条件 { listKey: { field: value } }
@@ -5777,6 +5864,47 @@ const App = {
   mpGoQuote(product) {
     this.mpTab('quote');
     this.toast('已带入产品：' + product + '，请填写最高/最低价', 'info');
+  },
+
+  // ========== 小程序底部弹窗选择器 ==========
+  openMpSheet(type) {
+    const configs = {
+      unit: { title: '选择价格单位', options: ['万元/吨', '元/公斤', '美元/吨'], stateKey: 'mpUnit' },
+      reminder: { title: '选择提醒时间', options: ['每日 15:30 提醒', '每日 16:00 提醒', '不提醒'], stateKey: 'mpReminder' },
+      enterprise: { title: '选择填报企业', options: ['包头市金蒙稀土有限责任公司', '北方稀土高科股份有限公司', '中国北方稀土（集团）高科技股份有限公司', '包头市玺骏稀土有限责任公司'], stateKey: 'mpCompany' },
+      product: { title: '选择报价产品', options: ['氧化镨钕（万元/吨）', '氧化镝（万元/吨）', '碳酸镧铈（万元/吨）', '金属镝（万元/吨）'], stateKey: 'mpProduct' },
+      behavior: { title: '选择行为类型', options: ['销售', '采购'], stateKey: 'mpBehavior' },
+    };
+    const cfg = configs[type];
+    if (!cfg) return;
+    this._mpSheetType = type;
+    this._mpSheetStateKey = cfg.stateKey;
+    document.getElementById('mpSheetTitle').textContent = cfg.title;
+    const current = this.state[cfg.stateKey];
+    const optsHtml = cfg.options.map(opt => {
+      const safe = opt.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+      return `<div class="mp-sheet-option ${opt === current ? 'selected' : ''}" onclick="App.selectMpSheetOption(this, '${safe}')">${opt}</div>`;
+    }).join('');
+    document.getElementById('mpSheetOptions').innerHTML = optsHtml;
+    const overlay = document.getElementById('mpSheetOverlay');
+    if (overlay) overlay.classList.add('show');
+  },
+
+  selectMpSheetOption(el, value) {
+    document.querySelectorAll('.mp-sheet-option').forEach(o => o.classList.remove('selected'));
+    if (el) el.classList.add('selected');
+    if (this._mpSheetStateKey) {
+      this.state[this._mpSheetStateKey] = value;
+    }
+  },
+
+  closeMpSheet() {
+    const overlay = document.getElementById('mpSheetOverlay');
+    if (overlay) overlay.classList.remove('show');
+    if (this._mpSheetStateKey) {
+      this.refreshContent();
+      this._mpSheetStateKey = null;
+    }
   },
 
   // ========== 小程序历史报价范围切换（近7日 / 近30日） ==========
