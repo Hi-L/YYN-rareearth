@@ -2475,10 +2475,7 @@ function renderReviewHistory() {
               }).join('')}
             </tbody>
           </table>
-          ${renderPagination(_total_pm, _pg_pm.current, _pg_pm.size, 'pm')}
-
           ${renderPagination(_total_be, _pg_be.current, _pg_be.size, 'be')}
-
         </div>
       </div>
     </div>
@@ -2534,6 +2531,7 @@ function renderReviewHistory() {
               }).join('')}
             </tbody>
           </table>
+          ${renderPagination(_total_pm, _pg_pm.current, _pg_pm.size, 'pm')}
         </div>
       </div>
     </div>
@@ -2856,10 +2854,13 @@ function renderReports() {
     </div>
   `;
   return `
-    <div style="display:flex;justify-content:flex-end;margin-bottom:16px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin:24px 0 16px;">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <span style="display:inline-block;width:4px;height:14px;background:var(--c-primary);border-radius:2px;"></span>
+        <span style="font-size:15px;font-weight:600;color:var(--c-gray-800);">数据概览</span>
+      </div>
       <select class="form-select" style="width:130px;"><option>近7天</option><option>近30天</option><option>本月</option><option>本季度</option><option>自定义</option></select>
     </div>
-    ${sectionHeading('数据概览')}
     ${renderReportsOverview()}
     ${sectionHeading('企业报价')}
     ${renderReportsEnterprise()}
@@ -3885,7 +3886,7 @@ function renderMiniProgramPreview() {
 }
 
 function renderMessages() {  return `
-    <div style="display:flex;justify-content:flex-end;margin-bottom:16px;">
+    <div style="display:flex;justify-content:flex-start;margin-bottom:16px;">
       <button class="btn btn-sm" onclick="App.markAllRead()">全部已读</button>
     </div>
     <div class="card">
