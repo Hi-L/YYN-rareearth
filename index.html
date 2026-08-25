@@ -786,9 +786,10 @@ table.data-table {
 /* ========== 企业端小程序预览（手机壳） ========== */
 .mp-preview-wrap { display: flex; gap: 28px; align-items: flex-start; flex-wrap: wrap; }
 .mp-phone {
-  width: 300px; flex-shrink: 0; border-radius: 36px;
+  width: 300px; height: 640px; flex-shrink: 0; border-radius: 36px;
   border: 7px solid var(--c-gray-800); background: #f5f7fa;
   box-shadow: var(--shadow-lg); overflow: hidden; position: relative;
+  display: flex; flex-direction: column;
 }
 .mp-phone::before {
   content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%);
@@ -805,7 +806,7 @@ table.data-table {
   font-size: 15px; font-weight: 600; padding: 10px 0; position: relative; z-index: 1;
   border-bottom: 1px solid var(--c-border);
 }
-.mp-body { height: 472px; overflow-y: auto; background: #f5f7fa; }
+.mp-body { flex: 1; min-height: 0; overflow-y: auto; background: #f5f7fa; }
 .mp-panel { display: none; padding: 0; }
 .mp-panel.show { display: block; }
 
@@ -884,10 +885,15 @@ table.data-table {
 }
 .mp-form-row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .mp-select {
-  background: #fff; border: 1px solid var(--c-border); border-radius: 10px;
-  padding: 10px 12px; font-size: 14px; color: var(--c-gray-800);
-  display: flex; justify-content: space-between; align-items: center;
+  width: 100%; background: #fff; border: 1px solid var(--c-border); border-radius: 10px;
+  padding: 10px 28px 10px 12px; font-size: 14px; color: var(--c-gray-800);
+  appearance: none; -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='%2397a3b5'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 10px center;
+  outline: none; cursor: pointer;
 }
+.mp-select:focus { border-color: var(--c-primary); box-shadow: 0 0 0 3px rgba(59,130,246,0.1); }
+.mp-select:disabled { background: #f8fafc; color: var(--c-gray-400); cursor: not-allowed; }
 .mp-tip {
   font-size: 11px; color: var(--c-gray-400); margin: 2px 0 12px; line-height: 1.5;
 }
@@ -932,6 +938,25 @@ table.data-table {
 .mp-tab.active { color: var(--c-primary); font-weight: 600; }
 .mp-tab svg { width: 22px; height: 22px; }
 
+
+/* 我的页面 */
+.mp-profile-head {
+  background: #fff; border-radius: var(--radius-lg); padding: 20px 16px; margin-bottom: 12px;
+  display: flex; align-items: center; gap: 14px; box-shadow: var(--shadow-sm);
+}
+.mp-avatar {
+  width: 56px; height: 56px; border-radius: 50%; background: #e5e7eb;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden;
+}
+.mp-avatar svg { width: 36px; height: 36px; fill: #9ca3af; }
+.mp-profile-meta { flex: 1; min-width: 0; }
+.mp-profile-name { font-size: 17px; font-weight: 700; color: var(--c-gray-800); }
+.mp-profile-company { font-size: 12px; color: var(--c-gray-500); margin-top: 3px; }
+.mp-profile-tag {
+  display: inline-flex; align-items: center; margin-top: 6px;
+  background: #eff6ff; color: var(--c-primary); font-size: 11px; font-weight: 600;
+  padding: 3px 8px; border-radius: 999px;
+}
 .mp-info-col { flex: 1; min-width: 320px; display: grid; gap: 16px; }
 .mp-info-col .badge { font-size: 10px; }
 
@@ -3640,15 +3665,28 @@ function renderMiniProgramPreview() {
                 <div class="mp-card-title">填写报价信息</div>
                 <div class="mp-form-cell">
                   <div class="mp-form-label"><span class="required">*</span>填报企业</div>
-                  <div class="mp-select">包头市金蒙稀土有限责任公司 <span style="color:#97a3b5;">▾</span></div>
+                  <select class="mp-select">
+                    <option selected>包头市金蒙稀土有限责任公司</option>
+                    <option>北方稀土高科股份有限公司</option>
+                    <option>中国北方稀土（集团）高科技股份有限公司</option>
+                    <option>包头市玺骏稀土有限责任公司</option>
+                  </select>
                 </div>
                 <div class="mp-form-cell">
                   <div class="mp-form-label"><span class="required">*</span>报价产品</div>
-                  <div class="mp-select">氧化镨钕（万元/吨） <span style="color:#97a3b5;">▾</span></div>
+                  <select class="mp-select">
+                    <option selected>氧化镨钕（万元/吨）</option>
+                    <option>氧化镝（万元/吨）</option>
+                    <option>碳酸镧铈（万元/吨）</option>
+                    <option>金属镝（万元/吨）</option>
+                  </select>
                 </div>
                 <div class="mp-form-cell">
                   <div class="mp-form-label"><span class="required">*</span>行为类型</div>
-                  <div class="mp-select">销售 <span style="color:#97a3b5;">▾</span></div>
+                  <select class="mp-select">
+                    <option selected>销售</option>
+                    <option>采购</option>
+                  </select>
                 </div>
                 <div class="mp-form-row2">
                   <div class="mp-form-cell">
@@ -3662,7 +3700,10 @@ function renderMiniProgramPreview() {
                 </div>
                 <div class="mp-form-cell">
                   <div class="mp-form-label"><span class="required">*</span>佐证附件</div>
-                  <div class="mp-select" onclick="App.simulateUpload()">📎 报价单_20260818.png <span style="color:#97a3b5;">▾</span></div>
+                  <div style="position:relative;">
+                    <input class="mp-input" id="mp-file-display" value="📎 报价单_20260818.png" readonly onclick="document.getElementById('mp-file').click()" style="cursor:pointer;">
+                    <input type="file" id="mp-file" style="display:none;" onchange="document.getElementById('mp-file-display').value='📎 '+this.files[0].name; App.toast('附件已选择','success')">
+                  </div>
                 </div>
                 <div class="mp-status-ok">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
@@ -3744,17 +3785,18 @@ function renderMiniProgramPreview() {
 
           <!-- Tab: 我的 -->
           <div class="mp-panel ${mpTab === 'profile' ? 'show' : ''}" data-tab="profile">
-            <div class="mp-top-card" style="padding-bottom:36px;">
-              <div style="display:flex;align-items:center;gap:14px;">
-                <div style="width:54px;height:54px;background:rgba(255,255,255,0.2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;">刘</div>
-                <div>
-                  <div style="font-size:17px;font-weight:700;">刘工</div>
-                  <div style="font-size:12px;color:rgba(255,255,255,0.85);margin-top:3px;">包头市金蒙稀土有限责任公司</div>
-                  <div style="font-size:11px;color:rgba(255,255,255,0.7);margin-top:2px;">报价对接人</div>
+            <div class="mp-page-body" style="padding-top:14px;">
+              <div class="mp-profile-head">
+                <div class="mp-avatar">
+                  <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                </div>
+                <div class="mp-profile-meta">
+                  <div class="mp-profile-name">刘工</div>
+                  <div class="mp-profile-company">包头市金蒙稀土有限责任公司</div>
+                  <span class="mp-profile-tag">报价对接人</span>
                 </div>
               </div>
-            </div>
-            <div class="mp-page-body">
+              <div class="mp-card">
               <div class="mp-card">
                 <div class="mp-form-cell">
                   <div class="mp-form-label">联系电话</div>
