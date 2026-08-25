@@ -3817,7 +3817,10 @@ function renderMiniProgramPreview() {
           </div>
 
         </div>
-        ${mpTab !== 'login' ? `
+        
+
+      </div>
+${mpTab !== 'login' ? `
         <div class="mp-tabbar">
           <div class="mp-tab ${mpTab === 'quote' ? 'active' : ''}" data-tab="quote" onclick="App.mpTab('quote')">
             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l-5.5 9h11L12 2zm0 3.84L13.76 9h-3.52L12 5.84zM17.5 13c-1.56 0-3.08.24-4.5.69v8.06c1.42-.45 2.94-.69 4.5-.69 1.28 0 2.52.16 3.71.46.27.07.54.13.79.19v-8.32c-1.42-.42-2.93-.65-4.5-.65-1.7 0-3.32.27-4.85.76v8.27c-1.63-.55-3.4-.85-5.35-.85-1.56 0-3.08.24-4.5.69v8.06c1.42-.45 2.94-.69 4.5-.69 1.95 0 3.72.3 5.35.85 1.53-.49 3.15-.76 4.85-.76 1.56 0 3.08.24 4.5.69v-8.06c-1.42-.45-2.94-.69-4.5-.69-.34 0-.67.02-1 .05v-.01z"/></svg>
@@ -3833,8 +3836,7 @@ function renderMiniProgramPreview() {
           </div>
         </div>
         ` : ''}
-      </div>
-
+    </div>
       <div class="mp-info-col">
         <div class="card">
           <div class="card-header"><div class="card-title">页面清单</div></div>
@@ -3926,6 +3928,7 @@ function renderMessages() {  return `
     </div>
   `;
 }
+
 
 </script>
 <script>
@@ -5766,8 +5769,8 @@ const App = {
   // ========== 小程序预览 Tab 切换 ==========
   mpTab(tab) {
     this.state.mpTab = tab;
-    document.querySelectorAll('.mp-panel').forEach(p => p.classList.toggle('show', p.dataset.tab === tab));
-    document.querySelectorAll('.mp-tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
+    // header/tabbar/面板均按 state 条件渲染，必须重渲染才能正确出现
+    this.refreshContent();
   },
 
   // ========== 小程序行情 → 去填报 ==========
