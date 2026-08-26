@@ -655,19 +655,22 @@ table.data-table {
 .modal-overlay.show { display: flex; }
 .modal {
   background: #fff; border-radius: var(--radius-lg);
-  width: 90%; max-width: 600px; max-height: 85vh; overflow-y: auto;
+  width: 90%; max-width: 600px; max-height: 85vh;
   box-shadow: var(--shadow-lg);
+  display: flex; flex-direction: column;
 }
 .modal-header {
   padding: 16px 24px; border-bottom: 1px solid var(--c-border);
   display: flex; align-items: center; justify-content: space-between;
+  flex-shrink: 0;
 }
 .modal-title { font-size: 16px; font-weight: 600; color: var(--c-gray-800); }
 .modal-close { cursor: pointer; color: var(--c-gray-400); font-size: 20px; border: none; background: none; }
-.modal-body { padding: 24px; }
+.modal-body { padding: 24px; overflow-y: auto; min-height: 0; }
 .modal-footer {
   padding: 12px 24px; border-top: 1px solid var(--c-border);
   display: flex; justify-content: flex-end; gap: 8px;
+  background: #fff; flex-shrink: 0;
 }
 
 /* Toast */
@@ -1124,6 +1127,34 @@ const COLLECTION_RECORDS = [
   { id: 'CR20260818008', date: '2026-08-18', enterprise: '宁波复能稀土新材料股份有限公司', tradeType: '成交', product: '氧化铽', highPrice: 622.00, lowPrice: 618.00, status: 'submitted', submitTime: '16:10', collector: '王强', hasAttachment: true, attachment: ['CR20260818008_报价单.png'], deviation: '+0.32%' },
   { id: 'CR20260817009', date: '2026-08-17', enterprise: '包头市金蒙稀土有限责任公司', tradeType: '销售', product: '氧化镝', highPrice: 185.50, lowPrice: 184.00, status: 'published', submitTime: '14:28', collector: '张明', hasAttachment: true, attachment: ['CR20260817009_报价单.png'], deviation: '+0.11%' },
   { id: 'CR20260817010', date: '2026-08-17', enterprise: '内蒙古包钢和发稀土有限公司', tradeType: '销售', product: '氧化镨钕', highPrice: 48.60, lowPrice: 48.20, status: 'published', submitTime: '14:50', collector: '张明', hasAttachment: true, attachment: ['CR20260817010_报价单.png'], deviation: '+0.16%' },
+];
+
+// 报价表每日报价行（用于预览/下载弹窗，按参考图配置）
+const QUOTE_TABLE_ROWS = [
+  { name: '氧化镨钕', spec: 'Pr₆O₁₁+Nd₂O₃/TREO≥99%, Nd₂O₃/TREO≥75%, TREM≥99%，Pr≥20%~25%，Nd≥75%~80%', high: 72.80, low: 72.50, avg: 72.57, yest: 72.58, change: -0.01 },
+  { name: '金属镨钕', spec: 'Nd/TREM≥99.9%', high: 88.00, low: 87.50, avg: 87.78, yest: 87.74, change: 0.04 },
+  { name: '金属钕', spec: 'Nd/TREM≥99.9%', high: 96.00, low: 95.25, avg: 95.61, yest: 95.61, change: 0.00 },
+  { name: '氧化镝', spec: 'Dy₂O₃/TREO≥99.5%', high: 145.00, low: 143.00, avg: 143.43, yest: 142.14, change: 1.29 },
+  { name: '氧化铽', spec: 'Tb₄O₇/TREO≥99.99%', high: 675.00, low: 673.00, avg: 674.00, yest: 669.67, change: 4.33 },
+  { name: '氧化镧', spec: 'TREO≥97.5%  La₂O₃/REO≥99.99%', high: 0.61, low: 0.58, avg: 0.60, yest: 0.60, change: 0.00 },
+  { name: '氧化铈', spec: 'TREO≥99%  CeO₂/REO≥99.95%', high: 1.50, low: 1.40, avg: 1.44, yest: 1.44, change: 0.00 },
+  { name: '氧化镧铈', spec: 'TREO≥99%  La₂O₃/REO:35%±2  CeO₂/REO 65%±2', high: 0.62, low: 0.62, avg: 0.62, yest: 0.62, change: 0.00 },
+  { name: '金属铈', spec: 'TREM≥99%  Ce/TREM≥99%  C≤0.05%', high: 3.00, low: 2.80, avg: 2.92, yest: 2.92, change: 0.00 },
+  { name: '金属镧', spec: 'TREO≥99%  La/TREM≥99%  C≤0.05%', high: 2.20, low: 2.10, avg: 2.12, yest: 2.12, change: 0.00 },
+  { name: '金属镧铈', spec: 'TREO≥99%  La/TREM:35%±2; Ce/TREM:65%±2  Fe≤0.5% C≤0.05%', high: 2.10, low: 2.00, avg: 2.07, yest: 2.07, change: 0.00 },
+  { name: '碳酸镧（折百）', spec: 'TREO≥45% La₂O₃/REO≥99.95%', high: 0.40, low: 0.35, avg: 0.39, yest: 0.39, change: 0.00 },
+  { name: '碳酸铈（折百）', spec: 'TREO≥45% CeO₂/REO≥99.95%', high: 1.40, low: 1.35, avg: 1.36, yest: 1.36, change: 0.00 },
+  { name: '碳酸镧铈（实物）', spec: 'TREO≥45% La₂O₃/REO:33~37; CeO₂/REO: 63~68%', high: 0.240, low: 0.230, avg: 0.233, yest: 0.233, change: 0.00 },
+  { name: '氧化镨', spec: 'TREO≥99%  Pr₆O₁₁/TREO: 99.0%~99.9%', high: 77.80, low: 77.80, avg: 77.80, yest: 77.62, change: 0.18 },
+  { name: '氧化钕', spec: 'TREO≥99%  Nd₂O₃/REO: 99.0%~99.9%', high: 77.50, low: 77.00, avg: 77.31, yest: 77.31, change: 0.00 },
+  { name: '氧化镥', spec: 'Lu₂O₃/TREO≥99.5%', high: 510.00, low: 500.00, avg: 505.00, yest: 505.00, change: 0.00 },
+  { name: '氧化铕', spec: 'TREO≥99%  Eu₂O₃/REO≥99.99%', high: 17.50, low: 17.00, avg: 17.25, yest: 17.25, change: 0.00 },
+  { name: '氧化钆', spec: 'Gd₂O₃/TREO≥99.5%', high: 19.30, low: 19.20, avg: 19.24, yest: 19.26, change: -0.02 },
+  { name: '氧化钐', spec: 'Sm₂O₃/TREO≥99.5%', high: 1.70, low: 1.60, avg: 1.64, yest: 1.64, change: 0.00 },
+  { name: '氧化铒', spec: 'Er₂O₃/TREO≥99%', high: 62.50, low: 61.00, avg: 62.00, yest: 62.42, change: -0.42 },
+  { name: '氧化钬', spec: 'Ho₂O₃/TREO≥99.5%', high: 61.00, low: 60.00, avg: 60.25, yest: 59.78, change: 0.47 },
+  { name: '氧化钇', spec: 'Y₂O₃/TREO≥99.99%', high: 6.20, low: 5.80, avg: 5.96, yest: 5.97, change: -0.01 },
+  { name: '钆铁', spec: 'TREM≥99%，Gd≥75%', high: 18.50, low: 18.00, avg: 18.33, yest: 18.30, change: 0.03 },
 ];
 
 // 流程2：发布审核 —— 计算批次输出后，由统计人员提交，董事长终审（两级流程，无多级审批）
@@ -1903,11 +1934,9 @@ function renderCollection() {
     <div class="tabs">
       <div class="tab-item ${tab === 'entry' ? 'active' : ''}" onclick="App.setSubTab('entry')">快捷填报</div>
       <div class="tab-item ${tab === 'records' ? 'active' : ''}" onclick="App.setSubTab('records')">采集记录</div>
-      <div class="tab-item ${tab === 'import' ? 'active' : ''}" onclick="App.setSubTab('import')">批量导入</div>
     </div>
     ${tab === 'entry' ? renderCollectionEntry() : ''}
     ${tab === 'records' ? renderCollectionRecords() : ''}
-    ${tab === 'import' ? renderCollectionImport() : ''}
   `;
 }
 
@@ -1923,9 +1952,6 @@ function renderCollectionEntry() {
           </div>
         </div>
         <div class="card-body">
-          <div class="alert alert-info">
-            <strong>填报规则：</strong>计价单位统一万元/吨；最高价必填、最低价选填；每日16:30为报价截止时间，以末次提交为准；佐证附件为必传字段，至少上传1份材料，附件自动加水印。
-          </div>
           <div class="form-row">
             <div class="form-group">
               <label class="form-label">报价企业<span class="required">*</span></label>
@@ -1933,7 +1959,6 @@ function renderCollectionEntry() {
                 <option value="">请选择企业</option>
                 ${ENTERPRISES.filter(e => e.status === '合作中').map(e => `<option value="${e.id}">${e.name}</option>`).join('')}
               </select>
-              <div class="form-hint">仅展示当前采集员绑定企业，数据权限隔离</div>
             </div>
             <div class="form-group">
               <label class="form-label">产品名称<span class="required">*</span></label>
@@ -1941,14 +1966,12 @@ function renderCollectionEntry() {
                 <option value="">请选择产品</option>
                 ${PRODUCTS.map(p => `<option value="${p.id}">${p.name}（${p.category}）</option>`).join('')}
               </select>
-              <div class="form-hint">关联产品库，支持关键词联想</div>
             </div>
           </div>
           <div class="form-row">
             <div class="form-group">
               <label class="form-label">产品规格<span class="required">*</span></label>
               <input class="form-input" id="entrySpec" placeholder="选择产品后自动回显" disabled />
-              <div class="form-hint">跟随产品联动，无需手动录入</div>
             </div>
             <div class="form-group">
               <label class="form-label">行为类型<span class="required">*</span></label>
@@ -1958,24 +1981,17 @@ function renderCollectionEntry() {
                 <option>销售</option>
                 <option>成交</option>
               </select>
-              <div class="form-hint">购买 / 销售 / 成交，标识业务方向</div>
             </div>
           </div>
           <div class="form-row">
             <div class="form-group">
               <label class="form-label">最高价（万元/吨）<span class="required">*</span></label>
               <input class="form-input" id="entryHighPrice" type="number" step="0.01" placeholder="数值，保留2位小数" oninput="App.onPriceInput()" />
-              <div class="form-hint">核心报价字段，触发双阈值校验</div>
             </div>
             <div class="form-group">
               <label class="form-label">最低价（万元/吨）<span style="font-weight:400;color:#97a3b5;font-size:11px;">（选填）</span></label>
               <input class="form-input" id="entryLowPrice" type="number" step="0.01" placeholder="数值，保留2位小数" />
-              <div class="form-hint">填写后参与计算，空值不校验</div>
             </div>
-          </div>
-          <div class="unit-display" style="margin-bottom:16px;">
-            <span class="unit-value">计价单位：万元/吨</span>
-            <span class="unit-src">由系统参数配置统一设定（辅助信息，非填报字段）</span>
           </div>
 
           <div id="thresholdPanel" style="display:none;">
@@ -2055,6 +2071,9 @@ function renderCollectionRecords() {
   if (fv.collector) records = records.filter(r => r.collector === fv.collector);
   App.state.filterCounts.cr = records.length;
 
+  // 默认不显示已拦截的记录
+  records = records.filter(r => r.status !== 'blocked');
+
   // ===== 分页 =====
   const pg = App.state.pages.cr = App.state.pages.cr || { current: 1, size: 10 };
   const total = records.length;
@@ -2065,8 +2084,9 @@ function renderCollectionRecords() {
   return `
     <div class="card">
       <div class="card-header">
-        <div class="card-title">采集记录</div>
+        <div></div>
         <div style="display:flex;gap:8px;">
+          <button class="btn btn-sm" onclick="App.simulateBatchImport()">批量导入</button>
           <button class="btn btn-sm" onclick="App.exportRecords()">导出Excel</button>
         </div>
       </div>
@@ -2074,7 +2094,7 @@ function renderCollectionRecords() {
         ${filterBar([
           { label: '企业名称', control: App.mselFilter('flt_cr_enterprise', '企业', ENTERPRISES.map(e => e.name)).replace('class="msel" id="flt_cr_enterprise"', 'class="msel" id="flt_cr_enterprise" data-flt="enterprise"') },
           { label: '产品', control: App.mselFilter('flt_cr_product', '产品', PRODUCTS.map(p => p.name)).replace('class="msel" id="flt_cr_product"', 'class="msel" id="flt_cr_product" data-flt="product"') },
-          { label: '状态', control: '<select class="form-select" data-flt="status"><option value="">全部</option><option>草稿</option><option>已提交</option><option>审核中</option><option>预警</option><option>已拦截</option><option>已发布</option></select>' },
+          { label: '状态', control: '<select class="form-select" data-flt="status"><option value="">全部</option><option>草稿</option><option>已提交</option><option>审核中</option><option>预警</option><option>已发布</option></select>' },
           { label: '日期', control: '<input class="form-input" type="date" data-flt="date" />' },
           { label: '采集员', control: '<select class="form-select" data-flt="collector"><option value="">全部</option><option>张明</option><option>李芳</option><option>王强</option></select>', fold: true },
         ], 'cr')}
@@ -2185,9 +2205,6 @@ function renderProcessingCalc() {
           </div>
         </div>
         <div class="card-body" style="padding:0;">
-          <div class="alert alert-info" style="margin:16px 16px 0;">
-            <strong>处理规则：</strong>自动归集当日所有有效报价；校验结果由系统按提醒阈值自动标识；勾选需要参与计算的报价数据后点击「执行计算」，结果输出至「结果输出」模块；如需调整结果可重新勾选后再计算。所有修改留痕备注。
-          </div>
           <div style="display:flex;gap:12px;align-items:center;padding:12px 16px 0;flex-wrap:wrap;">
             <div class="filter-item">
               <label class="filter-label">企业</label>
@@ -2222,14 +2239,13 @@ function renderProcessingCalc() {
                   <th class="col-num">最低价</th>
                   <th class="col-num">偏差</th>
                   <th>校验结果</th>
-                  <th>操作</th>
                 </tr>
               </thead>
               <tbody>
                 ${records.map(r => {
                   const isWarn = r.status === 'warning';
                   return `
-                  <tr>
+                  <tr style="${isWarn ? 'background:#fff2f0;' : ''}">
                     <td class="check-col"><input type="checkbox" name="calcRow" value="${r.id}" checked /></td>
                     <td style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${r.enterprise}</td>
                     <td>${r.product}</td>
@@ -2238,10 +2254,6 @@ function renderProcessingCalc() {
                     <td class="col-num ${isWarn ? 'text-warning font-bold' : ''}">${r.deviation}</td>
                     <td>
                       ${isWarn ? '<span class="badge badge-warning">⚠ 超提醒阈值</span>' : '<span class="badge badge-success">✓ 正常</span>'}
-                    </td>
-                    <td>
-                      <button class="btn-xs btn-primary" onclick="App.openCorrectModal('${r.id}')">修正</button>
-                      <button class="btn-xs" onclick="App.viewRecord('${r.id}')">详情</button>
                     </td>
                   </tr>
                   `;
@@ -4863,6 +4875,8 @@ const App = {
 
   closeModal() {
     document.getElementById('modalOverlay').classList.remove('show');
+    const modal = document.getElementById('modal');
+    if (modal) modal.style.maxWidth = '';
   },
 
   // ========== 筛选折叠（更多筛选） ==========
@@ -5427,75 +5441,77 @@ const App = {
 
   // ========== 报价表图片预览下载（文档4.2.3 报价表展示字段规范） ==========
   openQuoteTablePreview() {
-    const rows = PRODUCTS.slice(0, 6).map(p => {
-      const avg = parseFloat((p.yestAvg * 1.004).toFixed(2));
-      const delta = parseFloat((avg - p.yestAvg).toFixed(2));
-      const deltaHtml = delta > 0
-        ? `<span style="color:#c0392b;font-weight:600;">↑ +${delta.toFixed(2)}</span>`
-        : delta < 0
-          ? `<span style="color:#1c8a4d;font-weight:600;">↓ ${delta.toFixed(2)}</span>`
-          : '<span style="color:#1f2a3d;">—</span>';
+    const fmt = n => n < 1 ? n.toFixed(3) : n.toFixed(2);
+    const dateStr = '2026年8月25日 星期二';
+    const rows = QUOTE_TABLE_ROWS.map(p => {
+      const change = p.change;
+      let changeHtml;
+      if (change > 0) {
+        changeHtml = `<span style="color:#c0392b;font-weight:600;">${change.toFixed(2)} ↑</span>`;
+      } else if (change < 0) {
+        changeHtml = `<span style="color:#1c8a4d;font-weight:600;">${change.toFixed(2)} ↓</span>`;
+      } else {
+        changeHtml = `<span style="color:#1f2a3d;">0.00 —</span>`;
+      }
       return `
         <tr>
-          <td style="padding:5px 12px;border:1px solid #dfe5ee;text-align:left;">${p.name}</td>
-          <td style="padding:5px 12px;border:1px solid #dfe5ee;text-align:left;">${p.spec}</td>
-          <td style="padding:5px 12px;border:1px solid #dfe5ee;text-align:right;">${p.thirdPartyHigh.toFixed(2)}</td>
-          <td style="padding:5px 12px;border:1px solid #dfe5ee;text-align:right;">${p.thirdPartyLow.toFixed(2)}</td>
-          <td style="padding:5px 12px;border:1px solid #dfe5ee;text-align:right;font-weight:700;">${avg.toFixed(2)}</td>
-          <td style="padding:5px 12px;border:1px solid #dfe5ee;text-align:right;color:#64748b;">${p.yestAvg.toFixed(2)}</td>
-          <td style="padding:5px 12px;border:1px solid #dfe5ee;text-align:center;">${deltaHtml}</td>
+          <td style="padding:6px 8px;border:1px solid #d9d9d9;text-align:left;vertical-align:middle;">${p.name}</td>
+          <td style="padding:6px 8px;border:1px solid #d9d9d9;text-align:left;vertical-align:middle;font-size:12px;">${p.spec}</td>
+          <td style="padding:6px 8px;border:1px solid #d9d9d9;text-align:right;vertical-align:middle;">${fmt(p.high)}</td>
+          <td style="padding:6px 8px;border:1px solid #d9d9d9;text-align:right;vertical-align:middle;">${fmt(p.low)}</td>
+          <td style="padding:6px 8px;border:1px solid #d9d9d9;text-align:right;vertical-align:middle;font-weight:700;">${fmt(p.avg)}</td>
+          <td style="padding:6px 8px;border:1px solid #d9d9d9;text-align:right;vertical-align:middle;color:#64748b;">${fmt(p.yest)}</td>
+          <td style="padding:6px 8px;border:1px solid #d9d9d9;text-align:center;vertical-align:middle;white-space:nowrap;">${changeHtml}</td>
         </tr>`;
     }).join('');
     const modal = document.getElementById('modal');
+    modal.style.maxWidth = '900px';
     modal.innerHTML = `
       <div class="modal-header">
-        <div class="modal-title">报价表预览 - 2026年8月18日日报</div>
+        <div class="modal-title">报价表预览 - 2026年8月25日日报</div>
         <button class="modal-close" onclick="App.closeModal()">×</button>
       </div>
-      <div class="modal-body">
-        <div class="alert alert-info" style="margin-bottom:12px;">
-          <strong>报价表图片：</strong>由计算结果自动生成，带企业水印，可下载后随行情发布。
-        </div>
-        <div style="border:1px solid #dfe5ee;border-radius:8px;background:#f7f9fc;padding:20px;overflow-x:auto;">
-          <div style="background:#fff;border:1px solid #dfe5ee;border-radius:6px;padding:22px 26px;box-shadow:0 4px 12px rgba(15,35,65,0.08);min-width:560px;">
-            <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
-              <div style="width:34px;height:34px;background:linear-gradient(135deg,#3b82f6,#1a4d8c);border-radius:6px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:15px;flex-shrink:0;">稀</div>
-              <div style="font-size:11px;color:#64748b;line-height:1.4;">包头稀土产品交易所<br/>BAOTOU RARE EARTH PRODUCTS EXCHANGE</div>
-            </div>
-            <div style="text-align:center;font-size:18px;font-weight:700;color:#1f2a3d;letter-spacing:3px;">稀土产品每日报价表</div>
-            <div style="display:flex;justify-content:space-between;font-size:11px;color:#64748b;margin:8px 0 12px;">
-              <span>2026年8月18日 星期二</span>
-              <span>单位：万元/吨</span>
-            </div>
-            <table style="border-collapse:collapse;font-size:12px;color:#475569;width:100%;">
-              <thead>
-                <tr style="background:#f7f9fc;color:#64748b;">
-                  <th style="padding:6px 12px;border:1px solid #dfe5ee;text-align:left;font-weight:600;">产品名称</th>
-                  <th style="padding:6px 12px;border:1px solid #dfe5ee;text-align:left;font-weight:600;">产品规格</th>
-                  <th style="padding:6px 12px;border:1px solid #dfe5ee;text-align:right;font-weight:600;">最高价</th>
-                  <th style="padding:6px 12px;border:1px solid #dfe5ee;text-align:right;font-weight:600;">最低价</th>
-                  <th style="padding:6px 12px;border:1px solid #dfe5ee;text-align:right;font-weight:600;">均价</th>
-                  <th style="padding:6px 12px;border:1px solid #dfe5ee;text-align:right;font-weight:600;">昨日均价</th>
-                  <th style="padding:6px 12px;border:1px solid #dfe5ee;text-align:center;font-weight:600;">变化量</th>
-                </tr>
-              </thead>
-              <tbody>${rows}</tbody>
-            </table>
-            <div style="margin-top:14px;padding-top:12px;border-top:1px dashed #c9d3e0;">
-              <div style="font-size:10px;color:#97a3b5;line-height:1.8;">
-                <b>免责声明：</b>本价格信息（含税价）由包头稀土产品交易所向行业企业采集所得，仅为稀土行业企业提供参考，不构成投资建议，不对任何企业或个人使用该价格信息产生的任何后果及影响承担任何法律责任。
+      <div class="modal-body" style="padding:0;">
+        <div style="border:1px solid #d9d9d9;background:#fff;overflow-x:auto;">
+          <div style="min-width:760px;padding:0;">
+            <div style="background:#c00000;padding:12px 20px;display:flex;align-items:center;gap:14px;">
+              <div style="width:44px;height:44px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;color:#c00000;font-weight:800;font-size:16px;flex-shrink:0;">RE</div>
+              <div style="color:#fff;line-height:1.3;">
+                <div style="font-size:16px;font-weight:700;letter-spacing:1px;">包头稀土产品交易所</div>
+                <div style="font-size:10px;opacity:0.9;">BAOTOU RARE EARTH PRODUCTS EXCHANGE</div>
               </div>
-              <div style="display:flex;gap:6px;margin-top:10px;">
-                <div style="flex:1;background:#fae6e3;border-radius:4px;padding:6px;text-align:center;font-size:11px;color:#8f2a20;">看涨 <b>${WEEK_FORECAST.up}%</b></div>
-                <div style="flex:1;background:#e2f3ea;border-radius:4px;padding:6px;text-align:center;font-size:11px;color:#1c5c37;">看跌 <b>${WEEK_FORECAST.down}%</b></div>
-                <div style="flex:1;background:#eef2f7;border-radius:4px;padding:6px;text-align:center;font-size:11px;color:#475569;">持平 <b>${WEEK_FORECAST.flat}%</b></div>
+              <div style="margin-left:auto;color:#fff;font-size:18px;font-weight:700;letter-spacing:3px;">稀土产品每日报价表</div>
+            </div>
+            <div style="padding:12px 20px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;font-size:13px;color:#333;margin-bottom:10px;">
+                <span style="font-weight:700;">${dateStr}</span>
+                <span>单位：万元/吨</span>
+              </div>
+              <table style="border-collapse:collapse;font-size:13px;color:#333;width:100%;">
+                <thead>
+                  <tr style="background:#f7f7f7;">
+                    <th style="padding:8px;border:1px solid #d9d9d9;text-align:center;font-weight:700;width:90px;">产品名称</th>
+                    <th style="padding:8px;border:1px solid #d9d9d9;text-align:center;font-weight:700;">产品规格</th>
+                    <th style="padding:8px;border:1px solid #d9d9d9;text-align:center;font-weight:700;width:72px;">最高价</th>
+                    <th style="padding:8px;border:1px solid #d9d9d9;text-align:center;font-weight:700;width:72px;">最低价</th>
+                    <th style="padding:8px;border:1px solid #d9d9d9;text-align:center;font-weight:700;width:72px;">均价</th>
+                    <th style="padding:8px;border:1px solid #d9d9d9;text-align:center;font-weight:700;width:80px;">昨日均价</th>
+                    <th style="padding:8px;border:1px solid #d9d9d9;text-align:center;font-weight:700;width:80px;">变化量</th>
+                  </tr>
+                </thead>
+                <tbody>${rows}</tbody>
+              </table>
+              <div style="margin-top:12px;padding-top:10px;border-top:1px dashed #c9c9c9;">
+                <div style="font-size:11px;color:#666;line-height:1.7;">
+                  <b>免责声明：</b>本价格信息（含税价）由包头稀土产品交易所向行业企业采集所得，仅为稀土行业企业提供参考，不构成投资建议，不对任何企业或个人使用该价格信息产生的任何后果及影响承担任何法律责任。
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
       <div class="modal-footer">
-        <button class="btn" onclick="App.downloadAttachment('稀土产品每日报价表_20260818.png')">下载报价表图片</button>
+        <button class="btn" onclick="App.downloadAttachment('稀土产品每日报价表_20260825.png')">下载报价表图片</button>
         <button class="btn btn-primary" onclick="App.closeModal()">关闭</button>
       </div>
     `;
@@ -6255,6 +6271,7 @@ const App = {
 
   // ========== 批量导入模拟 ==========
   simulateBatchImport() {
+    App.state.batchImportCount = App.state.batchImportCount || 1;
     const modal = document.getElementById('modal');
     modal.innerHTML = `
       <div class="modal-header">
@@ -6280,10 +6297,26 @@ const App = {
       </div>
       <div class="modal-footer">
         <button class="btn" onclick="App.closeModal()">取消</button>
-        <button class="btn btn-primary" onclick="App.closeModal(); App.toast('批量导入完成：46条已入库，2条待修正', 'success')">确认导入</button>
+        <button class="btn btn-primary" onclick="App.confirmBatchImport()">确认导入</button>
       </div>
     `;
     document.getElementById('modalOverlay').classList.add('show');
+  },
+
+  confirmBatchImport() {
+    // 模拟导入：生成 3 条新采集记录追加到列表，并刷新采集记录页
+    const baseId = 900 + (App.state.batchImportCount || 1);
+    const today = new Date().toISOString().slice(0, 10);
+    const newRecords = [
+      { id: 'CR' + (baseId), date: today, enterprise: '导入企业 A（示例）', tradeType: '销售', product: '氧化镨钕', highPrice: 48.75, lowPrice: 48.40, status: 'submitted', submitTime: '09:30', collector: '系统导入', hasAttachment: true, attachment: ['IMPORT_' + baseId + '_报价单.png'], deviation: '+0.62%' },
+      { id: 'CR' + (baseId + 1), date: today, enterprise: '导入企业 B（示例）', tradeType: '成交', product: '氧化镝', highPrice: 186.20, lowPrice: 184.80, status: 'submitted', submitTime: '09:31', collector: '系统导入', hasAttachment: true, attachment: ['IMPORT_' + (baseId + 1) + '_报价单.png'], deviation: '+0.25%' },
+      { id: 'CR' + (baseId + 2), date: today, enterprise: '导入企业 C（示例）', tradeType: '销售', product: '氧化铽', highPrice: 621.50, lowPrice: 618.00, status: 'warning', submitTime: '09:32', collector: '系统导入', hasAttachment: true, attachment: ['IMPORT_' + (baseId + 2) + '_报价单.png'], deviation: '+1.85%' },
+    ];
+    newRecords.forEach(r => COLLECTION_RECORDS.unshift(r));
+    App.state.batchImportCount = (App.state.batchImportCount || 1) + 1;
+    App.closeModal();
+    App.refreshContent();
+    App.toast('批量导入完成：已新增 3 条采集记录', 'success');
   },
 
   // ========== 小程序提交报价 ==========
