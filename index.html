@@ -307,6 +307,29 @@ body {
 .msel-actions button:hover { text-decoration: underline; }
 .msel-count { font-size: 11px; color: var(--c-gray-500); }
 
+/* RuoYi 风格：左树右表布局 */
+.ruoyi-layout { display: grid; grid-template-columns: 260px 1fr; gap: 16px; align-items: start; }
+.ruoyi-left { min-width: 0; }
+.ruoyi-right { min-width: 0; }
+.ruoyi-tree { display: flex; flex-direction: column; gap: 2px; }
+.ruoyi-tree-node {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 10px; border-radius: var(--radius-sm);
+  font-size: 13px; color: var(--c-gray-700); cursor: pointer;
+  transition: all 0.15s;
+}
+.ruoyi-tree-node:hover { background: var(--c-gray-100); color: var(--c-primary); }
+.ruoyi-tree-node.active { background: var(--c-primary-50); color: var(--c-primary); font-weight: 500; }
+.ruoyi-tree-node svg { flex-shrink: 0; opacity: 0.8; }
+
+/* RuoYi 风格按钮 */
+.btn-success { background: #1c8a4d; color: #fff; border-color: #1c8a4d; }
+.btn-success:hover { background: #166a3d; }
+.btn-warning { background: #f59e0b; color: #fff; border-color: #f59e0b; }
+.btn-warning:hover { background: #d97706; }
+.btn-danger { background: #ef4444; color: #fff; border-color: #ef4444; }
+.btn-danger:hover { background: #dc2626; }
+
 /* Unit auxiliary display */
 .unit-display {
   display: flex; align-items: center; gap: 8px;
@@ -959,6 +982,11 @@ table.data-table {
 .mp-item-time { font-size: 11px; color: var(--c-gray-400); margin-top: 6px; }
 .mp-item-price { font-size: 16px; font-weight: 700; color: var(--c-gray-800); }
 .mp-item-price .unit { font-size: 10px; font-weight: 400; color: var(--c-gray-400); margin-left: 2px; }
+.mp-edit-btn {
+  border: 1px solid var(--c-primary); background: rgba(29,78,216,0.06);
+  color: var(--c-primary); font-size: 11px; font-weight: 600;
+  padding: 3px 10px; border-radius: 999px; cursor: pointer;
+}
 
 /* Tabbar */
 .mp-tabbar {
@@ -974,27 +1002,43 @@ table.data-table {
 
 
 /* 我的页面 */
-.mp-profile-head {
-  background: transparent; border-radius: 0; padding: 8px 0 16px;
-  margin-bottom: 0; display: flex; align-items: center; gap: 14px;
-  box-shadow: none;
+.mp-profile-card {
+  background: #fff; border-radius: var(--radius-lg);
+  padding: 18px; margin-bottom: 12px;
+  display: flex; align-items: center; gap: 14px;
+  box-shadow: var(--shadow-sm);
 }
-.mp-avatar {
-  width: 58px; height: 58px; border-radius: 50%; background: #e5e7eb;
+.mp-avatar-large {
+  width: 64px; height: 64px; border-radius: 50%; background: #e5e7eb;
   display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden;
-  border: 2px solid #fff;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  border: 2px solid #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.08);
 }
 .mp-avatar-img { width: 100%; height: 100%; object-fit: cover; }
-.mp-avatar svg { width: 36px; height: 36px; fill: #9ca3af; }
-.mp-profile-meta { flex: 1; min-width: 0; }
-.mp-profile-name-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-.mp-profile-name { font-size: 17px; font-weight: 700; color: var(--c-gray-800); }
+.mp-profile-info { flex: 1; min-width: 0; }
+.mp-profile-name { font-size: 17px; font-weight: 700; color: var(--c-gray-800); margin-bottom: 4px; }
 .mp-profile-company { font-size: 12px; color: var(--c-gray-500); margin-top: 4px; }
+.mp-profile-phone { font-size: 12px; color: var(--c-gray-400); margin-top: 2px; }
 .mp-profile-tag {
   display: inline-flex; align-items: center;
   background: rgba(29,78,216,0.08); color: var(--c-primary); font-size: 11px; font-weight: 600;
   padding: 2px 8px; border-radius: 999px;
+}
+.mp-menu-card {
+  background: #fff; border-radius: var(--radius-lg);
+  padding: 6px 0; margin-bottom: 12px;
+  box-shadow: var(--shadow-sm);
+}
+.mp-menu-item {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 16px; font-size: 14px; color: var(--c-gray-700);
+  cursor: pointer; transition: background 0.15s;
+  border-bottom: 1px solid var(--c-border);
+}
+.mp-menu-item:last-child { border-bottom: none; }
+.mp-menu-item:hover { background: var(--c-gray-50); }
+.mp-menu-icon {
+  width: 28px; height: 28px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
 }
 .mp-info-col { flex: 1; min-width: 320px; display: grid; gap: 16px; }
 .mp-info-col .badge { font-size: 10px; }
@@ -1277,9 +1321,9 @@ const OPERATION_LOGS = [
   { time: '2026-08-18 16:42:08', user: '陈思远', action: '提交审核', target: '氧化镝 8月18日报价', ip: '10.0.1.15', detail: '计算批次已提交，待董事长终审' },
   { time: '2026-08-18 16:35:44', user: '陈思远', action: '批量计算', target: '8月18日全品类', ip: '10.0.1.15', detail: '8个品类计算完成，异常1条已拦截' },
   { time: '2026-08-18 16:30:00', user: '系统', action: '截止提醒', target: '采集员群组', ip: '-', detail: '报价截止时间到达，自动锁定当日填报' },
-  { time: '2026-08-18 15:48:22', user: '王强', action: '填报被拦截', target: '碳酸镧铈-益阳鸿源', ip: '10.0.2.33', detail: '超限制阈值，系统自动拦截禁止提交' },
-  { time: '2026-08-18 15:35:10', user: '王强', action: '填报提交', target: '金属镝-乐山有研', ip: '10.0.2.33', detail: '超提醒阈值，预警确认后提交' },
-  { time: '2026-08-18 14:32:05', user: '张明', action: '填报提交', target: '氧化镨钕-金蒙稀土', ip: '10.0.2.11', detail: '正常提交，偏差+0.58%' },
+  { time: '2026-08-18 15:48:22', user: '王强', action: '填报被拦截', target: '碳酸镧铈-益阳鸿源', ip: '10.0.2.33', detail: '超限制阈值，系统自动拦截禁止提交', before: '2.85 万元/吨', after: '4.20 万元/吨' },
+  { time: '2026-08-18 15:35:10', user: '王强', action: '填报提交', target: '金属镝-乐山有研', ip: '10.0.2.33', detail: '超提醒阈值，预警确认后提交', before: '185.00 万元/吨', after: '186.50 万元/吨' },
+  { time: '2026-08-18 14:32:05', user: '张明', action: '价格修正', target: '氧化镨钕-金蒙稀土', ip: '10.0.2.11', detail: '采集员修正报价后重新提交', before: '48.12 万元/吨', after: '48.65 万元/吨' },
   { time: '2026-08-17 18:00:00', user: '系统', action: '定时发布', target: '8月17日稀土价格行情', ip: '-', detail: '已推送至移动短信平台/新华社' },
   { time: '2026-08-17 17:30:15', user: '孙志强', action: '终审通过', target: '8月17日全品类行情', ip: '10.0.1.05', detail: '终审通过，自动触发定时发布' },
 ];
@@ -2205,30 +2249,12 @@ function renderProcessingCalc() {
           </div>
         </div>
         <div class="card-body" style="padding:0;">
-          <div style="display:flex;gap:12px;align-items:center;padding:12px 16px 0;flex-wrap:wrap;">
-            <div class="filter-item">
-              <label class="filter-label">企业</label>
-              <select class="form-select" style="width:200px;padding:6px 10px;">
-                <option value="">全部</option>
-                ${ENTERPRISES.filter(e => e.status === '合作中').map(e => `<option>${e.name}</option>`).join('')}
-              </select>
-            </div>
-            <div class="filter-item">
-              <label class="filter-label">产品</label>
-              <select class="form-select" style="width:160px;padding:6px 10px;">
-                <option value="">全部</option>
-                ${PRODUCTS.map(p => `<option>${p.name}</option>`).join('')}
-              </select>
-            </div>
-            <div class="filter-item">
-              <label class="filter-label">行为类型</label>
-              <select class="form-select" style="width:120px;padding:6px 10px;">
-                <option value="">全部</option>
-                <option>购买</option><option>销售</option><option>成交</option>
-              </select>
-            </div>
-          </div>
-          <div class="table-wrap" style="margin-top:16px;">
+          ${filterBar([
+            { label: '企业', control: '<select class="form-select"><option value="">全部</option>' + ENTERPRISES.filter(e => e.status === '合作中').map(e => '<option>' + e.name + '</option>').join('') + '</select>' },
+            { label: '产品', control: '<select class="form-select"><option value="">全部</option>' + PRODUCTS.map(p => '<option>' + p.name + '</option>').join('') + '</select>' },
+            { label: '行为类型', control: '<select class="form-select"><option value="">全部</option><option>购买</option><option>销售</option><option>成交</option></select>' },
+          ], 'pc')}
+          <div class="table-wrap">
             <table class="data-table">
               <thead>
                 <tr>
@@ -2369,11 +2395,9 @@ function renderReview() {
     <div class="tabs">
       <div class="tab-item ${tab === 'pending' ? 'active' : ''}" onclick="App.setSubTab('pending')">待审核 <span class="tab-badge">${pendingCount}</span></div>
       <div class="tab-item ${tab === 'history' ? 'active' : ''}" onclick="App.setSubTab('history')">审核记录</div>
-      <div class="tab-item ${tab === 'anomaly' ? 'active' : ''}" onclick="App.setSubTab('anomaly')">异常归集</div>
     </div>
     ${tab === 'pending' ? renderReviewPending() : ''}
     ${tab === 'history' ? renderReviewHistory() : ''}
-    ${tab === 'anomaly' ? renderReviewAnomaly() : ''}
   `;
 }
 
@@ -3069,7 +3093,7 @@ function renderBaseData() {
       <div class="tab-item ${tab === 'enterprise' ? 'active' : ''}" onclick="App.setSubTab('enterprise')">企业管理</div>
       <div class="tab-item ${tab === 'product' ? 'active' : ''}" onclick="App.setSubTab('product')">产品管理</div>
       <div class="tab-item ${tab === 'customer' ? 'active' : ''}" onclick="App.setSubTab('customer')">潜在客户</div>
-      <div class="tab-item ${tab === 'params' ? 'active' : ''}" onclick="App.setSubTab('params')">系统参数配置</div>
+      <div class="tab-item ${tab === 'params' ? 'active' : ''}" onclick="App.setSubTab('params')">业务参数</div>
     </div>
     ${tab === 'enterprise' ? renderBaseDataEnterprise() : ''}
     ${tab === 'product' ? renderBaseDataProduct() : ''}
@@ -3295,27 +3319,6 @@ function renderBaseDataParams() {
         </div>
       </div>
     </div>
-    <div class="card">
-      <div class="card-header">
-        <div class="card-title">数据备份恢复</div>
-        <span class="badge badge-success">每日自动备份正常</span>
-      </div>
-      <div class="card-body">
-        <div class="alert alert-info">
-          <strong>备份规则：</strong>系统每日自动全量数据备份，备份文件加密存储；支持管理员手动触发备份与一键恢复。
-        </div>
-        <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
-          <div>
-            <div style="font-size:12px;color:#64748b;">最近备份</div>
-            <div style="font-size:14px;font-weight:600;color:#1f2a3d;">2026-08-19 02:00（自动）· 加密存储</div>
-          </div>
-          <div style="margin-left:auto;display:flex;gap:8px;">
-            <button class="btn btn-sm" onclick="App.toast('手动备份已触发，预计2分钟完成', 'info')">手动触发备份</button>
-            <button class="btn btn-sm btn-danger" onclick="App.toast('一键恢复需二次确认，请联系系统管理员执行', 'warning')">一键恢复</button>
-          </div>
-        </div>
-      </div>
-    </div>
   `;
 }
 
@@ -3340,52 +3343,53 @@ function renderSystem() {
 }
 
 function renderSystemMenu() {
-  const _pg_bm = App.state.pages['bm'] = App.state.pages['bm'] || { current: 1, size: 10 };
-  const _src_bm = MENU_LIST;
-  const _total_bm = _src_bm.length;
-  const _rows_bm = _src_bm.slice((_pg_bm.current - 1) * _pg_bm.size, _pg_bm.current * _pg_bm.size);
+  const menuRows = (parent, level = 0) => MENU_LIST.filter(m => m.parent === parent).sort((a,b) => a.sort - b.sort).map(m => {
+    const children = MENU_LIST.filter(x => x.parent === m.id);
+    return `
+      <tr>
+        <td style="padding-left:${16 + level * 22}px;">
+          <div style="display:flex;align-items:center;gap:6px;">
+            ${children.length ? '<span style="color:#97a3b5;cursor:pointer;font-size:12px;">▼</span>' : '<span style="display:inline-block;width:14px;"></span>'}
+            <span class="font-bold">${m.label}</span>
+          </div>
+        </td>
+        <td class="col-mono">${m.icon}</td>
+        <td class="col-num">${m.sort}</td>
+        <td class="col-mono">${m.type === '菜单' ? '目录' : '菜单'}</td>
+        <td class="col-mono">${m.id.toLowerCase()}:view</td>
+        <td class="col-mono">/${m.id}</td>
+        <td><span class="badge badge-success">${m.status}</span></td>
+        <td class="col-mono">2026-08-18</td>
+        <td>
+          <button class="btn-xs btn-primary" onclick="App.openMenuModal('${m.id}')">编辑</button>
+          <button class="btn-xs btn-primary" onclick="App.openMenuModal()">新增</button>
+          <button class="btn-xs btn-danger" onclick="App.toast('菜单已删除', 'success')">删除</button>
+        </td>
+      </tr>
+      ${children.length ? menuRows(m.id, level + 1) : ''}
+    `;
+  }).join('');
   return `
     <div class="card">
-      <div class="card-header">
-        <div class="card-title">菜单管理</div>
-        <div style="display:flex;gap:8px;">
-          <button class="btn btn-sm" onclick="App.importData('menu')">导入</button>
-          <button class="btn btn-sm" onclick="App.exportData('menu')">导出</button>
-          <button class="btn btn-sm btn-primary" onclick="App.openMenuModal()">新增菜单</button>
-        </div>
-      </div>
       <div class="card-body" style="padding:16px;">
         ${filterBar([
-          { label: '菜单名称', control: '<input class="form-input" placeholder="菜单名称关键词" />' },
-          { label: '所属分组', control: '<select class="form-select"><option value="">全部</option><option>概览</option><option>业务</option><option>分析</option><option>管理</option></select>' },
-          { label: '状态', control: '<select class="form-select"><option value="">全部</option><option>启用</option><option>停用</option></select>', fold: true },
+          { label: '菜单名称', control: '<input class="form-input" placeholder="请输入菜单名称" />' },
+          { label: '状态', control: '<select class="form-select"><option value="">全部</option><option>启用</option><option>停用</option></select>' },
         ], 'bm')}
+        <div style="display:flex;gap:8px;margin-bottom:12px;">
+          <button class="btn btn-sm btn-primary" onclick="App.openMenuModal()"><span style="margin-right:2px;">+</span>新增</button>
+          <button class="btn btn-sm btn-success" onclick="App.toast('修改菜单', 'info')">修改</button>
+          <button class="btn btn-sm btn-danger" onclick="App.toast('删除菜单', 'warning')">删除</button>
+        </div>
         <div class="table-wrap">
           <table class="data-table">
             <thead>
-              <tr><th>菜单名称</th><th>所属分组</th><th>类型</th><th>上级菜单</th><th>图标</th><th class="col-num">排序</th><th>状态</th><th>操作</th></tr>
+              <tr><th>菜单名称</th><th>图标</th><th class="col-num">排序</th><th>类型</th><th>权限标识</th><th>路由地址</th><th>状态</th><th>创建时间</th><th>操作</th></tr>
             </thead>
             <tbody>
-              ${_rows_bm.map(m => `
-                <tr>
-                  <td class="font-bold">${m.parent === '-' ? m.label : '&nbsp;&nbsp;└ ' + m.label}</td>
-                  <td><span class="badge badge-gray">${m.group}</span></td>
-                  <td>${m.type === '菜单' ? '<span class="badge badge-primary">菜单</span>' : '<span class="badge badge-info">页面</span>'}</td>
-                  <td>${m.parent === '-' ? '<span class="text-gray">—</span>' : MENU_LIST.find(x => x.id === m.parent)?.label || m.parent}</td>
-                  <td class="col-mono">${m.icon}</td>
-                  <td class="col-num">${m.sort}</td>
-                  <td><span class="badge badge-success">${m.status}</span></td>
-                  <td>
-                    <button class="btn-xs btn-primary" onclick="App.openMenuModal('${m.id}')">编辑</button>
-                    <button class="btn-xs" onclick="App.toast('菜单已隐藏', 'warning')">停用</button>
-                    <button class="btn-xs btn-danger" onclick="App.toast('菜单已删除', 'success')">删除</button>
-                  </td>
-                </tr>
-              `).join('')}
+              ${menuRows('-')}
             </tbody>
           </table>
-          ${renderPagination(_total_bm, _pg_bm.current, _pg_bm.size, 'bm')}
-
         </div>
       </div>
     </div>
@@ -3394,68 +3398,71 @@ function renderSystemMenu() {
 
 function renderSystemDept() {
   const root = DEPARTMENTS.find(d => d.parent === '-');
-  const children = DEPARTMENTS.filter(d => d.parent !== '-');
   const _pg_bd = App.state.pages['bd'] = App.state.pages['bd'] || { current: 1, size: 10 };
   const _src_bd = DEPARTMENTS.filter(d => !App.state.deptQuery || d.name.toLowerCase().includes(App.state.deptQuery.toLowerCase()));
   const _total_bd = _src_bd.length;
   const _rows_bd = _src_bd.slice((_pg_bd.current - 1) * _pg_bd.size, _pg_bd.current * _pg_bd.size);
+  const deptTree = (parent, level = 0) => DEPARTMENTS.filter(d => d.parent === parent).map(d => `
+    <div class="ruoyi-tree-node" style="padding-left:${level * 16}px;" onclick="App.toast('已按部门筛选：${d.name}', 'info')">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/></svg>
+      <span>${d.name}</span>
+    </div>
+    ${DEPARTMENTS.some(x => x.parent === d.id) ? deptTree(d.id, level + 1) : ''}
+  `).join('');
   return `
-    <div class="grid" style="grid-template-columns:1fr 2fr;gap:16px;">
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">组织架构</div>
-          <button class="btn btn-sm btn-primary" onclick="App.openDeptModal()">新增部门</button>
-        </div>
-        <div class="card-body" style="padding:16px;">
-          <div style="padding:10px 14px;border:1px solid #dfe5ee;border-radius:8px;background:#eaf1fa;margin-bottom:8px;font-size:13px;font-weight:600;color:#123662;">${root.name}<span class="badge badge-primary" style="font-size:9px;margin-left:6px;">${root.type}</span></div>
-          ${children.map(d => {
-            const sub = d.type === '部门' ? `<div style="margin-left:20px;margin-top:6px;display:flex;flex-direction:column;gap:6px;">${DEPARTMENTS.filter(x => x.parent === d.id).map(g => `<div style="padding:6px 10px;border:1px solid #dfe5ee;border-radius:6px;background:#f7f9fc;font-size:12px;color:#475569;">${g.name}<span class="badge badge-gray" style="font-size:9px;margin-left:4px;">${g.type}</span></div>`).join('')}</div>` : '';
-            return `
-              <div style="padding:8px 14px;border:1px solid #dfe5ee;border-radius:8px;margin-bottom:6px;font-size:13px;color:#334155;">${d.name}<span class="badge badge-gray" style="font-size:9px;margin-left:6px;">${d.type}</span>
-              ${sub}
-              </div>
-            `;
-          }).join('')}
-        </div>
-      </div>
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">部门列表</div>
-          <div style="display:flex;gap:8px;">
-            <button class="btn btn-sm" onclick="App.importData('dept')">导入</button>
-            <button class="btn btn-sm" onclick="App.exportData('dept')">导出</button>
+    <div class="ruoyi-layout">
+      <div class="ruoyi-left">
+        <div class="card" style="height:100%;">
+          <div class="card-header"><div class="card-title">部门结构</div></div>
+          <div class="card-body" style="padding:12px;">
+            <input class="form-input" style="margin-bottom:10px;" placeholder="请输入部门名称" />
+            <div class="ruoyi-tree">
+              <div class="ruoyi-tree-node active" onclick="App.toast('显示全部部门', 'info')"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.73zm5.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg><span>${root ? root.name : '稀土交易所'}</span></div>
+              ${root ? deptTree(root.id, 1) : ''}
+            </div>
           </div>
         </div>
-        <div class="card-body" style="padding:0;">
-          ${filterBar([
-            { label: '部门名称', control: '<input class="form-input" placeholder="部门名称关键词" oninput="App.filterDept(this.value)" value="${App.state.deptQuery}" />' },
-            { label: '类型', control: '<select class="form-select"><option value="">全部</option><option>公司</option><option>中心</option><option>部门</option><option>小组</option></select>' },
-            { label: '状态', control: '<select class="form-select"><option value="">全部</option><option>启用</option><option>停用</option></select>', fold: true },
-          ], 'bd')}
-          <div class="table-wrap">
-            <table class="data-table">
-              <thead>
-                <tr><th>部门名称</th><th>类型</th><th>上级组织</th><th>负责人</th><th class="col-num">成员数</th><th>状态</th><th>操作</th></tr>
-              </thead>
-              <tbody>
-                ${_rows_bd.map(d => `
-                  <tr>
-                    <td class="font-bold">${d.name}</td>
-                    <td><span class="badge badge-gray">${d.type}</span></td>
-                    <td>${d.parent === '-' ? '<span class="text-gray">—</span>' : (DEPARTMENTS.find(x => x.id === d.parent)?.name || '—')}</td>
-                    <td>${d.leader}</td>
-                    <td class="col-num">${d.memberCount}</td>
-                    <td>${d.status === '启用' ? '<span class="badge badge-success">启用</span>' : '<span class="badge badge-danger">停用</span>'}</td>
-                    <td>
-                      <button class="btn-xs btn-primary" onclick="App.openDeptModal('${d.id}')">编辑</button>
-                      <button class="btn-xs" onclick="App.toast('部门已删除，成员自动移出', 'success')">删除</button>
-                    </td>
-                  </tr>
-                `).join('')}
-              </tbody>
-            </table>
-          ${renderPagination(_total_bd, _pg_bd.current, _pg_bd.size, 'bd')}
-
+      </div>
+      <div class="ruoyi-right">
+        <div class="card">
+          <div class="card-body" style="padding:16px;">
+            ${filterBar([
+              { label: '部门名称', control: '<input class="form-input" placeholder="请输入部门名称" oninput="App.filterDept(this.value)" value="${App.state.deptQuery}" />' },
+              { label: '状态', control: '<select class="form-select"><option value="">全部</option><option>启用</option><option>停用</option></select>' },
+              { label: '创建时间', control: '<input class="form-input" type="date" value="2026-08-18" />', fold: true },
+            ], 'bd')}
+            <div style="display:flex;gap:8px;margin-bottom:12px;">
+              <button class="btn btn-sm btn-primary" onclick="App.openDeptModal()"><span style="margin-right:2px;">+</span>新增</button>
+              <button class="btn btn-sm btn-success" onclick="App.toast('修改部门', 'info')">修改</button>
+              <button class="btn btn-sm btn-danger" onclick="App.toast('删除部门', 'warning')">删除</button>
+              <button class="btn btn-sm btn-warning" onclick="App.toast('导入部门', 'info')">导入</button>
+              <button class="btn btn-sm" onclick="App.exportData('dept')">导出</button>
+            </div>
+            <div class="table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr><th class="check-col"><input type="checkbox" /></th><th>部门名称</th><th class="col-num">排序</th><th>负责人</th><th class="col-num">成员数</th><th>状态</th><th>创建时间</th><th>操作</th></tr>
+                </thead>
+                <tbody>
+                  ${_rows_bd.map(d => `
+                    <tr>
+                      <td class="check-col"><input type="checkbox" /></td>
+                      <td class="font-bold">${d.name}</td>
+                      <td class="col-num">${d.sort || 1}</td>
+                      <td>${d.leader}</td>
+                      <td class="col-num">${d.memberCount}</td>
+                      <td>${d.status === '启用' ? '<span class="badge badge-success">启用</span>' : '<span class="badge badge-danger">停用</span>'}</td>
+                      <td class="col-mono">2026-08-18</td>
+                      <td>
+                        <button class="btn-xs btn-primary" onclick="App.openDeptModal('${d.id}')">编辑</button>
+                        <button class="btn-xs btn-danger" onclick="App.toast('部门已删除，成员自动移出', 'success')">删除</button>
+                      </td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+              ${renderPagination(_total_bd, _pg_bd.current, _pg_bd.size, 'bd')}
+            </div>
           </div>
         </div>
       </div>
@@ -3518,63 +3525,70 @@ function renderSystemUser() {
   const _src_bu = SYSTEM_USERS;
   const _total_bu = _src_bu.length;
   const _rows_bu = _src_bu.slice((_pg_bu.current - 1) * _pg_bu.size, _pg_bu.current * _pg_bu.size);
+  const deptTree = (parent, level = 0) => DEPARTMENTS.filter(d => d.parent === parent).map(d => `
+    <div class="ruoyi-tree-node" style="padding-left:${level * 16}px;" onclick="App.toast('已按部门筛选：${d.name}', 'info')">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/></svg>
+      <span>${d.name}</span>
+    </div>
+    ${DEPARTMENTS.some(x => x.parent === d.id) ? deptTree(d.id, level + 1) : ''}
+  `).join('');
   return `
-    <div class="card">
-      <div class="card-header">
-        <div class="card-title">用户管理<span style="font-size:12px;color:#97a3b5;font-weight:400;margin-left:8px;">用户归属组织架构节点，决定数据权限范围</span></div>
-        <div style="display:flex;gap:8px;">
-          <button class="btn btn-sm" onclick="App.importData('user')">导入</button>
-          <button class="btn btn-sm" onclick="App.exportData('user')">导出</button>
-          <button class="btn btn-sm btn-primary" onclick="App.openUserModal()">新增用户</button>
+    <div class="ruoyi-layout">
+      <div class="ruoyi-left">
+        <div class="card" style="height:100%;">
+          <div class="card-header"><div class="card-title">组织机构</div></div>
+          <div class="card-body" style="padding:12px;">
+            <input class="form-input" style="margin-bottom:10px;" placeholder="请输入部门名称" />
+            <div class="ruoyi-tree">
+              <div class="ruoyi-tree-node active" onclick="App.toast('显示全部用户', 'info')"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.73zm5.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg><span>稀土交易所</span></div>
+              ${deptTree('DEPT00', 1)}
+            </div>
+          </div>
         </div>
       </div>
-      <div class="card-body" style="padding:16px;">
-        ${filterBar([
-          { label: '姓名 / 工号', control: '<input class="form-input" placeholder="关键词搜索" />' },
-          { label: '所属角色', control: '<select class="form-select"><option value="">全部</option>' + ROLES.map(r => '<option>' + r.name + '</option>').join('') + '</select>' },
-          { label: '所属部门', control: '<select class="form-select"><option value="">全部</option>' + DEPARTMENTS.filter(d => d.status === '启用').map(d => '<option>' + d.name + '</option>').join('') + '</select>' },
-          { label: '状态', control: '<select class="form-select"><option value="">全部</option><option>启用</option><option>禁用</option></select>', fold: true },
-        ], 'bu')}
-        <div class="table-wrap">
-          <table class="data-table">
-            <thead>
-              <tr><th>工号</th><th>姓名</th><th>角色</th><th>所属部门（组织架构）</th><th>联系电话</th><th>状态</th><th>最近登录</th><th>操作</th></tr>
-            </thead>
-            <tbody>
-              ${_rows_bu.map(u => {
-                const dept = DEPARTMENTS.find(d => d.id === u.deptId);
-                return `
-                <tr>
-                  <td class="col-mono">${u.id}</td>
-                  <td>
-                    <div style="display:flex;align-items:center;gap:8px;">
-                      <div class="user-avatar" style="width:28px;height:28px;font-size:11px;">${u.name[0]}</div>
-                      <span class="font-bold">${u.name}</span>
-                    </div>
-                  </td>
-                  <td><span class="badge badge-primary">${u.role}</span></td>
-                  <td>
-                    <div style="display:flex;align-items:center;gap:6px;">
-                      <svg width="13" height="13" viewBox="0 0 24 24" fill="#97a3b5"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-                      <span>${u.dept}</span>
-                      ${dept ? `<span class="badge badge-gray" style="font-size:9px;">${dept.type}</span>` : ''}
-                    </div>
-                  </td>
-                  <td>${u.phone}</td>
-                  <td>${u.status === '启用' ? '<span class="badge badge-success">启用</span>' : '<span class="badge badge-danger">禁用</span>'}</td>
-                  <td>${u.lastLogin}</td>
-                  <td>
-                    <button class="btn-xs btn-primary" onclick="App.openUserModal('${u.id}')">编辑</button>
-                    <button class="btn-xs" onclick="App.toast('重置密码链接已发送至管理员邮箱', 'info')">重置密码</button>
-                    <button class="btn-xs btn-danger" onclick="App.deleteUser('${u.id}')">删除</button>
-                  </td>
-                </tr>
-                `;
-              }).join('')}
-            </tbody>
-          </table>
-          ${renderPagination(_total_bu, _pg_bu.current, _pg_bu.size, 'bu')}
-
+      <div class="ruoyi-right">
+        <div class="card">
+          <div class="card-body" style="padding:16px;">
+            ${filterBar([
+              { label: '用户名称', control: '<input class="form-input" placeholder="请输入用户名称" />' },
+              { label: '手机号码', control: '<input class="form-input" placeholder="请输入手机号码" />' },
+              { label: '状态', control: '<select class="form-select"><option value="">全部</option><option>启用</option><option>禁用</option></select>' },
+              { label: '创建时间', control: '<input class="form-input" type="date" value="2026-08-18" />', fold: true },
+            ], 'bu')}
+            <div style="display:flex;gap:8px;margin-bottom:12px;">
+              <button class="btn btn-sm btn-primary" onclick="App.openUserModal()"><span style="margin-right:2px;">+</span>新增</button>
+              <button class="btn btn-sm btn-success" onclick="App.toast('修改用户', 'info')">修改</button>
+              <button class="btn btn-sm btn-danger" onclick="App.toast('删除用户', 'warning')">删除</button>
+              <button class="btn btn-sm btn-warning" onclick="App.toast('导入用户', 'info')">导入</button>
+              <button class="btn btn-sm" onclick="App.exportData('user')">导出</button>
+            </div>
+            <div class="table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr><th class="check-col"><input type="checkbox" /></th><th>用户编号</th><th>用户名称</th><th>用户昵称</th><th>部门</th><th>手机号码</th><th>状态</th><th>创建时间</th><th>操作</th></tr>
+                </thead>
+                <tbody>
+                  ${_rows_bu.map((u, idx) => `
+                  <tr>
+                    <td class="check-col"><input type="checkbox" /></td>
+                    <td class="col-mono">${u.id}</td>
+                    <td class="font-bold">${u.name}</td>
+                    <td>${u.name}</td>
+                    <td>${u.dept}</td>
+                    <td class="col-mono">${u.phone}</td>
+                    <td>${u.status === '启用' ? '<span class="badge badge-success">启用</span>' : '<span class="badge badge-danger">禁用</span>'}</td>
+                    <td class="col-mono">2026-08-18</td>
+                    <td>
+                      <button class="btn-xs btn-primary" onclick="App.openUserModal('${u.id}')">编辑</button>
+                      <button class="btn-xs btn-danger" onclick="App.deleteUser('${u.id}')">删除</button>
+                    </td>
+                  </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+              ${renderPagination(_total_bu, _pg_bu.current, _pg_bu.size, 'bu')}
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -3588,37 +3602,37 @@ function renderSystemRole() {
   const _rows_br = _src_br.slice((_pg_br.current - 1) * _pg_br.size, _pg_br.current * _pg_br.size);
   return `
     <div class="card">
-      <div class="card-header">
-        <div class="card-title">角色列表<span style="font-size:12px;color:#97a3b5;font-weight:400;margin-left:8px;">共 ${ROLES.length} 个角色</span></div>
-        <div style="display:flex;gap:8px;">
-          <button class="btn btn-sm" onclick="App.importData('role')">导入</button>
-          <button class="btn btn-sm" onclick="App.exportData('role')">导出</button>
-          <button class="btn btn-sm btn-primary" onclick="App.openRoleModal()">新增角色</button>
-        </div>
-      </div>
       <div class="card-body" style="padding:16px;">
         ${filterBar([
-          { label: '角色名称', control: '<input class="form-input" placeholder="角色名称关键词" oninput="App.filterRole(this.value)" value="${App.state.roleQuery}" />' },
-          { label: '角色编码', control: '<input class="form-input" placeholder="角色编码" />' },
-          { label: '状态', control: '<select class="form-select"><option value="">全部</option><option>启用</option><option>停用</option></select>', fold: true },
+          { label: '角色名称', control: '<input class="form-input" placeholder="请输入角色名称" oninput="App.filterRole(this.value)" value="${App.state.roleQuery}" />' },
+          { label: '权限字符', control: '<input class="form-input" placeholder="请输入权限字符" />' },
+          { label: '状态', control: '<select class="form-select"><option value="">全部</option><option>启用</option><option>停用</option></select>' },
+          { label: '创建时间', control: '<input class="form-input" type="date" value="2026-08-18" />', fold: true },
         ], 'br')}
+        <div style="display:flex;gap:8px;margin-bottom:12px;">
+          <button class="btn btn-sm btn-primary" onclick="App.openRoleModal()"><span style="margin-right:2px;">+</span>新增</button>
+          <button class="btn btn-sm btn-success" onclick="App.toast('修改角色', 'info')">修改</button>
+          <button class="btn btn-sm btn-danger" onclick="App.toast('删除角色', 'warning')">删除</button>
+          <button class="btn btn-sm btn-warning" onclick="App.toast('导出角色', 'info')">导出</button>
+        </div>
         <div class="table-wrap">
           <table class="data-table">
             <thead>
-              <tr><th>角色名称</th><th>角色编码</th><th class="col-num">成员数</th><th>职责描述</th><th>状态</th><th>操作</th></tr>
+              <tr><th class="check-col"><input type="checkbox" /></th><th>角色编号</th><th>角色名称</th><th>权限字符</th><th class="col-num">显示顺序</th><th>状态</th><th>创建时间</th><th>操作</th></tr>
             </thead>
             <tbody>
-              ${_rows_br.map(r => `
+              ${_rows_br.map((r, idx) => `
                 <tr>
-                  <td><span class="badge badge-primary">${r.name}</span></td>
+                  <td class="check-col"><input type="checkbox" /></td>
                   <td class="col-mono">${r.id}</td>
-                  <td class="col-num">${r.memberCount}</td>
-                  <td style="max-width:360px;color:#64748b;">${r.desc}</td>
+                  <td class="font-bold">${r.name}</td>
+                  <td class="col-mono">${r.id.toLowerCase()}</td>
+                  <td class="col-num">${idx + 1}</td>
                   <td><span class="badge badge-success">启用</span></td>
+                  <td class="col-mono">2026-08-18</td>
                   <td>
+                    <button class="btn-xs btn-primary" onclick="App.openRolePermissionModal('${r.id}')">分配权限</button>
                     <button class="btn-xs btn-primary" onclick="App.openRoleModal('${r.id}')">编辑</button>
-                    <button class="btn-xs btn-primary" onclick="App.openRolePermissionModal('${r.id}')">配置权限</button>
-                    <button class="btn-xs btn-danger" onclick="App.toast('角色已停用', 'warning')">停用</button>
                     <button class="btn-xs btn-danger" onclick="App.deleteRole('${r.id}')">删除</button>
                   </td>
                 </tr>
@@ -3626,7 +3640,6 @@ function renderSystemRole() {
             </tbody>
           </table>
           ${renderPagination(_total_br, _pg_br.current, _pg_br.size, 'br')}
-
         </div>
       </div>
     </div>
@@ -3665,7 +3678,17 @@ function renderSystemLog() {
                   <td>${log.action.includes('驳回') || log.action.includes('拦截') ? '<span class="badge badge-danger">' + log.action + '</span>' : log.action.includes('通过') || log.action.includes('发布') ? '<span class="badge badge-success">' + log.action + '</span>' : log.action.includes('预警') || log.action.includes('提醒') ? '<span class="badge badge-warning">' + log.action + '</span>' : '<span class="badge badge-gray">' + log.action + '</span>'}</td>
                   <td>${log.target}</td>
                   <td class="col-mono">${log.ip}</td>
-                  <td style="max-width:300px;">${log.detail}</td>
+                  <td style="max-width:320px;">
+                    <div>${log.detail}</div>
+                    ${log.before !== undefined && log.after !== undefined ? `
+                    <div style="margin-top:6px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:12px;">
+                      <span style="color:#97a3b5;">初始值</span>
+                      <span style="color:#64748b;text-decoration:line-through;">${log.before}</span>
+                      <span style="color:#1d4ed8;font-weight:600;">→</span>
+                      <span style="color:#1d4ed8;font-weight:600;">${log.after}</span>
+                      <span style="color:#97a3b5;">修改后</span>
+                    </div>` : ''}
+                  </td>
                 </tr>
               `).join('')}
             </tbody>
@@ -3729,22 +3752,18 @@ function renderMiniProgramPreview() {
           </div>
           <div class="mp-login-card">
             <div class="mp-form-cell">
-              <div class="mp-form-label"><span class="required">*</span>手机号</div>
-              <input class="mp-input" value="138****8101" placeholder="请输入手机号" />
+              <div class="mp-form-label"><span class="required">*</span>账号</div>
+              <input class="mp-input" value="liugong" placeholder="请输入账号" />
             </div>
             <div class="mp-form-cell">
-              <div class="mp-form-label"><span class="required">*</span>验证码</div>
-              <div class="mp-input-row">
-                <input class="mp-input" placeholder="请输入验证码" />
-                <button class="mp-code-btn" onclick="App.toast('验证码已发送至手机', 'success')">获取验证码</button>
-              </div>
+              <div class="mp-form-label"><span class="required">*</span>密码</div>
+              <input class="mp-input" type="password" value="********" placeholder="请输入密码" />
             </div>
-            <button class="mp-submit" style="margin-top:8px;" onclick="App.mpTab('quote'); App.toast('登录成功，欢迎回来！', 'success')">登录</button>
-            <div class="mp-divider">或</div>
-            <button class="mp-wechat-btn" onclick="App.mpTab('quote'); App.toast('企业微信授权登录成功', 'success')">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M8.69 4C4.86 4 1.74 6.68 1.74 10c0 1.88 1.01 3.55 2.59 4.66l-.65 1.95 2.27-1.14c.73.2 1.5.31 2.3.31.2 0 .4-.01.6-.03-.13-.42-.2-.87-.2-1.33 0-2.86 2.75-5.19 6.15-5.19.2 0 .39.01.58.02C14.33 5.87 11.78 4 8.69 4zm-2.6 3.15c.36 0 .65.29.65.65s-.29.65-.65.65-.65-.29-.65-.65.29-.65.65-.65zm5.2 0c.36 0 .65.29.65.65s-.29.65-.65.65-.65-.29-.65-.65.29-.65.65-.65zM14.8 9.34c-3.22 0-5.84 2.18-5.84 4.88 0 1.57.83 2.97 2.13 3.88l-.55 1.64 1.92-.96c.62.17 1.27.27 1.95.27.16 0 .31-.01.47-.02-.11-.35-.17-.72-.17-1.1 0-2.38 2.29-4.32 5.12-4.32.17 0 .33.01.49.02C19.42 10.87 17.36 9.34 14.8 9.34zm-2.42 2.6c.3 0 .54.24.54.54s-.24.54-.54.54-.54-.24-.54-.54.24-.54.54-.54zm4.84 0c.3 0 .54.24.54.54s-.24.54-.54.54-.54-.24-.54-.54.24-.54.54-.54z"/></svg>
-              企业微信授权登录
-            </button>
+            <div style="display:flex;align-items:center;justify-content:space-between;font-size:12px;color:#64748b;margin:8px 4px 0;">
+              <label style="display:flex;align-items:center;gap:4px;cursor:pointer;"><input type="checkbox" checked style="accent-color:#1d4ed8;" /> 记住密码</label>
+              <span style="color:#1d4ed8;cursor:pointer;">忘记密码？</span>
+            </div>
+            <button class="mp-submit" style="margin-top:16px;" onclick="App.mpTab('quote'); App.toast('登录成功，欢迎回来！', 'success')">登录</button>
             <div class="mp-agree">登录即代表同意《用户协议》和《隐私政策》</div>
           </div>
         </div>
@@ -3816,7 +3835,7 @@ function renderMiniProgramPreview() {
                 <div class="mp-list-item green">
                   <div class="mp-item-head">
                     <span class="mp-item-title">氧化镝</span>
-                    <span class="badge badge-success">已发布</span>
+                    <button class="mp-edit-btn" onclick="App.toast('进入修改模式','info')">修改</button>
                   </div>
                   <div class="mp-item-body">最高 185.50 · 最低 184.00 <span style="color:#97a3b5;">万元/吨</span></div>
                   <div class="mp-item-time">8月17日 14:32 提交</div>
@@ -3824,7 +3843,7 @@ function renderMiniProgramPreview() {
                 <div class="mp-list-item blue">
                   <div class="mp-item-head">
                     <span class="mp-item-title">碳酸镧铈</span>
-                    <span class="badge badge-primary">待终审</span>
+                    <button class="mp-edit-btn" onclick="App.toast('进入修改模式','info')">修改</button>
                   </div>
                   <div class="mp-item-body">最高 2.90 · 最低 2.80 <span style="color:#97a3b5;">万元/吨</span></div>
                   <div class="mp-item-time">8月17日 15:05 提交</div>
@@ -3896,33 +3915,57 @@ function renderMiniProgramPreview() {
           <!-- Tab: 我的 -->
           <div class="mp-panel ${mpTab === 'profile' ? 'show' : ''}" data-tab="profile">
             <div class="mp-page-body" style="padding-top:14px;">
-              <div class="mp-profile-head">
-                <div class="mp-avatar">
+              <div class="mp-profile-card">
+                <div class="mp-avatar-large">
                   <img class="mp-avatar-img" src="${mpAvatar}" alt="头像">
                 </div>
-                <div class="mp-profile-meta">
-                  <div class="mp-profile-name-row">
-                    <div class="mp-profile-name">刘工</div>
-                    <span class="mp-profile-tag">报价对接人</span>
-                  </div>
+                <div class="mp-profile-info">
+                  <div class="mp-profile-name">刘工</div>
+                  <div class="mp-profile-tag">报价对接人</div>
                   <div class="mp-profile-company">包头市金蒙稀土有限责任公司</div>
+                  <div class="mp-profile-phone">138****8101</div>
                 </div>
               </div>
-              <div class="mp-card">
-                <div class="mp-form-cell">
-                  <div class="mp-form-label">联系电话</div>
-                  <input class="mp-input" value="138****8101" />
+
+              <div class="mp-menu-card">
+                <div class="mp-menu-item" onclick="App.toast('我的企业','info')">
+                  <div style="display:flex;align-items:center;gap:10px;">
+                    <div class="mp-menu-icon" style="background:rgba(29,78,216,0.08);color:#1d4ed8;"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 7V3H2v18h20V7H12zM6 19H4v-2h2v2zm0-4H4v-2h2v2zm0-4H4V9h2v2zm0-4H4V5h2v2zm4 12H8v-2h2v2zm0-4H8v-2h2v2zm0-4H8V9h2v2zm0-4H8V5h2v2zm10 12h-8v-2h2v-2h-2v-2h2v-2h-2V9h8v10zm-2-8h-2v2h2v-2zm0 4h-2v2h2v-2z"/></svg></div>
+                    <span>我的企业</span>
+                  </div>
+                  <span style="color:#97a3b5;font-size:12px;">▸</span>
                 </div>
-                <div class="mp-form-cell">
-                  <div class="mp-form-label">价格单位</div>
-                  <div class="mp-select" onclick="App.openMpSheet('unit')">${mpUnit} <span style="color:#97a3b5;">▾</span></div>
+                <div class="mp-menu-item" onclick="App.toast('消息通知','info')">
+                  <div style="display:flex;align-items:center;gap:10px;">
+                    <div class="mp-menu-icon" style="background:rgba(28,138,77,0.08);color:#1c8a4d;"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg></div>
+                    <span>消息通知</span>
+                  </div>
+                  <span style="color:#97a3b5;font-size:12px;">▸</span>
                 </div>
-                <div class="mp-form-cell">
-                  <div class="mp-form-label">填报截止提醒</div>
-                  <div class="mp-select" onclick="App.openMpSheet('reminder')">${mpReminder} <span style="color:#97a3b5;">▾</span></div>
+                <div class="mp-menu-item" onclick="App.toast('帮助中心','info')">
+                  <div style="display:flex;align-items:center;gap:10px;">
+                    <div class="mp-menu-icon" style="background:rgba(245,158,11,0.08);color:#f59e0b;"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/></svg></div>
+                    <span>帮助中心</span>
+                  </div>
+                  <span style="color:#97a3b5;font-size:12px;">▸</span>
+                </div>
+                <div class="mp-menu-item" onclick="App.toast('关于我们','info')">
+                  <div style="display:flex;align-items:center;gap:10px;">
+                    <div class="mp-menu-icon" style="background:rgba(239,68,68,0.08);color:#ef4444;"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg></div>
+                    <span>关于我们</span>
+                  </div>
+                  <span style="color:#97a3b5;font-size:12px;">▸</span>
+                </div>
+                <div class="mp-menu-item" onclick="App.toast('设置','info')">
+                  <div style="display:flex;align-items:center;gap:10px;">
+                    <div class="mp-menu-icon" style="background:rgba(107,114,128,0.08);color:#6b7280;"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L5.09 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg></div>
+                    <span>设置</span>
+                  </div>
+                  <span style="color:#97a3b5;font-size:12px;">▸</span>
                 </div>
               </div>
-              <button class="mp-ghost-btn" onclick="App.mpTab('login')">退出登录</button>
+
+              <button class="mp-ghost-btn" style="margin-top:8px;" onclick="App.mpTab('login')">退出登录</button>
             </div>
           </div>
 
@@ -6111,19 +6154,29 @@ const App = {
         <button class="modal-close" onclick="App.closeModal()">×</button>
       </div>
       <div class="modal-body">
-        <div style="font-size:14px;color:#334155;margin-bottom:12px;">确认将计算结果提交至审核流程？</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px;">
+        <div style="font-size:14px;color:#334155;margin-bottom:20px;">确认将计算结果提交至审核流程？</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;">
           <div style="padding:12px;background:#f7f9fc;border-radius:6px;">
             <div style="font-size:12px;color:#64748b;">产品数</div><div style="font-weight:600;">6 个品类</div>
           </div>
           <div style="padding:12px;background:#f7f9fc;border-radius:6px;">
             <div style="font-size:12px;color:#64748b;">样本数</div><div style="font-weight:600;">48 条</div>
           </div>
-          <div style="padding:12px;background:#f7f9fc;border-radius:6px;">
-            <div style="font-size:12px;color:#64748b;">异常数</div><div style="font-weight:600;color:#c0392b;">2 条</div>
+        </div>
+        <div style="font-size:12px;color:#64748b;margin-bottom:10px;">提交后流转路径</div>
+        <div style="display:flex;align-items:flex-start;gap:0;margin-bottom:8px;">
+          <div style="display:flex;flex-direction:column;align-items:center;min-width:90px;">
+            <div style="width:40px;height:40px;border-radius:50%;background:#1c8a4d;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;flex-shrink:0;">✓</div>
+            <div style="margin-top:8px;font-size:13px;color:#1f2a3d;font-weight:500;">统计人员</div>
+            <div style="font-size:11px;color:#64748b;">陈思远 16:35</div>
+          </div>
+          <div style="flex:1;height:2px;background:#1c8a4d;margin-top:19px;min-width:40px;"></div>
+          <div style="display:flex;flex-direction:column;align-items:center;min-width:90px;">
+            <div style="width:40px;height:40px;border-radius:50%;background:#1d4ed8;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;flex-shrink:0;">2</div>
+            <div style="margin-top:8px;font-size:13px;color:#1f2a3d;font-weight:500;">董事长</div>
+            <div style="font-size:11px;color:#64748b;">孙志强</div>
           </div>
         </div>
-        <div class="alert alert-info">提交后将流转至业务经理初审 → 副总二审 → 董事长终审。</div>
       </div>
       <div class="modal-footer">
         <button class="btn" onclick="App.closeModal()">取消</button>
