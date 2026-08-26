@@ -67,8 +67,8 @@ body {
 .app-layout { display: flex; height: 100vh; }
 .sidebar {
   width: var(--sidebar-w);
-  background: linear-gradient(180deg, var(--c-sidebar-top) 0%, var(--c-sidebar-bottom) 100%);
-  border-right: 1px solid var(--c-sidebar-border);
+  background: #0f172a;
+  border-right: 1px solid rgba(255,255,255,0.08);
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
@@ -115,30 +115,30 @@ body {
 .main-area { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
 .topbar {
   height: var(--topbar-h);
-  background: linear-gradient(90deg, #eff6ff 0%, #dbeafe 55%, #c7dbff 100%);
-  border-bottom: 1px solid #d3e3fb;
+  background: #0f172a;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
   display: flex; align-items: center;
   padding: 0 24px; gap: 16px; flex-shrink: 0;
 }
-.topbar-title { font-size: 16px; font-weight: 700; color: #1e3a8a; }
+.topbar-title { font-size: 16px; font-weight: 700; color: #fff; }
 .topbar-spacer { flex: 1; }
 
 /* 顶部全局搜索 */
 .topbar-search { position: relative; width: 320px; }
 .topbar-search .search-box {
   display: flex; align-items: center; gap: 8px;
-  background: rgba(255,255,255,0.85); border: 1px solid #c7d7f5;
+  background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
   border-radius: var(--radius-md); padding: 6px 12px; transition: all 0.15s;
 }
 .topbar-search .search-box:focus-within {
-  background: #fff; border-color: var(--c-primary);
-  box-shadow: 0 0 0 3px rgba(59,130,246,0.18);
+  background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.35);
+  box-shadow: 0 0 0 3px rgba(255,255,255,0.08);
 }
 .topbar-search input {
   border: none; outline: none; background: transparent;
-  font-size: 13px; color: var(--c-gray-700); width: 100%; font-family: inherit;
+  font-size: 13px; color: #fff; width: 100%; font-family: inherit;
 }
-.topbar-search input::placeholder { color: var(--c-gray-400); }
+.topbar-search input::placeholder { color: rgba(255,255,255,0.45); }
 .search-dropdown {
   display: none; position: absolute; top: calc(100% + 6px); left: 0; right: 0;
   background: #fff; border: 1px solid var(--c-border); border-radius: var(--radius-md);
@@ -164,28 +164,28 @@ body {
 .topbar-icon-btn {
   width: 36px; height: 36px; border-radius: var(--radius-md);
   display: flex; align-items: center; justify-content: center;
-  cursor: pointer; color: var(--c-gray-500); position: relative;
+  cursor: pointer; color: rgba(255,255,255,0.65); position: relative;
   transition: all 0.15s; border: none; background: none;
 }
-.topbar-icon-btn:hover { background: var(--c-gray-100); color: var(--c-gray-700); }
+.topbar-icon-btn:hover { background: rgba(255,255,255,0.1); color: #fff; }
 .topbar-icon-btn .dot {
   position: absolute; top: 8px; right: 8px;
   width: 8px; height: 8px; background: var(--c-danger);
-  border-radius: 50%; border: 2px solid #fff;
+  border-radius: 50%; border: 2px solid #0f172a;
 }
 .user-chip {
   display: flex; align-items: center; gap: 8px;
   padding: 4px 12px 4px 4px; border-radius: 20px;
   cursor: pointer; transition: all 0.15s;
 }
-.user-chip:hover { background: var(--c-gray-100); }
+.user-chip:hover { background: rgba(255,255,255,0.1); }
 .user-avatar {
   width: 32px; height: 32px; border-radius: 50%;
   background: linear-gradient(135deg, #3b82f6, #1e3a8a);
   display: flex; align-items: center; justify-content: center;
   color: #fff; font-size: 13px; font-weight: 600;
 }
-.user-name { font-size: 13px; color: var(--c-gray-700); font-weight: 500; }
+.user-name { font-size: 13px; color: #fff; font-weight: 500; }
 .user-role-tag {
   font-size: 11px; color: var(--c-primary); background: var(--c-primary-light);
   padding: 1px 8px; border-radius: 10px; font-weight: 500; white-space: nowrap;
@@ -826,16 +826,34 @@ table.data-table {
   padding: 0 16px; font-size: 11px; color: var(--c-gray-800); font-weight: 600;
 }
 .mp-signal { font-size: 9px; letter-spacing: 1px; color: var(--c-gray-500); }
-.mp-header {
-  background: linear-gradient(135deg, #dbeafe 0%, #eff6ff 45%, #fce7f3 100%);
-  color: var(--c-gray-800);
-  padding: 10px 16px 14px;
+.mp-top-nav {
+  background: #fff;
+  border-bottom: 1px solid var(--c-border);
+  padding: 8px 10px 8px 14px;
   position: relative; z-index: 1;
   display: flex; align-items: center; justify-content: space-between;
-  min-height: 52px;
+  min-height: 44px;
 }
-.mp-header-title { font-size: 17px; font-weight: 700; color: #1e293b; }
-.mp-header-icons { display: flex; gap: 12px; color: var(--c-gray-700); align-items: center; }
+.mp-top-tabs {
+  display: flex; align-items: center; gap: 4px;
+}
+.mp-top-tab {
+  padding: 6px 14px; font-size: 14px; font-weight: 600;
+  color: var(--c-gray-500); cursor: pointer; border-radius: 999px;
+  transition: all .2s; -webkit-user-select: none; user-select: none;
+}
+.mp-top-tab.active { background: rgba(29,78,216,0.08); color: var(--c-primary); }
+.mp-capsule {
+  display: flex; align-items: center;
+  border: 1px solid var(--c-border); border-radius: 999px;
+  background: rgba(255,255,255,0.9); overflow: hidden;
+}
+.mp-capsule-btn {
+  width: 32px; height: 28px; display: flex; align-items: center; justify-content: center;
+  cursor: pointer; color: var(--c-gray-700); transition: background .15s;
+}
+.mp-capsule-btn:hover { background: var(--c-gray-100); }
+.mp-capsule-divider { width: 1px; height: 18px; background: var(--c-border); }
 .mp-body { flex: 1; min-height: 0; overflow-y: auto; background: #f5f7fa; }
 .mp-panel { display: none; padding: 0; }
 .mp-panel.show { display: block; }
@@ -988,19 +1006,6 @@ table.data-table {
   padding: 3px 10px; border-radius: 999px; cursor: pointer;
 }
 
-/* Tabbar */
-.mp-tabbar {
-  display: flex; border-top: 1px solid var(--c-border); background: #fff; padding: 6px 0 8px;
-}
-.mp-tab {
-  flex: 1; text-align: center; font-size: 11px;
-  color: var(--c-gray-400); cursor: pointer; display: flex; flex-direction: column;
-  align-items: center; gap: 3px; transition: color 0.15s;
-}
-.mp-tab.active { color: var(--c-primary); font-weight: 600; }
-.mp-tab svg { width: 22px; height: 22px; }
-
-
 /* 我的页面 */
 .mp-profile-card {
   background: #fff; border-radius: var(--radius-lg);
@@ -1042,6 +1047,16 @@ table.data-table {
 }
 .mp-info-col { flex: 1; min-width: 320px; display: grid; gap: 16px; }
 .mp-info-col .badge { font-size: 10px; }
+
+/* 企业-产品关联弹窗 */
+.ep-product-list {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
+  max-height: 320px; overflow-y: auto; padding-right: 6px;
+}
+.ep-product-list::-webkit-scrollbar { width: 4px; }
+.ep-product-list::-webkit-scrollbar-track { background: transparent; }
+.ep-product-list::-webkit-scrollbar-thumb { background: #c9d3e0; border-radius: 4px; }
+.ep-product-list::-webkit-scrollbar-thumb:hover { background: #97a3b5; }
 
 /* 小程序底部弹窗选择器 */
 .mp-sheet-overlay {
@@ -1853,15 +1868,6 @@ function renderDashboard() {
         </div>
         <div class="kpi-value">${s.weekPublishes}<span class="unit">次</span></div>
         <div class="kpi-trend flat">— 本周已发布5次</div>
-      </div>
-      <div class="kpi-card info">
-        <div class="kpi-top">
-          <div class="kpi-label">合作企业总数</div><div class="kpi-icon" style="background:linear-gradient(135deg,#06b6d4,#0e7490);">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 7V3H2v18h20V7H12zM6 19H4v-2h2v2zm0-4H4v-2h2v2zm0-4H4V9h2v2zm0-4H4V5h2v2zm4 12H8v-2h2v2zm0-4H8v-2h2v2zm0-4H8V9h2v2zm0-4H8V5h2v2zm10 12h-8v-2h2v-2h-2v-2h2v-2h-2V9h8v10zm-2-8h-2v2h2v-2zm0 4h-2v2h2v-2z"/></svg>
-          </div>
-        </div>
-        <div class="kpi-value">${s.totalEnterprises}<span class="unit">家</span></div>
-        <div class="kpi-trend flat">— 核心企业5家</div>
       </div>
       <div class="kpi-card danger">
         <div class="kpi-top">
@@ -3768,10 +3774,24 @@ function renderMiniProgramPreview() {
           </div>
         </div>
 
-        ${mpTab !== 'login' ? `<div class="mp-header">
-          <div class="mp-header-title">${mpTitles[mpTab]}</div>
-          <div class="mp-header-icons">${mpHeaderIcons[mpTab]}</div>
-        </div>` : ''}
+        ${mpTab !== 'login' ? `
+        <div class="mp-top-nav">
+          <div class="mp-top-tabs">
+            <div class="mp-top-tab ${mpTab === 'quote' ? 'active' : ''}" onclick="App.mpTab('quote')">填报</div>
+            <div class="mp-top-tab ${mpTab === 'review' ? 'active' : ''}" onclick="App.mpTab('review')">审核</div>
+            <div class="mp-top-tab ${mpTab === 'profile' ? 'active' : ''}" onclick="App.mpTab('profile')">我的</div>
+          </div>
+          <div class="mp-capsule">
+            <div class="mp-capsule-btn" onclick="App.toast('关闭小程序','info')">
+              <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+            </div>
+            <div class="mp-capsule-divider"></div>
+            <div class="mp-capsule-btn" onclick="App.toast('更多操作','info')">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><circle cx="6" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="18" cy="12" r="2"/></svg>
+            </div>
+          </div>
+        </div>
+        ` : ''}
         <div class="mp-body" style="${mpTab === 'login' ? 'padding:0;' : ''}">
 
           <!-- Tab: 报价填报 -->
@@ -3835,7 +3855,7 @@ function renderMiniProgramPreview() {
                 <div class="mp-list-item green">
                   <div class="mp-item-head">
                     <span class="mp-item-title">氧化镝</span>
-                    <button class="mp-edit-btn" onclick="App.toast('进入修改模式','info')">修改</button>
+                    <button class="mp-edit-btn" onclick="App.mpQuoteSub('form')">修改</button>
                   </div>
                   <div class="mp-item-body">最高 185.50 · 最低 184.00 <span style="color:#97a3b5;">万元/吨</span></div>
                   <div class="mp-item-time">8月17日 14:32 提交</div>
@@ -3843,7 +3863,7 @@ function renderMiniProgramPreview() {
                 <div class="mp-list-item blue">
                   <div class="mp-item-head">
                     <span class="mp-item-title">碳酸镧铈</span>
-                    <button class="mp-edit-btn" onclick="App.toast('进入修改模式','info')">修改</button>
+                    <button class="mp-edit-btn" onclick="App.mpQuoteSub('form')">修改</button>
                   </div>
                   <div class="mp-item-body">最高 2.90 · 最低 2.80 <span style="color:#97a3b5;">万元/吨</span></div>
                   <div class="mp-item-time">8月17日 15:05 提交</div>
@@ -3927,67 +3947,13 @@ function renderMiniProgramPreview() {
                 </div>
               </div>
 
-              <div class="mp-menu-card">
-                <div class="mp-menu-item" onclick="App.toast('我的企业','info')">
-                  <div style="display:flex;align-items:center;gap:10px;">
-                    <div class="mp-menu-icon" style="background:rgba(29,78,216,0.08);color:#1d4ed8;"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 7V3H2v18h20V7H12zM6 19H4v-2h2v2zm0-4H4v-2h2v2zm0-4H4V9h2v2zm0-4H4V5h2v2zm4 12H8v-2h2v2zm0-4H8v-2h2v2zm0-4H8V9h2v2zm0-4H8V5h2v2zm10 12h-8v-2h2v-2h-2v-2h2v-2h-2V9h8v10zm-2-8h-2v2h2v-2zm0 4h-2v2h2v-2z"/></svg></div>
-                    <span>我的企业</span>
-                  </div>
-                  <span style="color:#97a3b5;font-size:12px;">▸</span>
-                </div>
-                <div class="mp-menu-item" onclick="App.toast('消息通知','info')">
-                  <div style="display:flex;align-items:center;gap:10px;">
-                    <div class="mp-menu-icon" style="background:rgba(28,138,77,0.08);color:#1c8a4d;"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg></div>
-                    <span>消息通知</span>
-                  </div>
-                  <span style="color:#97a3b5;font-size:12px;">▸</span>
-                </div>
-                <div class="mp-menu-item" onclick="App.toast('帮助中心','info')">
-                  <div style="display:flex;align-items:center;gap:10px;">
-                    <div class="mp-menu-icon" style="background:rgba(245,158,11,0.08);color:#f59e0b;"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/></svg></div>
-                    <span>帮助中心</span>
-                  </div>
-                  <span style="color:#97a3b5;font-size:12px;">▸</span>
-                </div>
-                <div class="mp-menu-item" onclick="App.toast('关于我们','info')">
-                  <div style="display:flex;align-items:center;gap:10px;">
-                    <div class="mp-menu-icon" style="background:rgba(239,68,68,0.08);color:#ef4444;"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg></div>
-                    <span>关于我们</span>
-                  </div>
-                  <span style="color:#97a3b5;font-size:12px;">▸</span>
-                </div>
-                <div class="mp-menu-item" onclick="App.toast('设置','info')">
-                  <div style="display:flex;align-items:center;gap:10px;">
-                    <div class="mp-menu-icon" style="background:rgba(107,114,128,0.08);color:#6b7280;"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L5.09 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg></div>
-                    <span>设置</span>
-                  </div>
-                  <span style="color:#97a3b5;font-size:12px;">▸</span>
-                </div>
-              </div>
-
-              <button class="mp-ghost-btn" style="margin-top:8px;" onclick="App.mpTab('login')">退出登录</button>
+              <button class="mp-ghost-btn" style="margin-top:16px;" onclick="App.mpTab('login')">退出登录</button>
             </div>
           </div>
 
         </div>
         
 
-${mpTab !== 'login' ? `
-        <div class="mp-tabbar">
-          <div class="mp-tab ${mpTab === 'quote' ? 'active' : ''}" data-tab="quote" onclick="App.mpTab('quote')">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l-5.5 9h11L12 2zm0 3.84L13.76 9h-3.52L12 5.84zM17.5 13c-1.56 0-3.08.24-4.5.69v8.06c1.42-.45 2.94-.69 4.5-.69 1.28 0 2.52.16 3.71.46.27.07.54.13.79.19v-8.32c-1.42-.42-2.93-.65-4.5-.65-1.7 0-3.32.27-4.85.76v8.27c-1.63-.55-3.4-.85-5.35-.85-1.56 0-3.08.24-4.5.69v8.06c1.42-.45 2.94-.69 4.5-.69 1.95 0 3.72.3 5.35.85 1.53-.49 3.15-.76 4.85-.76 1.56 0 3.08.24 4.5.69v-8.06c-1.42-.45-2.94-.69-4.5-.69-.34 0-.67.02-1 .05v-.01z"/></svg>
-            <span>填报</span>
-          </div>
-          <div class="mp-tab ${mpTab === 'review' ? 'active' : ''}" data-tab="review" onclick="App.mpTab('review')">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
-            <span>审核</span>
-          </div>
-          <div class="mp-tab ${mpTab === 'profile' ? 'active' : ''}" data-tab="profile" onclick="App.mpTab('profile')">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-            <span>我的</span>
-          </div>
-        </div>
-        ` : ''}
         <!-- 底部弹窗选择器 -->
         <div id="mpSheetOverlay" class="mp-sheet-overlay" onclick="if(event.target===this)App.closeMpSheet()">
           <div class="mp-sheet">
@@ -5161,21 +5127,6 @@ const App = {
             ${this.mselFilter('entCollectors', '采集员', ['张明','李芳','王强'], e && e.collector ? [e.collector] : [])}
             <div style="margin-top:4px;font-size:11px;color:#97a3b5;">多选，控制数据权限</div>
           </div>
-          <div style="grid-column:1 / -1;">
-            <label style="font-size:12px;color:#64748b;">关联产品<span style="color:#c0392b;">*</span><span style="font-size:11px;color:#97a3b5;margin-left:4px;">限定该企业可报价的产品范围，未关联产品不会出现在其填报列表</span></label>
-            <div style="margin-top:4px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;">
-              ${PRODUCTS.map(p => {
-                const checked = linked.includes(p.name);
-                return `
-                <label style="display:flex;align-items:center;gap:6px;padding:7px 10px;border:1px solid ${checked ? '#1a4d8c' : '#dfe5ee'};border-radius:6px;background:${checked ? '#eaf1fa' : '#fff'};cursor:pointer;font-size:12px;color:#334155;">
-                  <input type="checkbox" name="entProdLink" value="${p.name}" ${checked ? 'checked' : ''} onchange="this.closest('label').style.borderColor=this.checked?'#1a4d8c':'#dfe5ee';this.closest('label').style.background=this.checked?'#eaf1fa':'#fff';" />
-                  <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${p.name}</span>
-                </label>
-                `;
-              }).join('')}
-            </div>
-            <div style="margin-top:6px;font-size:11px;color:#97a3b5;">保存后将同步到「产品关联」管理，支持随时调整</div>
-          </div>
         </div>
       </div>
       <div class="modal-footer">
@@ -5255,6 +5206,7 @@ const App = {
     const e = ENTERPRISES.find(x => x.id === id);
     if (!e) return;
     const linked = ENTERPRISE_PRODUCTS[e.id] || [];
+    const categories = [...new Set(PRODUCTS.map(p => p.category))];
     const modal = document.getElementById('modal');
     modal.innerHTML = `
       <div class="modal-header">
@@ -5262,17 +5214,22 @@ const App = {
         <button class="modal-close" onclick="App.closeModal()">×</button>
       </div>
       <div class="modal-body">
-        <div class="alert alert-info">
-          <strong>关联说明：</strong>勾选后该企业可在小程序端填报对应产品报价；未关联的产品不会出现在该企业的填报列表中。
+        <div style="display:flex;gap:10px;align-items:center;margin-bottom:10px;">
+          <select id="epType" class="form-select" style="width:120px;flex-shrink:0;" onchange="App.filterEpProducts(this.value, document.getElementById('epSearch').value)">
+            <option value="">全部类型</option>
+            ${categories.map(c => `<option value="${c}">${c}</option>`).join('')}
+          </select>
+          <input id="epSearch" class="form-input" placeholder="搜索产品名称" style="flex:1;" oninput="App.filterEpProducts(document.getElementById('epType').value, this.value)" />
+          <span id="epCount" style="font-size:12px;color:#64748b;white-space:nowrap;">已选 ${linked.length}</span>
         </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <div class="ep-product-list">
           ${PRODUCTS.map(p => {
             const checked = linked.includes(p.id);
             return `
-            <label style="display:flex;align-items:center;gap:8px;padding:10px 12px;border:1px solid ${checked ? '#1a4d8c' : '#dfe5ee'};border-radius:8px;background:${checked ? '#eaf1fa' : '#fff'};cursor:pointer;font-size:13px;color:#334155;">
-              <input type="checkbox" name="epLink" value="${p.id}" ${checked ? 'checked' : ''} onchange="this.closest('label').style.borderColor=this.checked?'#1a4d8c':'#dfe5ee';this.closest('label').style.background=this.checked?'#eaf1fa':'#fff';" />
-              <span style="flex:1;">${p.name}</span>
-              <span style="font-size:11px;color:#97a3b5;">${p.category}</span>
+            <label data-category="${p.category}" data-name="${p.name.toLowerCase()}" style="display:flex;align-items:center;gap:6px;padding:6px 10px;border:1px solid ${checked ? '#1a4d8c' : '#dfe5ee'};border-radius:6px;background:${checked ? '#eaf1fa' : '#fff'};cursor:pointer;font-size:12px;color:#334155;">
+              <input type="checkbox" name="epLink" value="${p.id}" ${checked ? 'checked' : ''} onchange="this.closest('label').style.borderColor=this.checked?'#1a4d8c':'#dfe5ee';this.closest('label').style.background=this.checked?'#eaf1fa':'#fff';App.updateEpCount();" />
+              <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${p.name}</span>
+              <span style="font-size:10px;color:#97a3b5;flex-shrink:0;">${p.category}</span>
             </label>
             `;
           }).join('')}
@@ -5284,6 +5241,22 @@ const App = {
       </div>
     `;
     document.getElementById('modalOverlay').classList.add('show');
+  },
+
+  filterEpProducts(type, keyword) {
+    const k = (keyword || '').toLowerCase().trim();
+    document.querySelectorAll('.ep-product-list label').forEach(el => {
+      const cat = el.dataset.category || '';
+      const name = el.dataset.name || '';
+      const match = (!type || cat === type) && (!k || name.includes(k));
+      el.style.display = match ? 'flex' : 'none';
+    });
+  },
+
+  updateEpCount() {
+    const count = document.querySelectorAll('input[name="epLink"]:checked').length;
+    const el = document.getElementById('epCount');
+    if (el) el.textContent = '已选 ' + count;
   },
 
   saveEnterpriseProductModal(id) {
