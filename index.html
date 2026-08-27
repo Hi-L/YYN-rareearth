@@ -2837,16 +2837,206 @@ function renderPublishManage() {
   `;
 }
 
-// 短信平台发布：号码分组 + 全选 + 选分组发布
+// 短信平台发布：号码分组 + 全选 + 选分组发布；点击"新建发送任务"进入三步向导
 function renderPublishSms() {
   const selectedGroups = App.state.smsSelectedGroups || [];
+  const step = App.state.smsTaskStep;
+
+  // 步骤条（1=选择接收人，2=选择产品，3=确认发送）
+  const stepBar = (active) => `
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:20px;padding:14px 16px;background:#f7f9fc;border-radius:8px;">
+      ${[1,2,3].map((n, idx) => {
+        const labels = ['选择接收人', '选择产品', '确认发送'];
+        const isActive = n === active;
+        const isDone = n < active;
+        const circleBg = isActive ? 'var(--c-primary)' : (isDone ? 'var(--c-success)' : '#cbd5e1');
+        const textColor = isActive ? 'var(--c-primary)' : (isDone ? 'var(--c-success)' : '#64748b');
+        return `
+          <div style="display:flex;align-items:center;gap:8px;">
+            <div style="display:flex;align-items:center;gap:6px;">
+              <span style="width:22px;height:22px;border-radius:50%;background:${circleBg};color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;">${isDone ? '✓' : n}</span>
+              <span style="font-size:13px;font-weight:500;color:${textColor};">${labels[idx]}</span>
+            </div>
+            ${idx < 2 ? '<span style="color:#cbd5e1;font-size:13px;">></span>' : ''}
+          </div>
+        `;
+      }).join('')}
+    </div>
+  `;
+
+  // 公共底部按钮
+  const wizardFooter = (left, right) => `
+    <div style="display:flex;gap:12px;justify-content:flex-end;margin-top:16px;padding-top:16px;border-top:1px solid var(--c-border);">
+      ${left}
+      ${right}
+    </div>
+  `;
+
+  // ===== 向导视图 =====
+  if (step === 1) {
+    return `
+      <div class="card">
+        <div class="card-header"><div></div><span class="badge badge-primary">新建发送任务</span></div>
+        <div class="card-body" style="padding:16px;">
+          ${stepBar(1)}
+          <div style="display:grid;grid-template-columns:240px 1fr;gap:16px;align-items:start;">
+            <div style="background:#f7f9fc;border-radius:8px;padding:14px;">
+              <div style="font-size:13px;font-weight:600;color:#1e293b;margin-bottom:12px;">号码分组</div>
+              ${SMS_GROUPS.map(g => `
+                <label style="display:flex;align-items:center;gap:8px;padding:8px 6px;cursor:pointer;border-radius:6px;transition:background 0.15s;" onmouseenter="this.style.background='#fff'" onmouseleave="this.style.background='transparent'">
+                  <input type="checkbox" ${selectedGroups.includes(g.id) ? 'checked' : ''} onchange="App.toggleSmsGroup('${g.id}', this)" />
+                  <span style="flex:1;font-size:13px;color:#334155;">${g.name}</span>
+                  <span style="font-size:11px;color:#94a3b8;">${g.count}</span>
+                </label>
+              `).join('')}
+            </div>
+            <div>
+              <div style="display:flex;gap:8px;align-items:center;margin-bottom:12px;">
+                <input class="form-input" placeholder="搜索姓名/手机号" style="width:220px;" id="smsSearch" oninput="App.filterSmsNumbers(this.value)" />
+                <div style="margin-left:auto;display:flex;gap:6px;">
+                  <button class="btn btn-sm" onclick="App.selectAllSmsNumbers(true)">全选</button>
+                  <button class="btn btn-sm" onclick="App.selectAllSmsNumbers(false)">取消全选</button>
+                  <button class="btn btn-sm" onclick="App.selectInverseSmsNumbers()">反选</button>
+                </div>
+              </div>
+              <div class="table-wrap" style="max-height:360px;overflow-y:auto;border:1px solid var(--c-border);border-radius:6px;">
+                <table class="data-table">
+                  <thead><tr><th style="width:40px;"><input type="checkbox" id="smsAllCheckbox" onchange="App.selectAllSmsNumbers(this.checked)" /></th><th>姓名</th><th>手机号</th><th>所属分组</th></tr></thead>
+                  <tbody id="smsTableBody">
+                    ${SMS_NUMBERS.map((n, i) => {
+                      const gname = (SMS_GROUPS.find(g => g.id === n.group) || {}).name || '-';
+                      return `
+                        <tr data-sms-search="${(n.name + ' ' + n.phone).toLowerCase()}" data-sms-index="${i}">
+                          <td><input type="checkbox" class="sms-row" ${selectedGroups.includes(n.group) ? 'checked' : ''} onchange="App.updateSmsSelectedCount()" /></td>
+                          <td>${n.name}</td>
+                          <td class="col-mono">${n.phone}</td>
+                          <td><span class="badge badge-gray" style="font-size:10px;">${gname}</span></td>
+                        </tr>
+                      `;
+                    }).join('')}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          ${wizardFooter(
+            '<button class="btn" onclick="App.cancelSmsTask()">取消</button>',
+            '<button class="btn btn-primary" onclick="App.setSmsTaskStep(2)">下一步：选择产品</button>'
+          )}
+        </div>
+      </div>
+    `;
+  }
+
+  if (step === 2) {
+    const selectedProducts = App.state.smsTaskProducts || [];
+    const enabledProducts = PRODUCTS.filter(p => p.status !== '停用');
+    return `
+      <div class="card">
+        <div class="card-header"><div></div><span class="badge badge-primary">新建发送任务</span></div>
+        <div class="card-body" style="padding:16px;">
+          ${stepBar(2)}
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+            <div style="font-size:13px;color:#64748b;">最多选择 <strong style="color:var(--c-primary);">4</strong> 个产品，已选 <strong id="smsProductCount" style="color:var(--c-primary);">${selectedProducts.length}</strong> 个</div>
+            <input class="form-input" placeholder="搜索产品名称" style="width:220px;" id="smsProductSearch" oninput="App.filterSmsProducts(this.value)" />
+          </div>
+          <div class="table-wrap" style="max-height:420px;overflow-y:auto;border:1px solid var(--c-border);border-radius:6px;">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th style="width:40px;"><input type="checkbox" id="smsProductAll" onchange="App.selectAllSmsProducts(this.checked)" ${selectedProducts.length === enabledProducts.length && enabledProducts.length > 0 ? 'checked' : ''}/></th>
+                  <th>产品名称</th>
+                  <th class="col-num">均价（万元/吨）</th>
+                  <th class="col-num">涨跌额（万元/吨）</th>
+                  <th>品类</th>
+                </tr>
+              </thead>
+              <tbody id="smsProductBody">
+                ${enabledProducts.map(p => {
+                  const q = App.getSmsProductQuote(p.id);
+                  const checked = selectedProducts.includes(p.id) ? 'checked' : '';
+                  return `
+                    <tr data-sms-product-search="${p.name.toLowerCase()}" data-sms-product="${p.id}">
+                      <td><input type="checkbox" class="sms-product-row" value="${p.id}" ${checked} onchange="App.toggleSmsTaskProduct('${p.id}', this)" /></td>
+                      <td class="font-bold">${p.name}</td>
+                      <td class="col-num font-bold text-primary">${q.avg.toFixed(2)}</td>
+                      <td class="col-num ${q.change >= 0 ? 'text-danger' : 'text-success'}">${q.change >= 0 ? '+' : ''}${q.change.toFixed(2)}</td>
+                      <td><span class="badge badge-gray" style="font-size:10px;">${p.category}</span></td>
+                    </tr>
+                  `;
+                }).join('')}
+              </tbody>
+            </table>
+          </div>
+          <div style="margin-top:12px;padding:10px;background:#f7f9fc;border-radius:6px;font-size:12px;color:#64748b;line-height:1.7;">
+            <div>· 默认已勾选 4 个核心品类，可手动调整</div>
+            <div>· 均价取自计算结果，涨跌额正数显示"上涨"、负数显示"下跌"</div>
+          </div>
+          ${wizardFooter(
+            '<button class="btn" onclick="App.setSmsTaskStep(1)">上一步</button>',
+            '<button class="btn btn-primary" onclick="App.setSmsTaskStep(3)">下一步：确认发送</button>'
+          )}
+        </div>
+      </div>
+    `;
+  }
+
+  if (step === 3) {
+    const count = App.getSmsSelectedCount();
+    const groups = App.state.smsSelectedGroups.length;
+    const content = App.getSmsTaskContent();
+    return `
+      <div class="card">
+        <div class="card-header"><div></div><span class="badge badge-primary">新建发送任务</span></div>
+        <div class="card-body" style="padding:16px;">
+          ${stepBar(3)}
+          <div style="display:grid;grid-template-columns:280px 1fr;gap:16px;align-items:start;">
+            <div style="display:grid;gap:12px;">
+              <div style="padding:14px;background:#f7f9fc;border-radius:8px;">
+                <div style="font-size:13px;font-weight:600;color:#1e293b;margin-bottom:10px;">发送对象</div>
+                <div style="font-size:13px;color:#334155;line-height:1.8;">
+                  已选号码：<strong style="color:var(--c-primary);">${count}</strong> 个<br/>
+                  已选分组：<strong style="color:var(--c-primary);">${groups}</strong> 个<br/>
+                  已选产品：<strong style="color:var(--c-primary);">${(App.state.smsTaskProducts || []).length}</strong> 个
+                </div>
+              </div>
+              <div>
+                <label style="font-size:12px;color:#64748b;">任务名称<span style="color:#c0392b;">*</span></label>
+                <input class="form-input" id="smsTaskName" style="margin-top:4px;width:100%;" value="8月18日稀土行情短信推送" />
+              </div>
+              <div>
+                <label style="font-size:12px;color:#64748b;">发送方式</label>
+                <select class="form-select" id="smsTaskMode" style="margin-top:4px;width:100%;" onchange="App.updateSmsTaskModeLabel(this)">
+                  <option value="now">立即发送</option>
+                  <option value="timing">定时发送（08:00）</option>
+                </select>
+              </div>
+            </div>
+            <div>
+              <div style="font-size:13px;font-weight:600;color:#1e293b;margin-bottom:10px;">短信预览</div>
+              <div style="padding:14px;background:#f7f9fc;border-radius:8px;border:1px dashed #cbd5e1;">
+                <div style="padding:12px 14px;background:#e6f5e8;border-radius:8px;font-size:13px;color:#1f3d22;line-height:1.8;max-width:520px;word-break:break-word;">${content}</div>
+                <div style="margin-top:10px;font-size:12px;color:#94a3b8;">预计字数：${content.length} 字 · 预计条数：${Math.ceil(content.length / 70)} 条</div>
+              </div>
+            </div>
+          </div>
+          ${wizardFooter(
+            '<button class="btn" onclick="App.setSmsTaskStep(2)">上一步</button>',
+            '<button class="btn btn-primary" onclick="App.submitSmsTask()">提交发送</button>'
+          )}
+        </div>
+      </div>
+    `;
+  }
+
+  // ===== 列表视图 =====
   return `
     <div class="card">
       <div class="card-header">
         <div></div>
         <div style="display:flex;gap:8px;">
           <button class="btn btn-sm" onclick="App.toast('号码管理待开发','info')">号码管理</button>
-          <button class="btn btn-sm btn-primary" onclick="App.openCreateSmsTaskModal()">+ 新建发送任务</button>
+          <button class="btn btn-sm btn-primary" onclick="App.openCreateSmsTask()">+ 新建发送任务</button>
         </div>
       </div>
       <div class="card-body" style="padding:16px;">
@@ -2907,14 +3097,8 @@ function renderPublishSms() {
         <!-- 底部操作栏 -->
         <div style="display:flex;gap:16px;align-items:center;margin-top:16px;padding-top:16px;border-top:1px solid var(--c-border);">
           <div style="font-size:13px;color:#64748b;">已选 <strong id="smsSelectedCount" style="color:var(--c-primary);font-size:15px;">${SMS_NUMBERS.filter(n => selectedGroups.includes(n.group)).length}</strong> 个号码，覆盖 <strong id="smsSelectedGroups" style="color:var(--c-primary);font-size:15px;">${selectedGroups.length}</strong> 个分组</div>
-          <div style="margin-left:auto;display:flex;gap:12px;align-items:center;">
-            <label class="ios-toggle">
-              <input type="checkbox" id="smsTimingToggle" onchange="App.updateSmsTimingLabel(this)" />
-              <span class="track"><span class="knob"></span></span>
-              <span class="label off">定时发送</span>
-            </label>
-            <button class="btn" onclick="App.previewSmsTask()">预览</button>
-            <button class="btn btn-primary" onclick="App.submitSmsTask()">立即发送</button>
+          <div style="margin-left:auto;">
+            <button class="btn btn-primary" onclick="App.openCreateSmsTask()">新建发送任务</button>
           </div>
         </div>
       </div>
@@ -4302,6 +4486,8 @@ const App = {
     filterCounts: {}, // 各列表筛选后的结果数（用于 toast 提示与分页计算）
     smsSelectedGroups: [], // 短信平台发布：已勾选分组
     smsTiming: false,      // 短信平台发布：是否定时发送
+    smsTaskStep: null,     // 短信任务创建向导步骤：1|2|3|null
+    smsTaskProducts: [],   // 短信任务已选产品ID（最多4个）
   },
 
   init() {
@@ -5208,6 +5394,26 @@ const App = {
   },
 
   // ========== 短信平台发布 ==========
+  // 根据产品 ID 生成固定但合理的均价与涨跌额（保持同一产品每次相同）
+  getSmsProductQuote(pid) {
+    const p = PRODUCTS.find(x => x.id === pid);
+    if (!p) return null;
+    const seed = parseInt(pid.slice(1), 10) * 37;
+    const change = ((seed % 100) / 100 * 4 - 1.5).toFixed(2);
+    const avg = (p.yestAvg + parseFloat(change)).toFixed(2);
+    return { id: pid, name: p.name, avg: parseFloat(avg), change: parseFloat(change) };
+  },
+  // 根据已选产品生成短信正文
+  getSmsTaskContent() {
+    const items = (this.state.smsTaskProducts || []).map(pid => this.getSmsProductQuote(pid)).filter(Boolean);
+    if (!items.length) return '【包头稀土产品交易所】尊敬的客户，您好！更多价格信息详见稀交所官网！拒收请回复R';
+    const parts = items.map(it => {
+      const dir = it.change >= 0 ? '上涨' : '下跌';
+      const val = Math.abs(it.change).toFixed(2);
+      return `${it.name}均价${it.avg.toFixed(2)}万元/吨，${dir}${val}万元/吨`;
+    });
+    return `【包头稀土产品交易所】尊敬的客户，您好！${parts.join('；')}。更多价格信息详见稀交所官网！拒收请回复R`;
+  },
   // 勾选/取消分组
   toggleSmsGroup(id, input) {
     const arr = this.state.smsSelectedGroups;
@@ -5397,84 +5603,112 @@ const App = {
     this.render();
     this.toast(`已将 ${indexes.length} 个号码加入分组「${gname}」`, 'success');
   },
-  // 新建发送任务
-  openCreateSmsTaskModal() {
-    const count = this.getSmsSelectedCount();
-    const modal = document.getElementById('modal');
-    modal.innerHTML = `
-      <div class="modal-header">
-        <div class="modal-title">新建发送任务</div>
-        <button class="modal-close" onclick="App.closeModal()">×</button>
-      </div>
-      <div class="modal-body">
-        <div style="display:grid;gap:12px;">
-          <div>
-            <label style="font-size:12px;color:#64748b;">任务名称<span style="color:#c0392b;">*</span></label>
-            <input class="form-input" id="smsTaskName" style="margin-top:4px;width:100%;" value="8月18日稀土指数短信推送" />
-          </div>
-          <div>
-            <label style="font-size:12px;color:#64748b;">短信模板</label>
-            <select class="form-select" id="smsTaskTpl" style="margin-top:4px;width:100%;">
-              ${SMS_TEMPLATES.map(t => `<option>${t.name}</option>`).join('')}
-            </select>
-          </div>
-          <div>
-            <label style="font-size:12px;color:#64748b;">发送对象</label>
-            <div style="margin-top:4px;padding:8px 10px;background:#f7f9fc;border-radius:6px;font-size:13px;color:#334155;">
-              当前已勾选 <strong style="color:var(--c-primary);">${count}</strong> 个号码 ·
-              已选分组 <strong style="color:var(--c-primary);">${this.state.smsSelectedGroups.length}</strong> 个
-            </div>
-          </div>
-          <div>
-            <label style="font-size:12px;color:#64748b;">发送方式</label>
-            <select class="form-select" style="margin-top:4px;width:100%;">
-              <option>${this.state.smsTiming ? '定时发送（08:00）' : '立即发送'}</option>
-              <option>${this.state.smsTiming ? '立即发送' : '定时发送（08:00）'}</option>
-            </select>
-          </div>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button class="btn" onclick="App.closeModal()">取消</button>
-        <button class="btn btn-primary" onclick="App.submitSmsTask()">创建并发送</button>
-      </div>
-    `;
-    document.getElementById('modalOverlay').classList.add('show');
+  // 新建发送任务：进入三步向导（选人→选产品→确认）
+  openCreateSmsTask() {
+    this.state.smsTaskStep = 1;
+    // 默认选中前 4 个启用的产品（核心品类）
+    const defaults = PRODUCTS.filter(p => p.status !== '停用').slice(0, 4).map(p => p.id);
+    this.state.smsTaskProducts = defaults;
+    this.render();
   },
-  // 预览短信任务
-  previewSmsTask() {
-    const count = this.getSmsSelectedCount();
-    if (!count && !this.state.smsSelectedGroups.length) {
-      this.toast('请先勾选号码或分组', 'warning');
-      return;
+  // 切换向导步骤
+  setSmsTaskStep(step) {
+    if (step === 2) {
+      const count = this.getSmsSelectedCount();
+      const groups = this.state.smsSelectedGroups.length;
+      if (!count && !groups) {
+        this.toast('请先勾选号码或分组', 'warning');
+        return;
+      }
     }
-    const tpl = SMS_TEMPLATES[0];
-    const modal = document.getElementById('modal');
-    modal.innerHTML = `
-      <div class="modal-header">
-        <div class="modal-title">短信预览</div>
-        <button class="modal-close" onclick="App.closeModal()">×</button>
-      </div>
-      <div class="modal-body">
-        <div style="font-size:12px;color:#64748b;margin-bottom:10px;">发送对象：已勾选 <strong style="color:var(--c-primary);">${count}</strong> 个号码 · 分组 ${this.state.smsSelectedGroups.length} 个</div>
-        <div style="padding:14px;background:#f7f9fc;border-radius:8px;border:1px dashed #cbd5e1;font-size:13px;color:#334155;line-height:1.8;white-space:pre-wrap;">【包头稀土】${tpl.content}</div>
-      </div>
-      <div class="modal-footer">
-        <button class="btn" onclick="App.closeModal()">关闭</button>
-        <button class="btn btn-primary" onclick="App.closeModal();App.submitSmsTask();">确认发送</button>
-      </div>
-    `;
-    document.getElementById('modalOverlay').classList.add('show');
+    if (step === 3) {
+      if (!this.state.smsTaskProducts.length) {
+        this.toast('请至少选择 1 个产品', 'warning');
+        return;
+      }
+    }
+    this.state.smsTaskStep = step;
+    this.render();
   },
-  // 提交发送
+  // 取消任务创建
+  cancelSmsTask() {
+    this.state.smsTaskStep = null;
+    this.state.smsTaskProducts = [];
+    this.render();
+  },
+  // 勾选/取消产品（最多 4 个）
+  toggleSmsTaskProduct(pid, input) {
+    const arr = this.state.smsTaskProducts;
+    const idx = arr.indexOf(pid);
+    if (input.checked) {
+      if (arr.length >= 4) {
+        input.checked = false;
+        this.toast('最多只能选择 4 个产品', 'warning');
+        return;
+      }
+      if (idx === -1) arr.push(pid);
+    } else {
+      if (idx > -1) arr.splice(idx, 1);
+    }
+    this.updateSmsProductCount();
+    this.updateSmsProductSelectAll();
+  },
+  // 更新已选产品数
+  updateSmsProductCount() {
+    const el = document.getElementById('smsProductCount');
+    if (el) el.textContent = this.state.smsTaskProducts.length;
+  },
+  // 产品全选/取消（受最多 4 个限制）
+  selectAllSmsProducts(checked) {
+    const enabled = PRODUCTS.filter(p => p.status !== '停用');
+    if (checked) {
+      this.state.smsTaskProducts = enabled.slice(0, 4).map(p => p.id);
+      if (enabled.length > 4) this.toast('已自动选中前 4 个产品', 'info');
+    } else {
+      this.state.smsTaskProducts = [];
+    }
+    document.querySelectorAll('#smsProductBody .sms-product-row').forEach(cb => {
+      cb.checked = this.state.smsTaskProducts.includes(cb.value);
+    });
+    this.updateSmsProductCount();
+  },
+  // 更新表头全选框状态
+  updateSmsProductSelectAll() {
+    const all = document.getElementById('smsProductAll');
+    if (!all) return;
+    const enabled = PRODUCTS.filter(p => p.status !== '停用');
+    all.checked = this.state.smsTaskProducts.length === enabled.length && enabled.length > 0;
+  },
+  // 搜索过滤产品
+  filterSmsProducts(keyword) {
+    const kw = (keyword || '').trim().toLowerCase();
+    document.querySelectorAll('#smsProductBody tr').forEach(tr => {
+      const hit = !kw || (tr.getAttribute('data-sms-product-search') || '').indexOf(kw) > -1;
+      tr.style.display = hit ? '' : 'none';
+    });
+  },
+  // 切换发送方式时同步状态
+  updateSmsTaskModeLabel(select) {
+    this.state.smsTiming = select.value === 'timing';
+  },
+  // 提交发送任务
   submitSmsTask() {
     const count = this.getSmsSelectedCount();
-    if (!count && !this.state.smsSelectedGroups.length) {
+    const groups = this.state.smsSelectedGroups.length;
+    if (!count && !groups) {
       this.toast('请先勾选号码或分组', 'warning');
       return;
     }
-    this.closeModal();
-    this.toast(`${this.state.smsTiming ? '定时任务已创建，将于 08:00 发送' : '短信已发送'}：${count} 个号码，分组 ${this.state.smsSelectedGroups.length} 个`, 'success');
+    if (!this.state.smsTaskProducts.length) {
+      this.toast('请至少选择 1 个产品', 'warning');
+      return;
+    }
+    const taskName = (document.getElementById('smsTaskName') || {}).value || '短信发送任务';
+    const timing = this.state.smsTiming;
+    this.state.smsTaskStep = null;
+    this.state.smsTaskProducts = [];
+    this.render();
+    this.toast(`${timing ? '定时任务已创建，将于 08:00 发送' : '短信已发送'}：${taskName}，覆盖 ${count} 个号码、${groups} 个分组`, 'success');
   },
   // 即期指数：提交审核
   submitSpotReview() {
