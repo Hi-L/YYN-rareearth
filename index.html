@@ -2458,12 +2458,16 @@ function renderReview() {
   const tab = App.state.subTab || 'pending';
   const pendingCount = REVIEW_RECORDS.filter(r => r.status.startsWith('pending')).length + PRICE_MODIFY_REVIEWS.filter(m => m.status === 'pending').length;
   return `
-    <div class="tabs">
-      <div class="tab-item ${tab === 'pending' ? 'active' : ''}" onclick="App.setSubTab('pending')">待审核 <span class="tab-badge">${pendingCount}</span></div>
-      <div class="tab-item ${tab === 'history' ? 'active' : ''}" onclick="App.setSubTab('history')">审核记录</div>
+    <div class="card">
+      <div class="card-body" style="padding:16px;">
+        <div class="tabs" style="margin-bottom:16px;">
+          <div class="tab-item ${tab === 'pending' ? 'active' : ''}" onclick="App.setSubTab('pending')">待审核 <span class="tab-badge">${pendingCount}</span></div>
+          <div class="tab-item ${tab === 'history' ? 'active' : ''}" onclick="App.setSubTab('history')">审核记录</div>
+        </div>
+        ${tab === 'pending' ? renderReviewPending() : ''}
+        ${tab === 'history' ? renderReviewHistory() : ''}
+      </div>
     </div>
-    ${tab === 'pending' ? renderReviewPending() : ''}
-    ${tab === 'history' ? renderReviewHistory() : ''}
   `;
 }
 
@@ -2759,6 +2763,72 @@ function renderReviewAnomaly() {
   `;
 }
 
+// 号码管理弹窗（短信平台发布使用）
+function renderSmsNumberManager(selectedGroup, keyword) {
+  const numbers = SMS_NUMBERS.map((n, i) => ({ ...n, index: i }));
+  const filtered = numbers.filter(n => {
+    const matchGroup = !selectedGroup || n.group === selectedGroup;
+    const kw = (keyword || '').trim().toLowerCase();
+    const matchKw = !kw || (n.name + ' ' + n.phone).toLowerCase().indexOf(kw) > -1;
+    return matchGroup && matchKw;
+  });
+  const activeStyle = 'background:#fff;border:1px solid var(--c-border);box-shadow:var(--shadow-sm);';
+  const normalStyle = 'background:transparent;';
+  return `
+    <div class="modal-header">
+      <div class="modal-title">号码管理</div>
+      <button class="modal-close" onclick="App.closeModal();setTimeout(()=>{App.state.smsManagerGroup='';App.state.smsManagerKeyword='';},50)">×</button>
+    </div>
+    <div class="modal-body" style="padding:0;">
+      <div style="display:grid;grid-template-columns:200px 1fr;min-height:420px;max-height:60vh;">
+        <!-- 左侧分组 -->
+        <div style="border-right:1px solid var(--c-border);padding:16px;background:#f7f9fc;overflow-y:auto;">
+          <div style="font-size:13px;font-weight:600;color:#1e293b;margin-bottom:12px;">号码分组</div>
+          <div style="display:flex;flex-direction:column;gap:6px;">
+            <div onclick="App.filterSmsManagerByGroup('')" style="padding:8px 10px;border-radius:6px;cursor:pointer;font-size:13px;color:#334155;${!selectedGroup ? activeStyle : normalStyle}">全部号码 <span style="float:right;font-size:11px;color:#94a3b8;">${SMS_NUMBERS.length}</span></div>
+            ${SMS_GROUPS.map(g => `
+              <div onclick="App.filterSmsManagerByGroup('${g.id}')" style="padding:8px 10px;border-radius:6px;cursor:pointer;font-size:13px;color:#334155;${selectedGroup === g.id ? activeStyle : normalStyle}">${g.name} <span style="float:right;font-size:11px;color:#94a3b8;">${g.count}</span></div>
+            `).join('')}
+          </div>
+        </div>
+        <!-- 右侧列表 -->
+        <div style="padding:16px;overflow-y:auto;">
+          <div style="display:flex;gap:8px;align-items:center;margin-bottom:12px;">
+            <input class="form-input" placeholder="搜索姓名/手机号" style="width:220px;" id="smsManagerSearch" value="${keyword || ''}" oninput="App.filterSmsManagerNumbers(this.value)" />
+            <div style="margin-left:auto;">
+              <button class="btn btn-sm btn-primary" onclick="App.openSmsNumberEditModal(-1)">+ 新增号码</button>
+            </div>
+          </div>
+          <div class="table-wrap" style="border:1px solid var(--c-border);border-radius:6px;">
+            <table class="data-table">
+              <thead>
+                <tr><th>姓名</th><th>手机号</th><th>所属分组</th><th style="width:110px;">操作</th></tr>
+              </thead>
+              <tbody>
+                ${filtered.map(n => {
+                  const gname = (SMS_GROUPS.find(g => g.id === n.group) || {}).name || '-';
+                  return `
+                    <tr>
+                      <td>${n.name}</td>
+                      <td class="col-mono">${n.phone}</td>
+                      <td><span class="badge badge-gray" style="font-size:10px;">${gname}</span></td>
+                      <td>
+                        <button class="btn-xs" onclick="App.openSmsNumberEditModal(${n.index})">编辑</button>
+                        <button class="btn-xs" style="margin-left:4px;color:var(--c-danger);border-color:var(--c-danger);" onclick="App.deleteSmsNumber(${n.index})">删除</button>
+                      </td>
+                    </tr>
+                  `;
+                }).join('')}
+                ${filtered.length === 0 ? '<tr><td colspan="4" style="text-align:center;padding:32px 0;color:#97a3b5;">暂无号码</td></tr>' : ''}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
 function renderPublish() {
   const tab = App.state.subTab || 'sms';
   return `
@@ -2902,7 +2972,7 @@ function renderPublishSms() {
               <div style="display:flex;gap:8px;align-items:center;margin-bottom:12px;">
                 <input class="form-input" placeholder="搜索姓名/手机号" style="width:220px;" id="smsSearch" oninput="App.filterSmsNumbers(this.value)" />
                 <div style="margin-left:auto;display:flex;gap:6px;">
-                  <button class="btn btn-sm" onclick="App.toast('号码管理待开发','info')">号码管理</button>
+                  <button class="btn btn-sm" onclick="App.openSmsNumberManagerModal()">号码管理</button>
                   <button class="btn btn-sm" onclick="App.openAddToSmsGroupModal()">加入分组</button>
                   <button class="btn btn-sm" onclick="App.selectAllSmsNumbers(true)">全选</button>
                   <button class="btn btn-sm" onclick="App.selectAllSmsNumbers(false)">取消全选</button>
@@ -3080,7 +3150,6 @@ function renderPublishSpot() {
         </div>
         <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:16px;border-top:1px solid #dfe5ee;padding-top:16px;">
           <button class="btn" onclick="App.runCalculation('spot')">计算</button>
-          <button class="btn" onclick="App.submitSpotReview()">审核</button>
           <button class="btn" onclick="App.previewPublish('spot')">预览全文</button>
           <button class="btn btn-primary" onclick="App.confirmPublish('spot')">立即发布</button>
         </div>
@@ -3174,33 +3243,6 @@ function renderPublishConfig() {
         <div style="display:flex;gap:6px;">
           <button class="btn btn-sm" onclick="App.testSmsConn()">连通性测试</button>
           <button class="btn btn-sm" onclick="App.viewSmsLog('get')">查看获取日志</button>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-header">
-        <div class="card-title">模型参数配置</div>
-        <button class="btn btn-sm btn-primary" onclick="App.toast('模型参数已保存', 'success')">保存全部</button>
-      </div>
-      <div class="card-body" style="padding:16px;">
-        <div class="table-wrap">
-          <table class="data-table">
-            <thead>
-              <tr><th>模型用途</th><th>模型名称</th><th>接口地址</th><th class="col-num">最大Token</th><th class="col-num">温度</th><th>操作</th></tr>
-            </thead>
-            <tbody>
-              ${MODEL_CONFIG.map(md => `
-                <tr>
-                  <td class="font-bold">${md.usage}</td>
-                  <td><select class="form-select" style="width:130px;"><option ${md.model === 'deepseek-v3' ? 'selected' : ''}>deepseek-v3</option><option>deepseek-r1</option><option>qwen-max</option></select></td>
-                  <td><input class="form-input" value="${md.endpoint}" readonly style="font-family:monospace;font-size:11px;width:260px;" /></td>
-                  <td class="col-num"><input class="form-input" style="width:80px;text-align:right;padding:4px 8px;" value="${md.maxTokens}" /></td>
-                  <td class="col-num"><input class="form-input" style="width:70px;text-align:right;padding:4px 8px;" value="${md.temperature}" /></td>
-                  <td><button class="btn-xs btn-primary" onclick="App.toast('模型参数已保存', 'success')">保存</button></td>
-                </tr>
-              `).join('')}
-            </tbody>
-          </table>
         </div>
       </div>
     </div>
@@ -4427,6 +4469,8 @@ const App = {
     smsTiming: false,      // 短信平台发布：是否定时发送
     smsTaskStep: null,     // 短信任务创建向导步骤：1|2|3|null
     smsTaskProducts: [],   // 短信任务已选产品ID（最多4个）
+    smsManagerGroup: '',   // 号码管理当前筛选分组
+    smsManagerKeyword: '', // 号码管理搜索关键词
   },
 
   init() {
@@ -5657,6 +5701,91 @@ const App = {
     this.state.smsTaskProducts = [];
     this.render();
     this.toast(`${timing ? '定时任务已创建，将于 08:00 发送' : '短信已发送'}：${taskName}，覆盖 ${count} 个号码、${groups} 个分组`, 'success');
+  },
+
+  // ========== 号码管理 ==========
+  openSmsNumberManagerModal() {
+    this.state.smsManagerGroup = '';
+    this.state.smsManagerKeyword = '';
+    const modal = document.getElementById('modal');
+    if (modal) modal.style.maxWidth = '820px';
+    modal.innerHTML = renderSmsNumberManager(this.state.smsManagerGroup, this.state.smsManagerKeyword);
+    const overlay = document.getElementById('modalOverlay');
+    if (overlay) overlay.classList.add('show');
+  },
+  filterSmsManagerByGroup(groupId) {
+    this.state.smsManagerGroup = groupId || '';
+    this.openSmsNumberManagerModal();
+  },
+  filterSmsManagerNumbers(keyword) {
+    this.state.smsManagerKeyword = keyword || '';
+    this.openSmsNumberManagerModal();
+  },
+  recalcSmsGroupCounts() {
+    SMS_GROUPS.forEach(g => {
+      g.count = SMS_NUMBERS.filter(n => n.group === g.id).length;
+    });
+  },
+  openSmsNumberEditModal(index) {
+    const item = index >= 0 ? SMS_NUMBERS[index] : { name: '', phone: '', group: SMS_GROUPS[0] ? SMS_GROUPS[0].id : '' };
+    const isEdit = index >= 0;
+    const modal = document.getElementById('modal');
+    if (modal) modal.style.maxWidth = '420px';
+    modal.innerHTML = `
+      <div class="modal-header">
+        <div class="modal-title">${isEdit ? '编辑号码' : '新增号码'}</div>
+        <button class="modal-close" onclick="App.closeModal();setTimeout(()=>App.openSmsNumberManagerModal(),50)">×</button>
+      </div>
+      <div class="modal-body">
+        <div style="display:grid;gap:12px;">
+          <div>
+            <label class="form-label">姓名</label>
+            <input class="form-input" id="smsNumberName" value="${item.name}" style="width:100%;margin-top:4px;" />
+          </div>
+          <div>
+            <label class="form-label">手机号</label>
+            <input class="form-input" id="smsNumberPhone" value="${item.phone}" style="width:100%;margin-top:4px;" />
+          </div>
+          <div>
+            <label class="form-label">所属分组</label>
+            <select class="form-select" id="smsNumberGroup" style="width:100%;margin-top:4px;">
+              ${SMS_GROUPS.map(g => `<option value="${g.id}" ${item.group === g.id ? 'selected' : ''}>${g.name}</option>`).join('')}
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" onclick="App.closeModal();setTimeout(()=>App.openSmsNumberManagerModal(),50)">取消</button>
+        <button class="btn btn-primary" onclick="App.submitSmsNumber(${isEdit ? index : -1})">${isEdit ? '保存' : '新增'}</button>
+      </div>
+    `;
+    const overlay = document.getElementById('modalOverlay');
+    if (overlay) overlay.classList.add('show');
+  },
+  submitSmsNumber(index) {
+    const name = (document.getElementById('smsNumberName') || {}).value.trim();
+    const phone = (document.getElementById('smsNumberPhone') || {}).value.trim();
+    const group = (document.getElementById('smsNumberGroup') || {}).value;
+    if (!name || !phone) {
+      this.toast('请填写姓名和手机号', 'warning');
+      return;
+    }
+    if (index >= 0) {
+      SMS_NUMBERS[index] = { name, phone, group };
+    } else {
+      SMS_NUMBERS.push({ name, phone, group });
+    }
+    this.recalcSmsGroupCounts();
+    this.closeModal();
+    setTimeout(() => this.openSmsNumberManagerModal(), 50);
+    this.toast(index >= 0 ? '号码已更新' : '号码已新增', 'success');
+  },
+  deleteSmsNumber(index) {
+    if (!confirm('确定删除该号码吗？')) return;
+    SMS_NUMBERS.splice(index, 1);
+    this.recalcSmsGroupCounts();
+    this.openSmsNumberManagerModal();
+    this.toast('号码已删除', 'success');
   },
   // 即期指数：提交审核
   submitSpotReview() {
