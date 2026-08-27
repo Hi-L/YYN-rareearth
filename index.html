@@ -2458,16 +2458,12 @@ function renderReview() {
   const tab = App.state.subTab || 'pending';
   const pendingCount = REVIEW_RECORDS.filter(r => r.status.startsWith('pending')).length + PRICE_MODIFY_REVIEWS.filter(m => m.status === 'pending').length;
   return `
-    <div class="card">
-      <div class="card-body" style="padding:16px;">
-        <div class="tabs" style="margin-bottom:16px;">
-          <div class="tab-item ${tab === 'pending' ? 'active' : ''}" onclick="App.setSubTab('pending')">待审核 <span class="tab-badge">${pendingCount}</span></div>
-          <div class="tab-item ${tab === 'history' ? 'active' : ''}" onclick="App.setSubTab('history')">审核记录</div>
-        </div>
-        ${tab === 'pending' ? renderReviewPending() : ''}
-        ${tab === 'history' ? renderReviewHistory() : ''}
-      </div>
+    <div class="tabs" style="margin-bottom:16px;">
+      <div class="tab-item ${tab === 'pending' ? 'active' : ''}" onclick="App.setSubTab('pending')">待审核 <span class="tab-badge">${pendingCount}</span></div>
+      <div class="tab-item ${tab === 'history' ? 'active' : ''}" onclick="App.setSubTab('history')">审核记录</div>
     </div>
+    ${tab === 'pending' ? `<div class="card"><div class="card-body" style="padding:16px;">${renderReviewPending()}</div></div>` : ''}
+    ${tab === 'history' ? renderReviewHistory() : ''}
   `;
 }
 
@@ -2813,8 +2809,10 @@ function renderSmsNumberManager(selectedGroup, keyword) {
                       <td class="col-mono">${n.phone}</td>
                       <td><span class="badge badge-gray" style="font-size:10px;">${gname}</span></td>
                       <td>
-                        <button class="btn-xs" onclick="App.openSmsNumberEditModal(${n.index})">编辑</button>
-                        <button class="btn-xs" style="margin-left:4px;color:var(--c-danger);border-color:var(--c-danger);" onclick="App.deleteSmsNumber(${n.index})">删除</button>
+                        <div style="display:flex;gap:6px;justify-content:center;align-items:center;">
+                          <button class="btn-xs" onclick="App.openSmsNumberEditModal(${n.index})">编辑</button>
+                          <button class="btn-xs" style="color:var(--c-danger);border-color:var(--c-danger);" onclick="App.deleteSmsNumber(${n.index})">删除</button>
+                        </div>
                       </td>
                     </tr>
                   `;
