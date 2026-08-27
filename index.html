@@ -514,6 +514,7 @@ table.data-table {
   display: inline-flex; align-items: center; gap: 4px;
   border: 1px solid var(--c-border); background: #fff; color: var(--c-gray-700);
   cursor: pointer; transition: all 0.15s; font-family: inherit;
+  white-space: nowrap;
 }
 .btn-xs:hover { border-color: var(--c-primary); color: var(--c-primary); }
 .btn-xs.btn-primary {
@@ -2798,7 +2799,7 @@ function renderSmsNumberManager(selectedGroup, keyword) {
           <div class="table-wrap" style="border:1px solid var(--c-border);border-radius:6px;">
             <table class="data-table">
               <thead>
-                <tr><th>姓名</th><th>手机号</th><th>所属分组</th><th style="width:110px;">操作</th></tr>
+                <tr><th>姓名</th><th>手机号</th><th>所属分组</th><th style="width:150px;">操作</th></tr>
               </thead>
               <tbody>
                 ${filtered.map(n => {
