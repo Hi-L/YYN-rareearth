@@ -2878,19 +2878,13 @@ function renderPublishSms() {
       <div class="card">
         <div class="card-header">
           <div style="font-weight:600;color:#1e293b;">短信平台发布</div>
-          <div style="display:flex;gap:8px;">
-            <button class="btn btn-sm" onclick="App.toast('号码管理待开发','info')">号码管理</button>
-            <button class="btn btn-sm" onclick="App.openCreateSmsGroupModal()">+ 新建分组</button>
-          </div>
+          <div></div>
         </div>
         <div class="card-body" style="padding:16px;">
           ${stepBar(1)}
           <div style="display:grid;grid-template-columns:240px 1fr;gap:16px;align-items:start;">
             <div style="background:#f7f9fc;border-radius:8px;padding:14px;">
-              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
-                <div style="font-size:13px;font-weight:600;color:#1e293b;">号码分组</div>
-                <button class="btn btn-xs" onclick="App.openCreateSmsGroupModal()">+ 新建分组</button>
-              </div>
+              <div style="font-size:13px;font-weight:600;color:#1e293b;margin-bottom:12px;">号码分组</div>
               ${SMS_GROUPS.map(g => `
                 <label style="display:flex;align-items:center;gap:8px;padding:8px 6px;cursor:pointer;border-radius:6px;transition:background 0.15s;" onmouseenter="this.style.background='#fff'" onmouseleave="this.style.background='transparent'">
                   <input type="checkbox" ${selectedGroups.includes(g.id) ? 'checked' : ''} onchange="App.toggleSmsGroup('${g.id}', this)" />
@@ -2902,17 +2896,16 @@ function renderPublishSms() {
                 <div style="font-weight:600;color:#1e293b;margin-bottom:4px;">使用说明</div>
                 <div>· 勾选分组后，发布将发送至该分组全部号码</div>
                 <div>· 也可在右侧手动勾选单个号码</div>
-                <div>· 号码来源：企业对接人 / 行业专家 / 自定义</div>
               </div>
             </div>
             <div>
               <div style="display:flex;gap:8px;align-items:center;margin-bottom:12px;">
                 <input class="form-input" placeholder="搜索姓名/手机号" style="width:220px;" id="smsSearch" oninput="App.filterSmsNumbers(this.value)" />
                 <div style="margin-left:auto;display:flex;gap:6px;">
+                  <button class="btn btn-sm" onclick="App.toast('号码管理待开发','info')">号码管理</button>
                   <button class="btn btn-sm" onclick="App.openAddToSmsGroupModal()">加入分组</button>
                   <button class="btn btn-sm" onclick="App.selectAllSmsNumbers(true)">全选</button>
                   <button class="btn btn-sm" onclick="App.selectAllSmsNumbers(false)">取消全选</button>
-                  <button class="btn btn-sm" onclick="App.selectInverseSmsNumbers()">反选</button>
                 </div>
               </div>
               <div class="table-wrap" style="max-height:360px;overflow-y:auto;border:1px solid var(--c-border);border-radius:6px;">
