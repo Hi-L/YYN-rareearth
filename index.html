@@ -2876,6 +2876,7 @@ function renderPublishSms() {
             <div style="display:flex;gap:8px;align-items:center;margin-bottom:12px;">
               <input class="form-input" placeholder="搜索姓名/手机号" style="width:220px;" id="smsSearch" oninput="App.filterSmsNumbers(this.value)" />
               <div style="margin-left:auto;display:flex;gap:6px;">
+                <button class="btn btn-sm" onclick="App.openAddToSmsGroupModal()">加入分组</button>
                 <button class="btn btn-sm" onclick="App.selectAllSmsNumbers(true)">全选</button>
                 <button class="btn btn-sm" onclick="App.selectAllSmsNumbers(false)">取消全选</button>
                 <button class="btn btn-sm" onclick="App.selectInverseSmsNumbers()">反选</button>
@@ -2887,11 +2888,11 @@ function renderPublishSms() {
                   <tr><th style="width:40px;"><input type="checkbox" id="smsAllCheckbox" onchange="App.selectAllSmsNumbers(this.checked)" /></th><th>姓名</th><th>手机号</th><th>所属分组</th></tr>
                 </thead>
                 <tbody id="smsTableBody">
-                  ${SMS_NUMBERS.map(n => {
+                  ${SMS_NUMBERS.map((n, i) => {
                     const gname = (SMS_GROUPS.find(g => g.id === n.group) || {}).name || '-';
                     return `
-                      <tr data-sms-search="${(n.name + ' ' + n.phone).toLowerCase()}">
-                        <td><input type="checkbox" class="sms-row" onchange="App.updateSmsSelectedCount()" /></td>
+                      <tr data-sms-search="${(n.name + ' ' + n.phone).toLowerCase()}" data-sms-index="${i}">
+                        <td><input type="checkbox" class="sms-row" ${selectedGroups.includes(n.group) ? 'checked' : ''} onchange="App.updateSmsSelectedCount()" /></td>
                         <td>${n.name}</td>
                         <td class="col-mono">${n.phone}</td>
                         <td><span class="badge badge-gray" style="font-size:10px;">${gname}</span></td>
@@ -2905,7 +2906,7 @@ function renderPublishSms() {
         </div>
         <!-- 底部操作栏 -->
         <div style="display:flex;gap:16px;align-items:center;margin-top:16px;padding-top:16px;border-top:1px solid var(--c-border);">
-          <div style="font-size:13px;color:#64748b;">已选 <strong id="smsSelectedCount" style="color:var(--c-primary);font-size:15px;">0</strong> 个号码，覆盖 <strong id="smsSelectedGroups" style="color:var(--c-primary);font-size:15px;">0</strong> 个分组</div>
+          <div style="font-size:13px;color:#64748b;">已选 <strong id="smsSelectedCount" style="color:var(--c-primary);font-size:15px;">${SMS_NUMBERS.filter(n => selectedGroups.includes(n.group)).length}</strong> 个号码，覆盖 <strong id="smsSelectedGroups" style="color:var(--c-primary);font-size:15px;">${selectedGroups.length}</strong> 个分组</div>
           <div style="margin-left:auto;display:flex;gap:12px;align-items:center;">
             <label class="ios-toggle">
               <input type="checkbox" id="smsTimingToggle" onchange="App.updateSmsTimingLabel(this)" />
@@ -5316,6 +5317,85 @@ const App = {
     this.closeModal();
     this.render();
     this.toast(`分组「${name}」已创建`, 'success');
+  },
+  // 获取当前已勾选的号码索引（短信平台发布）
+  getSmsSelectedIndexes() {
+    const idx = [];
+    document.querySelectorAll('#smsTableBody tr').forEach(tr => {
+      const cb = tr.querySelector('.sms-row');
+      if (cb && cb.checked) idx.push(parseInt(tr.getAttribute('data-sms-index'), 10));
+    });
+    return idx;
+  },
+  // 加入分组（勾选号码后批量归组）
+  openAddToSmsGroupModal() {
+    const count = this.getSmsSelectedCount();
+    if (!count) { this.toast('请先勾选要加入分组的号码', 'warning'); return; }
+    const modal = document.getElementById('modal');
+    modal.innerHTML = `
+      <div class="modal-header">
+        <div class="modal-title">加入分组</div>
+        <button class="modal-close" onclick="App.closeModal()">×</button>
+      </div>
+      <div class="modal-body">
+        <div style="font-size:13px;color:#64748b;margin-bottom:12px;">将把已勾选的 <strong style="color:var(--c-primary);">${count}</strong> 个号码加入以下分组：</div>
+        <div style="display:grid;gap:8px;max-height:240px;overflow-y:auto;padding-right:4px;">
+          <label style="display:flex;align-items:center;gap:8px;padding:8px 10px;border:1px solid var(--c-primary);border-radius:6px;cursor:pointer;font-size:13px;color:#334155;">
+            <input type="radio" name="smsGroupTarget" value="__new__" checked onchange="App.toggleSmsGroupNewInput(this)" />
+            <span style="font-weight:600;white-space:nowrap;">+ 新建分组</span>
+            <input class="form-input" id="smsNewGroupName" style="flex:1;margin-left:8px;padding:4px 8px;font-size:13px;" placeholder="输入新分组名称" />
+          </label>
+          ${SMS_GROUPS.map(g => `
+            <label style="display:flex;align-items:center;gap:8px;padding:8px 10px;border:1px solid var(--c-border);border-radius:6px;cursor:pointer;font-size:13px;color:#334155;">
+              <input type="radio" name="smsGroupTarget" value="${g.id}" onchange="App.toggleSmsGroupNewInput(this)" />
+              <span style="flex:1;">${g.name}</span>
+              <span style="font-size:11px;color:#94a3b8;">${g.count} 人</span>
+            </label>
+          `).join('')}
+        </div>
+        <div style="margin-top:12px;padding:10px;background:#f7f9fc;border-radius:6px;font-size:12px;color:#64748b;line-height:1.7;">
+          <div>· 加入后号码将从原分组移至所选分组</div>
+          <div>· 加入成功后自动勾选该分组，可直接新建发送任务</div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" onclick="App.closeModal()">取消</button>
+        <button class="btn btn-primary" onclick="App.submitAddToSmsGroup()">确定加入</button>
+      </div>
+    `;
+    document.getElementById('modalOverlay').classList.add('show');
+  },
+  // 切换"新建分组"名称输入框显隐
+  toggleSmsGroupNewInput(radio) {
+    const input = document.getElementById('smsNewGroupName');
+    if (input) input.style.display = (radio.value === '__new__') ? '' : 'none';
+  },
+  // 提交加入分组
+  submitAddToSmsGroup() {
+    const indexes = this.getSmsSelectedIndexes();
+    if (!indexes.length) { this.toast('请先勾选要加入分组的号码', 'warning'); return; }
+    const checked = document.querySelector('input[name="smsGroupTarget"]:checked');
+    if (!checked) { this.toast('请选择分组', 'error'); return; }
+    let gid = checked.value;
+    let gname;
+    if (gid === '__new__') {
+      gname = ((document.getElementById('smsNewGroupName') || {}).value || '').trim();
+      if (!gname) { this.toast('请输入新分组名称', 'error'); return; }
+      gid = 'G' + String(SMS_GROUPS.length + 1).padStart(2, '0');
+      SMS_GROUPS.push({ id: gid, name: gname, count: 0, remark: '自定义分组' });
+    } else {
+      gname = (SMS_GROUPS.find(x => x.id === gid) || {}).name || gid;
+    }
+    indexes.forEach(i => { if (SMS_NUMBERS[i]) SMS_NUMBERS[i].group = gid; });
+    // 重算各分组成员数（「全部企业」始终为全部号码数）
+    SMS_GROUPS.forEach(g => {
+      g.count = (g.id === 'G01') ? SMS_NUMBERS.length : SMS_NUMBERS.filter(n => n.group === g.id).length;
+    });
+    // 加入分组后自动勾选该分组
+    this.state.smsSelectedGroups = [gid];
+    this.closeModal();
+    this.render();
+    this.toast(`已将 ${indexes.length} 个号码加入分组「${gname}」`, 'success');
   },
   // 新建发送任务
   openCreateSmsTaskModal() {
