@@ -2330,27 +2330,13 @@ function renderProcessingCalc() {
           <button class="btn btn-sm btn-primary" onclick="App.runCalculation()">执行计算</button>
         </div>
       </div>
-      <div class="card-body" style="padding:0;">
-        <div style="display:flex;gap:12px;padding:14px 16px 0;">
-          <div style="flex:1;padding:10px 14px;background:#e2f3ea;border-radius:6px;">
-            <div style="font-size:12px;color:#1c5c37;">正常数据</div>
-            <div style="font-size:20px;font-weight:700;color:#1c8a4d;">${records.filter(r => r.status !== 'warning').length}<span style="font-size:13px;color:#1c8a4d;font-weight:400;"> 条</span></div>
-          </div>
-          <div style="flex:1;padding:10px 14px;background:#fdf0da;border-radius:6px;">
-            <div style="font-size:12px;color:#8a5a12;">超提醒阈值</div>
-            <div style="font-size:20px;font-weight:700;color:#b96a08;">${records.filter(r => r.status === 'warning').length}<span style="font-size:13px;color:#b96a08;font-weight:400;"> 条</span></div>
-          </div>
-          <div style="flex:1;padding:10px 14px;background:#f7f9fc;border-radius:6px;">
-            <div style="font-size:12px;color:#64748b;">已勾选参与计算</div>
-            <div style="font-size:20px;font-weight:700;color:#1d4ed8;">${records.length}<span style="font-size:13px;color:#64748b;font-weight:400;"> 条</span></div>
-          </div>
-        </div>
-          ${filterBar([
-            { label: '企业', control: '<select class="form-select"><option value="">全部</option>' + ENTERPRISES.filter(e => e.status === '合作中').map(e => '<option>' + e.name + '</option>').join('') + '</select>' },
-            { label: '产品', control: '<select class="form-select"><option value="">全部</option>' + PRODUCTS.map(p => '<option>' + p.name + '</option>').join('') + '</select>' },
-            { label: '行为类型', control: '<select class="form-select"><option value="">全部</option><option>购买</option><option>销售</option><option>成交</option></select>' },
-          ], 'pc')}
-          <div class="table-wrap">
+      <div class="card-body" style="padding:16px;">
+        ${filterBar([
+          { label: '企业', control: '<select class="form-select"><option value="">全部</option>' + ENTERPRISES.filter(e => e.status === '合作中').map(e => '<option>' + e.name + '</option>').join('') + '</select>' },
+          { label: '产品', control: '<select class="form-select"><option value="">全部</option>' + PRODUCTS.map(p => '<option>' + p.name + '</option>').join('') + '</select>' },
+          { label: '行为类型', control: '<select class="form-select"><option value="">全部</option><option>购买</option><option>销售</option><option>成交</option></select>' },
+        ], 'pc')}
+        <div class="table-wrap">
             <table class="data-table">
               <thead>
                 <tr>
@@ -2610,18 +2596,18 @@ function renderReviewHistory() {
   const _total_pm = _src_pm.length;
   const _rows_pm = _src_pm.slice((_pg_pm.current - 1) * _pg_pm.size, _pg_pm.current * _pg_pm.size);
   return `
-    ${filterBar([
-      { label: '流程类型', control: '<select class="form-select"><option value="">全部</option><option>发布审核</option><option>报价修改审核</option></select>' },
-      { label: '产品', control: '<select class="form-select"><option value="">全部</option>' + PRODUCTS.map(p => '<option>' + p.name + '</option>').join('') + '</select>' },
-      { label: '状态', control: '<select class="form-select"><option value="">全部</option><option>审核中</option><option>已通过</option><option>已驳回</option></select>' },
-      { label: '日期', control: '<input class="form-input" type="date" value="2026-08-18" />' },
-    ], 'be')}
-    <div class="card mb-16">
+    <div class="card">
       <div class="card-header">
         <div></div>
         <button class="btn btn-sm" onclick="App.exportData('review')">导出记录</button>
       </div>
-      <div class="card-body" style="padding:0;">
+      <div class="card-body" style="padding:16px;">
+        ${filterBar([
+          { label: '流程类型', control: '<select class="form-select"><option value="">全部</option><option>发布审核</option><option>报价修改审核</option></select>' },
+          { label: '产品', control: '<select class="form-select"><option value="">全部</option>' + PRODUCTS.map(p => '<option>' + p.name + '</option>').join('') + '</select>' },
+          { label: '状态', control: '<select class="form-select"><option value="">全部</option><option>审核中</option><option>已通过</option><option>已驳回</option></select>' },
+          { label: '日期', control: '<input class="form-input" type="date" value="2026-08-18" />' },
+        ], 'be')}
         <div class="table-wrap">
           <table class="data-table">
             <thead>
@@ -2664,13 +2650,7 @@ function renderReviewHistory() {
           </table>
           ${renderPagination(_total_be, _pg_be.current, _pg_be.size, 'be')}
         </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-header">
-        <div></div>
-      </div>
-      <div class="card-body" style="padding:0;">
+        <div style="height:1px;background:var(--c-border);margin:16px 0;"></div>
         <div class="table-wrap">
           <table class="data-table">
             <thead>
@@ -3118,7 +3098,7 @@ function renderPublishHistory() {
           <button class="btn btn-sm" onclick="App.exportData('publish')">导出</button>
         </div>
       </div>
-      <div class="card-body" style="padding:0;">
+      <div class="card-body" style="padding:16px;">
         <div class="table-wrap">
           <table class="data-table">
             <thead>
@@ -3457,7 +3437,12 @@ function renderBaseDataCustomer() {
           <button class="btn btn-sm btn-primary" onclick="App.openCustomerModal()">新增客户</button>
         </div>
       </div>
-      <div class="card-body" style="padding:0;">
+      <div class="card-body" style="padding:16px;">
+        ${filterBar([
+          { label: '客户名称', control: '<input class="form-input" placeholder="请输入客户名称" />' },
+          { label: '跟进阶段', control: '<select class="form-select"><option value="">全部</option><option>初步接洽</option><option>方案沟通</option><option>商务谈判</option></select>' },
+          { label: '所在区域', control: '<select class="form-select"><option value="">全部</option><option>华北</option><option>华东</option><option>华南</option><option>西南</option><option>西北</option></select>', fold: true },
+        ], 'cu')}
         <div class="table-wrap">
           <table class="data-table">
             <thead>
