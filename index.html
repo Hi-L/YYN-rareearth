@@ -2837,7 +2837,7 @@ function renderPublishManage() {
   `;
 }
 
-// 短信平台发布：号码分组 + 全选 + 选分组发布；点击"新建发送任务"进入三步向导
+// 短信平台发布：进入后直接展示三步向导，第一步为号码分组/单选接收人
 function renderPublishSms() {
   const selectedGroups = App.state.smsSelectedGroups || [];
   const step = App.state.smsTaskStep;
@@ -2872,16 +2872,25 @@ function renderPublishSms() {
     </div>
   `;
 
-  // ===== 向导视图 =====
-  if (step === 1) {
+  // 进入短信平台发布即进入三步向导；step 为空时默认展示第一步「选择接收人」
+  if (!step || step === 1) {
     return `
       <div class="card">
-        <div class="card-header"><div></div><span class="badge badge-primary">新建发送任务</span></div>
+        <div class="card-header">
+          <div style="font-weight:600;color:#1e293b;">短信平台发布</div>
+          <div style="display:flex;gap:8px;">
+            <button class="btn btn-sm" onclick="App.toast('号码管理待开发','info')">号码管理</button>
+            <button class="btn btn-sm" onclick="App.openCreateSmsGroupModal()">+ 新建分组</button>
+          </div>
+        </div>
         <div class="card-body" style="padding:16px;">
           ${stepBar(1)}
           <div style="display:grid;grid-template-columns:240px 1fr;gap:16px;align-items:start;">
             <div style="background:#f7f9fc;border-radius:8px;padding:14px;">
-              <div style="font-size:13px;font-weight:600;color:#1e293b;margin-bottom:12px;">号码分组</div>
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+                <div style="font-size:13px;font-weight:600;color:#1e293b;">号码分组</div>
+                <button class="btn btn-xs" onclick="App.openCreateSmsGroupModal()">+ 新建分组</button>
+              </div>
               ${SMS_GROUPS.map(g => `
                 <label style="display:flex;align-items:center;gap:8px;padding:8px 6px;cursor:pointer;border-radius:6px;transition:background 0.15s;" onmouseenter="this.style.background='#fff'" onmouseleave="this.style.background='transparent'">
                   <input type="checkbox" ${selectedGroups.includes(g.id) ? 'checked' : ''} onchange="App.toggleSmsGroup('${g.id}', this)" />
@@ -2889,11 +2898,18 @@ function renderPublishSms() {
                   <span style="font-size:11px;color:#94a3b8;">${g.count}</span>
                 </label>
               `).join('')}
+              <div style="margin-top:14px;padding:10px;background:#fff;border-radius:6px;border:1px dashed #cbd5e1;font-size:12px;color:#64748b;line-height:1.7;">
+                <div style="font-weight:600;color:#1e293b;margin-bottom:4px;">使用说明</div>
+                <div>· 勾选分组后，发布将发送至该分组全部号码</div>
+                <div>· 也可在右侧手动勾选单个号码</div>
+                <div>· 号码来源：企业对接人 / 行业专家 / 自定义</div>
+              </div>
             </div>
             <div>
               <div style="display:flex;gap:8px;align-items:center;margin-bottom:12px;">
                 <input class="form-input" placeholder="搜索姓名/手机号" style="width:220px;" id="smsSearch" oninput="App.filterSmsNumbers(this.value)" />
                 <div style="margin-left:auto;display:flex;gap:6px;">
+                  <button class="btn btn-sm" onclick="App.openAddToSmsGroupModal()">加入分组</button>
                   <button class="btn btn-sm" onclick="App.selectAllSmsNumbers(true)">全选</button>
                   <button class="btn btn-sm" onclick="App.selectAllSmsNumbers(false)">取消全选</button>
                   <button class="btn btn-sm" onclick="App.selectInverseSmsNumbers()">反选</button>
@@ -2919,10 +2935,13 @@ function renderPublishSms() {
               </div>
             </div>
           </div>
-          ${wizardFooter(
-            '<button class="btn" onclick="App.cancelSmsTask()">取消</button>',
-            '<button class="btn btn-primary" onclick="App.setSmsTaskStep(2)">下一步：选择产品</button>'
-          )}
+          <div style="display:flex;gap:16px;align-items:center;margin-top:16px;padding-top:16px;border-top:1px solid var(--c-border);">
+            <div style="font-size:13px;color:#64748b;">已选 <strong id="smsSelectedCount" style="color:var(--c-primary);font-size:15px;">${SMS_NUMBERS.filter(n => selectedGroups.includes(n.group)).length}</strong> 个号码，覆盖 <strong id="smsSelectedGroups" style="color:var(--c-primary);font-size:15px;">${selectedGroups.length}</strong> 个分组</div>
+            <div style="margin-left:auto;display:flex;gap:12px;">
+              <button class="btn" onclick="App.cancelSmsTask()">取消</button>
+              <button class="btn btn-primary" onclick="App.setSmsTaskStep(2)">下一步：选择产品</button>
+            </div>
+          </div>
         </div>
       </div>
     `;
@@ -3029,81 +3048,6 @@ function renderPublishSms() {
     `;
   }
 
-  // ===== 列表视图 =====
-  return `
-    <div class="card">
-      <div class="card-header">
-        <div></div>
-        <div style="display:flex;gap:8px;">
-          <button class="btn btn-sm" onclick="App.toast('号码管理待开发','info')">号码管理</button>
-          <button class="btn btn-sm btn-primary" onclick="App.openCreateSmsTask()">+ 新建发送任务</button>
-        </div>
-      </div>
-      <div class="card-body" style="padding:16px;">
-        <div style="display:grid;grid-template-columns:240px 1fr;gap:16px;align-items:start;">
-          <!-- 左侧：分组列表 -->
-          <div style="background:#f7f9fc;border-radius:8px;padding:14px;">
-            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
-              <div style="font-size:13px;font-weight:600;color:#1e293b;">号码分组</div>
-              <button class="btn btn-xs" onclick="App.openCreateSmsGroupModal()">+ 新建分组</button>
-            </div>
-            ${SMS_GROUPS.map(g => `
-              <label style="display:flex;align-items:center;gap:8px;padding:8px 6px;cursor:pointer;border-radius:6px;transition:background 0.15s;" onmouseenter="this.style.background='#fff'" onmouseleave="this.style.background='transparent'">
-                <input type="checkbox" ${selectedGroups.includes(g.id) ? 'checked' : ''} onchange="App.toggleSmsGroup('${g.id}', this)" />
-                <span style="flex:1;font-size:13px;color:#334155;">${g.name}</span>
-                <span style="font-size:11px;color:#94a3b8;">${g.count}</span>
-              </label>
-            `).join('')}
-            <div style="margin-top:14px;padding:10px;background:#fff;border-radius:6px;border:1px dashed #cbd5e1;font-size:12px;color:#64748b;line-height:1.7;">
-              <div style="font-weight:600;color:#1e293b;margin-bottom:4px;">使用说明</div>
-              <div>· 勾选分组后，发布将发送至该分组全部号码</div>
-              <div>· 也可在右侧手动勾选单个号码</div>
-              <div>· 号码来源：企业对接人 / 行业专家 / 自定义</div>
-            </div>
-          </div>
-          <!-- 右侧：号码表格 -->
-          <div>
-            <div style="display:flex;gap:8px;align-items:center;margin-bottom:12px;">
-              <input class="form-input" placeholder="搜索姓名/手机号" style="width:220px;" id="smsSearch" oninput="App.filterSmsNumbers(this.value)" />
-              <div style="margin-left:auto;display:flex;gap:6px;">
-                <button class="btn btn-sm" onclick="App.openAddToSmsGroupModal()">加入分组</button>
-                <button class="btn btn-sm" onclick="App.selectAllSmsNumbers(true)">全选</button>
-                <button class="btn btn-sm" onclick="App.selectAllSmsNumbers(false)">取消全选</button>
-                <button class="btn btn-sm" onclick="App.selectInverseSmsNumbers()">反选</button>
-              </div>
-            </div>
-            <div class="table-wrap" style="max-height:380px;overflow-y:auto;border:1px solid var(--c-border);border-radius:6px;">
-              <table class="data-table">
-                <thead>
-                  <tr><th style="width:40px;"><input type="checkbox" id="smsAllCheckbox" onchange="App.selectAllSmsNumbers(this.checked)" /></th><th>姓名</th><th>手机号</th><th>所属分组</th></tr>
-                </thead>
-                <tbody id="smsTableBody">
-                  ${SMS_NUMBERS.map((n, i) => {
-                    const gname = (SMS_GROUPS.find(g => g.id === n.group) || {}).name || '-';
-                    return `
-                      <tr data-sms-search="${(n.name + ' ' + n.phone).toLowerCase()}" data-sms-index="${i}">
-                        <td><input type="checkbox" class="sms-row" ${selectedGroups.includes(n.group) ? 'checked' : ''} onchange="App.updateSmsSelectedCount()" /></td>
-                        <td>${n.name}</td>
-                        <td class="col-mono">${n.phone}</td>
-                        <td><span class="badge badge-gray" style="font-size:10px;">${gname}</span></td>
-                      </tr>
-                    `;
-                  }).join('')}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <!-- 底部操作栏 -->
-        <div style="display:flex;gap:16px;align-items:center;margin-top:16px;padding-top:16px;border-top:1px solid var(--c-border);">
-          <div style="font-size:13px;color:#64748b;">已选 <strong id="smsSelectedCount" style="color:var(--c-primary);font-size:15px;">${SMS_NUMBERS.filter(n => selectedGroups.includes(n.group)).length}</strong> 个号码，覆盖 <strong id="smsSelectedGroups" style="color:var(--c-primary);font-size:15px;">${selectedGroups.length}</strong> 个分组</div>
-          <div style="margin-left:auto;">
-            <button class="btn btn-primary" onclick="App.openCreateSmsTask()">新建发送任务</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  `;
 }
 
 // 即期指数：把"待发布行情"功能拿过来，顶部按钮加【计算】【审核】
@@ -5620,6 +5564,10 @@ const App = {
         this.toast('请先勾选号码或分组', 'warning');
         return;
       }
+      // 首次进入第二步时，默认选中前 4 个启用产品
+      if (!this.state.smsTaskProducts.length) {
+        this.state.smsTaskProducts = PRODUCTS.filter(p => p.status !== '停用').slice(0, 4).map(p => p.id);
+      }
     }
     if (step === 3) {
       if (!this.state.smsTaskProducts.length) {
@@ -5630,10 +5578,11 @@ const App = {
     this.state.smsTaskStep = step;
     this.render();
   },
-  // 取消任务创建
+  // 取消任务创建：清空所有选择状态并回到第一步空状态
   cancelSmsTask() {
     this.state.smsTaskStep = null;
     this.state.smsTaskProducts = [];
+    this.state.smsSelectedGroups = [];
     this.render();
   },
   // 勾选/取消产品（最多 4 个）
