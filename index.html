@@ -526,6 +526,8 @@ table.data-table {
 }
 .btn-xs.btn-danger:hover { background: var(--c-danger); color: #fff; }
 .btn-xs + .btn-xs { margin-left: 6px; }
+.sms-group-item:hover .sms-group-count { display: none; }
+.sms-group-item:hover .sms-group-delete { display: inline-flex !important; }
 .btn-lg { padding: 10px 24px; font-size: 14px; }
 .btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
@@ -2780,11 +2782,21 @@ function renderSmsNumberManager(selectedGroup, keyword) {
       <div style="display:grid;grid-template-columns:200px 1fr;min-height:420px;max-height:60vh;">
         <!-- 左侧分组 -->
         <div style="border-right:1px solid var(--c-border);padding:16px;background:#f7f9fc;overflow-y:auto;">
-          <div style="font-size:13px;font-weight:600;color:#1e293b;margin-bottom:12px;">号码分组</div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+            <div style="font-size:13px;font-weight:600;color:#1e293b;">号码分组</div>
+            <button class="btn-xs" style="padding:2px 8px;white-space:nowrap;" onclick="App.openSmsGroupEditModal()">+ 新建</button>
+          </div>
           <div style="display:flex;flex-direction:column;gap:6px;">
-            <div onclick="App.filterSmsManagerByGroup('')" style="padding:8px 10px;border-radius:6px;cursor:pointer;font-size:13px;color:#334155;${!selectedGroup ? activeStyle : normalStyle}">全部号码 <span style="float:right;font-size:11px;color:#94a3b8;">${SMS_NUMBERS.length}</span></div>
+            <div class="sms-group-item" onclick="App.filterSmsManagerByGroup('')" style="padding:8px 10px;border-radius:6px;cursor:pointer;font-size:13px;color:#334155;display:flex;justify-content:space-between;align-items:center;${!selectedGroup ? activeStyle : normalStyle}">
+              <span>全部号码</span>
+              <span class="sms-group-count" style="font-size:11px;color:#94a3b8;">${SMS_NUMBERS.length}</span>
+            </div>
             ${SMS_GROUPS.map(g => `
-              <div onclick="App.filterSmsManagerByGroup('${g.id}')" style="padding:8px 10px;border-radius:6px;cursor:pointer;font-size:13px;color:#334155;${selectedGroup === g.id ? activeStyle : normalStyle}">${g.name} <span style="float:right;font-size:11px;color:#94a3b8;">${g.count}</span></div>
+              <div class="sms-group-item" onclick="App.filterSmsManagerByGroup('${g.id}')" style="padding:8px 10px;border-radius:6px;cursor:pointer;font-size:13px;color:#334155;display:flex;justify-content:space-between;align-items:center;${selectedGroup === g.id ? activeStyle : normalStyle}">
+                <span>${g.name}</span>
+                <span class="sms-group-count" style="font-size:11px;color:#94a3b8;">${g.count}</span>
+                <button class="sms-group-delete" style="display:none;font-size:11px;color:var(--c-danger);background:transparent;border:none;cursor:pointer;padding:2px 6px;white-space:nowrap;" onclick="event.stopPropagation();App.deleteSmsGroup('${g.id}')">删除</button>
+              </div>
             `).join('')}
           </div>
         </div>
@@ -5703,6 +5715,60 @@ const App = {
   },
 
   // ========== 号码管理 ==========
+  openSmsGroupEditModal() {
+    const modal = document.getElementById('modal');
+    if (modal) modal.style.maxWidth = '420px';
+    modal.innerHTML = `
+      <div class="modal-header">
+        <div class="modal-title">新建分组</div>
+        <button class="modal-close" onclick="App.closeModal();setTimeout(()=>App.openSmsNumberManagerModal(),50)">×</button>
+      </div>
+      <div class="modal-body">
+        <div>
+          <label class="form-label">分组名称</label>
+          <input class="form-input" id="smsGroupName" value="" style="width:100%;margin-top:4px;" placeholder="请输入分组名称" />
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" onclick="App.closeModal();setTimeout(()=>App.openSmsNumberManagerModal(),50)">取消</button>
+        <button class="btn btn-primary" onclick="App.submitSmsGroup()">保存</button>
+      </div>
+    `;
+    const overlay = document.getElementById('modalOverlay');
+    if (overlay) overlay.classList.add('show');
+  },
+  submitSmsGroup() {
+    const name = (document.getElementById('smsGroupName') || {}).value.trim();
+    if (!name) {
+      this.toast('请输入分组名称', 'warning');
+      return;
+    }
+    if (SMS_GROUPS.some(g => g.name === name)) {
+      this.toast('分组名称已存在', 'warning');
+      return;
+    }
+    const maxId = SMS_GROUPS.reduce((m, g) => Math.max(m, parseInt(g.id.replace('G', ''), 10) || 0), 0);
+    const newId = 'G' + String(maxId + 1).padStart(2, '0');
+    SMS_GROUPS.push({ id: newId, name, count: 0, remark: '' });
+    this.closeModal();
+    setTimeout(() => this.openSmsNumberManagerModal(), 50);
+    this.toast('分组已创建', 'success');
+  },
+  deleteSmsGroup(groupId) {
+    const group = SMS_GROUPS.find(g => g.id === groupId);
+    if (!group) return;
+    const count = SMS_NUMBERS.filter(n => n.group === groupId).length;
+    if (count > 0) {
+      this.toast(`该分组下还有 ${count} 个号码，请先转移或删除号码`, 'warning');
+      return;
+    }
+    if (!confirm(`确定删除分组「${group.name}」吗？`)) return;
+    const idx = SMS_GROUPS.findIndex(g => g.id === groupId);
+    if (idx > -1) SMS_GROUPS.splice(idx, 1);
+    this.state.smsManagerGroup = '';
+    this.openSmsNumberManagerModal();
+    this.toast('分组已删除', 'success');
+  },
   openSmsNumberManagerModal() {
     this.state.smsManagerGroup = '';
     this.state.smsManagerKeyword = '';
