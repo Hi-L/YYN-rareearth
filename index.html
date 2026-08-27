@@ -5552,23 +5552,27 @@ const App = {
   },
   // 切换向导步骤
   setSmsTaskStep(step) {
-    if (step === 2) {
-      const count = this.getSmsSelectedCount();
-      const groups = this.state.smsSelectedGroups.length;
-      if (!count && !groups) {
-        this.toast('请先勾选号码或分组', 'warning');
-        return;
+    const currentStep = this.state.smsTaskStep || 1;
+    // 回退时不做前进校验，确保用户能随时回到上一步修改
+    if (step > currentStep) {
+      if (step === 2) {
+        const count = this.getSmsSelectedCount();
+        const groups = this.state.smsSelectedGroups.length;
+        if (!count && !groups) {
+          this.toast('请先勾选号码或分组', 'warning');
+          return;
+        }
       }
-      // 首次进入第二步时，默认选中前 4 个启用产品
-      if (!this.state.smsTaskProducts.length) {
-        this.state.smsTaskProducts = PRODUCTS.filter(p => p.status !== '停用').slice(0, 4).map(p => p.id);
+      if (step === 3) {
+        if (!this.state.smsTaskProducts.length) {
+          this.toast('请至少选择 1 个产品', 'warning');
+          return;
+        }
       }
     }
-    if (step === 3) {
-      if (!this.state.smsTaskProducts.length) {
-        this.toast('请至少选择 1 个产品', 'warning');
-        return;
-      }
+    // 首次进入第二步时，默认选中前 4 个启用产品
+    if (step === 2 && !this.state.smsTaskProducts.length) {
+      this.state.smsTaskProducts = PRODUCTS.filter(p => p.status !== '停用').slice(0, 4).map(p => p.id);
     }
     this.state.smsTaskStep = step;
     this.render();
