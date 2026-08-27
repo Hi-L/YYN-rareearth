@@ -3570,7 +3570,7 @@ function renderSystemMenu() {
         <td class="col-mono">${m.type === '菜单' ? '目录' : '菜单'}</td>
         <td class="col-mono">${m.id.toLowerCase()}:view</td>
         <td class="col-mono">/${m.id}</td>
-        <td><span class="badge badge-success">${m.status}</span></td>
+        <td><label class="ios-toggle"><input type="checkbox" ${m.status === '启用' ? 'checked' : ''} onchange="App.toggleGenericStatus(this, MENU_LIST.find(x => x.id === '${m.id}'), 'status', '启用', '停用')" /><span class="track"><span class="knob"></span></span><span class="label ${m.status === '启用' ? 'on' : 'off'}">${m.status === '启用' ? '正常' : '停用'}</span></label></td>
         <td class="col-mono">2026-08-18</td>
         <td>
           <button class="btn-xs btn-primary" onclick="App.openMenuModal('${m.id}')">编辑</button>
@@ -3583,16 +3583,19 @@ function renderSystemMenu() {
   }).join('');
   return `
     <div class="card">
+      <div class="card-header">
+        <div></div>
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-sm btn-primary" onclick="App.openMenuModal()"><span style="margin-right:2px;">+</span>新增</button>
+          <button class="btn btn-sm" onclick="App.toast('修改菜单', 'info')">修改</button>
+          <button class="btn btn-sm" onclick="App.toast('删除菜单', 'warning')">删除</button>
+        </div>
+      </div>
       <div class="card-body" style="padding:16px;">
         ${filterBar([
           { label: '菜单名称', control: '<input class="form-input" placeholder="请输入菜单名称" />' },
           { label: '状态', control: '<select class="form-select"><option value="">全部</option><option>启用</option><option>停用</option></select>' },
         ], 'bm')}
-        <div style="display:flex;gap:8px;margin-bottom:12px;">
-          <button class="btn btn-sm btn-primary" onclick="App.openMenuModal()"><span style="margin-right:2px;">+</span>新增</button>
-          <button class="btn btn-sm btn-success" onclick="App.toast('修改菜单', 'info')">修改</button>
-          <button class="btn btn-sm btn-danger" onclick="App.toast('删除菜单', 'warning')">删除</button>
-        </div>
         <div class="table-wrap">
           <table class="data-table">
             <thead>
